@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+
+.login a{
+    text-decoration: none;
+    color: black;
+}
+.login:hover {
+        background-color: #368693;
+}
