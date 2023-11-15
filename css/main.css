@@ -4,18 +4,11 @@
     text-decoration: none;
     color: black;
 }
+
 .login:hover {
         background-color: #368693;
 }
 
-.care{
-    text-align: justify;
-}
-
-.unity{
-    text-align: justify;
-}
-
-.passion{
+.text{
     text-align: justify;
 }
