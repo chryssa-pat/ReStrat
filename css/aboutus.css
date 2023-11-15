@@ -1,6 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
 
 .paragraph{
-text-align: justify;
-font-family: 'Open Sans', sans-serif;
+    text-align: justify;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.boldtext{
+    font-weight: bold;
+    text-align: justify;
+    font-family: 'Open Sans', sans-serif;
 }
