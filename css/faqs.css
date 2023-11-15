@@ -4,3 +4,7 @@
 text-align: justify;
 font-family: 'Open Sans', sans-serif;
 }
+
+.question {
+    font-weight: bold;
+}
