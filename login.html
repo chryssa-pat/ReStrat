@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Signup Form</title>
+    <link rel="stylesheet" href="login-signup.css">
+   
+</head>
+<body>
+
+<div class="form-container">
+    <div class="login-container">
+        <img id="image" src="earth.png" alt="logo icon" height="60">
+        <h2>Login</h2>
+        <form action="your_login_script.php" method="post">
+            <label for="login-username">Username:</label>
+            <input type="text" id="login-username" name="login-username" autocomplete="on" required>
+
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" name="login-password" autocomplete="on" required>
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+
+    <p>Don't have an account? <a href="signup.html">Sign up here</a>.</p>
+</div>
+
+</body>
+</html>
