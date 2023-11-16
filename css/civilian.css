@@ -114,13 +114,20 @@ text-align: center;
     font-size: medium;
     background-color: rgba(11, 91, 212, 0.674);
 }
+
 .btn:hover{
     background-color:  rgb(11, 93, 212);
 }
+
 .scrollable-panel {
     background-color: white;
     border: 1px solid rgba(11, 91, 212, 0.557);
     margin-bottom: 10px;
+    height: 600px;
+    overflow-y: auto;
+    position: relative;
+    margin-left: auto;
+    
 }
 
 .panel-heading {
@@ -136,3 +143,6 @@ text-align: center;
     background-color:  rgb(11, 93, 212);
 }
 
+.larger-left-margin {
+    margin-left: 20px; /* Adjust the value as needed */
+}
