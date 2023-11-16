@@ -80,3 +80,15 @@ text-align: center;
     justify-content: center;
     min-height: 100vh;
 }
+
+.scrollable-panel {
+    background-color: white;
+    border: 1px solid rgba(11, 91, 212, 0.557);
+    margin-bottom: 10px;
+}
+
+.panel-heading {
+    background-color: rgba(11, 91, 212, 0.557);
+    color: white;
+    padding: 10px;
+}
