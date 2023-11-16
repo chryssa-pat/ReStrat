@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
-
 .container-fluid {
     max-height: 1000px; /* Set the maximum width to your desired value */
     margin-right: auto;
@@ -20,12 +18,6 @@
 /* Optional: Add some styling for better visibility */
 .user p, .user button {
     margin: 5px;
-}
-
-.availability_text{
-    text-align: justify;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 15px;
 }
 
 .column {
@@ -80,7 +72,51 @@ text-align: center;
     justify-content: center;
     min-height: 100vh;
 }
-
+/* Split the screen in half */
+.split {
+    height: 100%;
+    width: 50%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+  }
+  
+  /* Control the left side */
+  .left {
+    left: 0;
+    background-color: #111;
+  }
+  
+  /* Control the right side */
+  .right {
+    right: 0;
+    background-color: red;
+  }
+  
+  /* If you want the content centered horizontally and vertically */
+  .centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  
+  /* Style the image inside the centered container, if needed */
+  .centered img {
+    width: 150px;
+    border-radius: 50%;
+  }
+  .btn {
+    width: 150px; /* Set the desired width */
+    font-size: medium;
+    background-color: rgba(11, 91, 212, 0.674);
+}
+.btn:hover{
+    background-color:  rgb(11, 93, 212);
+}
 .scrollable-panel {
     background-color: white;
     border: 1px solid rgba(11, 91, 212, 0.557);
@@ -88,7 +124,15 @@ text-align: center;
 }
 
 .panel-heading {
-    background-color: rgba(11, 91, 212, 0.557);
+   
     color: white;
     padding: 10px;
+    background-color: rgba(11, 91, 212, 0.674);
 }
+.search{
+    color:white;
+}
+.search:hover{
+    background-color:  rgb(11, 93, 212);
+}
+
