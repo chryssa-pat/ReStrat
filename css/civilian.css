@@ -1,5 +1,5 @@
 .container-fluid {
-    max-height: 800px; /* Set the maximum width to your desired value */
+    max-height: 1000px; /* Set the maximum width to your desired value */
     margin-right: auto;
     margin-left: auto;
 }
@@ -18,6 +18,39 @@
 /* Optional: Add some styling for better visibility */
 .user p, .user button {
     margin: 5px;
+}
+
+.column {
+    float: left;
+    width: 50%;
+    height: 20%;
+  }
+  
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+   }
+   
+.container .item:nth-child(2){ /*Only second item padding and center text*/
+padding-left: 1em;
+padding-right: 1em;
+text-align: center;
+}
+
+.logout a{
+    text-decoration: none;
+    color: white;
+}
+
+.logout:hover {
+        background-color: rgb(11, 93, 212);
 }
 
 /* Media query for smaller screens */
