@@ -14,6 +14,9 @@
     margin: 15px;
 }
 
+.view{
+    font-weight: bold;
+}
 
 /* Optional: Add some styling for better visibility */
 .user p, .user button {
@@ -135,6 +138,7 @@ text-align: center;
     color: white;
     padding: 10px;
     background-color: rgba(11, 91, 212, 0.674);
+    font-weight: bold;
 }
 .search{
     color:white;
