@@ -1,152 +1,54 @@
-.container-fluid {
-    max-height: 1000px; /* Set the maximum width to your desired value */
-    margin-right: auto;
-    margin-left: auto;
-}
 
-.user {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex;
-    flex-direction: row; /* Display items horizontally by default */
-    align-items: center;
-    margin: 15px;
-}
-
-.view{
-    font-weight: bold;
-}
-
-/* Optional: Add some styling for better visibility */
-.user p, .user button {
-    margin: 5px;
-}
-
-.column {
-    float: left;
-    width: 50%;
-    height: 20%;
-  }
-  
-  /* Clear floats after the columns */
-  .row:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-
-  .container {
-    display: flex;
-    align-items: center;
-   }
-   
-.container .item:nth-child(2){ /*Only second item padding and center text*/
-padding-left: 1em;
-padding-right: 1em;
-text-align: center;
-}
-
-.logout a{
-    text-decoration: none;
-    color: white;
-}
-
-.logout:hover {
-        background-color: rgb(11, 93, 212);
-}
-
-/* Media query for smaller screens */
-@media screen and (max-width: 800px) {
-    .user {
-        flex-direction: column; /* Display items vertically on smaller screens */
-        align-items: left;
-    }
-    
-    .user button {
-        margin-left: 0; /* Remove left margin for button on smaller screens */
-        margin-top: 10px; /* Add top margin for button on smaller screens */
-    }
-}
-.center-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-}
-/* Split the screen in half */
-.split {
-    height: 100%;
-    width: 50%;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    overflow-x: hidden;
-    padding-top: 20px;
-  }
-  
-  /* Control the left side */
-  .left {
-    left: 0;
-    background-color: #111;
-  }
-  
-  /* Control the right side */
-  .right {
-    right: 0;
-    background-color: red;
-  }
-  
-  /* If you want the content centered horizontally and vertically */
-  .centered {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-  }
-  
-  /* Style the image inside the centered container, if needed */
-  .centered img {
-    width: 150px;
-    border-radius: 50%;
-  }
   .btn {
-    width: 150px; /* Set the desired width */
-    font-size: medium;
-    background-color: rgba(11, 91, 212, 0.674);
-}
-
-.btn:hover{
-    background-color:  rgb(11, 93, 212);
-}
-
-.scrollable-panel {
-    background-color: white;
-    border: 1px solid rgba(11, 91, 212, 0.557);
-    margin-bottom: 10px;
-    height: 600px;
-    overflow-y: auto;
-    position: relative;
-    margin-left: auto;
-    
-}
-
-.panel-heading {
-   
-    color: white;
+    background-color: #add8e6; /* Baby blue color */
+    color: #fff;
     padding: 10px;
-    background-color: rgba(11, 91, 212, 0.674);
-    font-weight: bold;
-}
-.search{
-    color:white;
-}
-.search:hover{
-    background-color:  rgb(11, 93, 212);
+    border: none;
+    cursor: pointer;
+    border-radius: 5px; /* Rounded corners for the button */
+    width: 100%;
+  }
+  
+  .btn:hover {
+    background-color: rgb(11, 93, 212);
+  }
+  
+ 
+  #orderFrame {
+    border: 2px solid #ddd;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   
 }
 
-.larger-left-margin {
-    margin-left: 20px; /* Adjust the value as needed */
+form {
+  max-width: 400px;
+  margin: 0 auto;
 }
+label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+select, input, .form_button {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.form_button{
+  background-color: #add8e6; /* Baby blue color */
+  color: #fff;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px; /* Rounded corners for the button */
+  width: 100%;
+
+}
+.form_button:hover {
+  background-color: rgb(11, 93, 212);
+}
+ 
