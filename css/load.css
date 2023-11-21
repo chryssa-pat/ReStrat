@@ -1,0 +1,56 @@
+#orderFrame {
+  border: 2px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+select,
+input,
+.form_button,
+.load,
+.unload {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.form_button {
+  background-color: rgb(11, 93, 212);
+  color: #fff;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px; /* Rounded corners for the button */
+}
+
+.form_button:hover {
+  background-color: rgb(7, 65, 151);
+}
+
+.load,
+.unload {
+  background-color: rgb(11, 93, 212);
+  color: #fff;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px; /* Rounded corners for the button */
+  width: 100%;
+}
+
+.load:hover,
+.unload:hover {
+  background-color: rgb(7, 65, 151);
+}
