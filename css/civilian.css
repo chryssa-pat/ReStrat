@@ -1,38 +1,65 @@
-  #orderFrame {
-    border: 2px solid #ddd;
-    padding: 20px;
-    border-radius: 10px;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.form-container {
+    max-width: 300px;
+    margin: 0 auto;
+    margin-top: 100px;
+    
+}
+
+
+.signup-container,.login-container {
+    background-color: #fff;
+    border: 1px solid #ccc;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-   
+    border-radius: 15px; /* Rounded corners */
+    padding: 20px;
+    margin-bottom: 20px;
+    
 }
 
-form {
-  max-width: 400px;
-  margin: 0 auto;
-}
-label {
-  display: block;
-  margin-bottom: 8px;
+#image {
+    display: block;
+    margin: 0 auto; /* Center the image horizontally */
+    margin-bottom: 20px; /* Add some space between the icon and the form */
 }
 
-select, input, .form_button {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 12px;
-  box-sizing: border-box;
+.form-container h2 {
+    text-align: center;
+    color: rgb(11, 93, 212); /* Baby blue color */
 }
 
-.form_button{
-  background-color: rgb(11, 93, 212); 
-  color: #fff;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px; /* Rounded corners for the button */
-  width: 100%;
+.form-container label {
+    display: block;
+    margin-bottom: 8px;
+}
 
+.form-container input {
+    width: 95%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 12px; /* Increase border-radius for curved text input */
+    border: 1px solid #ccc; /* Optional: Add a border for a distinct look */
 }
-.form_button:hover {
-  background-color: rgb(7, 65, 151);
+
+.form-container button {
+    background-color: rgb(11, 93, 212); /* Baby blue color */
+    color: #fff;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px; /* Rounded corners for the button */
+    width: 100%;
 }
- 
+
+.form-container button:hover {
+    background-color: rgb(7, 65, 151); /* Lighter shade of baby blue on hover */
+}
+
+.form-container p {
+    text-align: center;
+    margin-top: 10px;
+}
