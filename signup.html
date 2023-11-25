@@ -1,4 +1,4 @@
-
+<?php include ('signup.php')?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,12 +27,14 @@
             <input type="text" id="signup-phone" name="signup-phone" pattern="\d{10}" required title="Please enter a 10-digit phone number">
 
             
-            <label for="signup-location">Location:</label>
-            <input type="text" id="signup-location" name="signup-location" required>
-            
-            <button type="submit">Signup</button>
+            <button  type="button" onclick="signup()">Signup</button>
+           
         </form>
+        <div id="result"></div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script src="./javascript/signup.js"></script>
 </body>
 </html>
