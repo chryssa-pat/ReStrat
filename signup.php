@@ -1,36 +1,40 @@
 <?php
-// Establish a database connection (replace these with your actual database credentials)
+session_start();
 
-$conn = mysqli_connect('localhost', 'root', '', 'WEB');
+// Establish a database connection
+$conn = new mysqli("localhost", "root", "canmp168", "WEB");
 
 // Check the connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Retrieve data from AJAX request
-$username = $_POST['username'];
-$fullname = $_POST['fullname'];
-$password = $_POST['password'];
-$phone = $_POST['phone'];
+// Retrieve data from the signup form
+$username = $_POST['signup-username'];
+$fullname = $_POST['signup-fullname'];
+$password = $_POST['signup-password'];
+$phone = $_POST['signup-phone'];
 
-// Hash the password (you should use a stronger hashing algorithm in production)
-$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-// Insert data into the database - USERS table
-$sql = "INSERT INTO USERS (username, password, profile) VALUES ('$username', '$hashed_password', 'civilian')";
+
+$sql = "INSERT INTO users (username, password, profile) VALUES ('$username', '$password', 'civilian')";
 
 if ($conn->query($sql) === TRUE) {
     // If the insertion into USERS table is successful, proceed with CIVILIAN table
-    $sql_civilian = "INSERT INTO CIVILIAN (civilian_user, full_name, phone) VALUES ('$username', '$fullname', '$phone')";
+    $sql_civilian = "INSERT INTO civilian (civilian_user, full_name, phone) VALUES ('$username', '$fullname', '$phone')";
 
     if ($conn->query($sql_civilian) === TRUE) {
-        echo "Sign up successful!";
+        header('Location: civilian.html');
+        exit;
     } else {
-        echo "Error inserting into CIVILIAN table: " . $conn->error;
+        $_SESSION['signup_message'] = 'Error creating account in CIVILIAN table: ' . $conn->error;
+        header('Location: signup.html');
+        exit;
     }
 } else {
-    echo "Error inserting into USERS table: " . $conn->error;
+    $_SESSION['signup_message'] = 'Error creating account in USERS table: ' . $conn->error;
+    header('Location: signup.html');
+    exit;
 }
 
 // Close the database connection
