@@ -1,7 +1,7 @@
 <?php
 // Establish a database connection (replace these with your actual database credentials)
 
-$conn = mysqli_connect('localhost', 'root', 'canmp168', 'WEB');
+$conn = mysqli_connect('localhost', 'root', '', 'WEB');
 
 // Check the connection
 if ($conn->connect_error) {
