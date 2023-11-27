@@ -13,7 +13,7 @@
     <div class="signup-container">
         <a href="main.html"><img id="image" src="./images/earth.png" alt="logo icon" height="60"></a>
         <h2>Signup</h2>
-        <form action="your_signup_script.php" method="post">
+        <form action="signup.php" method="post">
             <label for="signup-username">Username:</label>
             <input type="text" id="signup-username" name="signup-username" required>
 
@@ -27,14 +27,12 @@
             <input type="text" id="signup-phone" name="signup-phone" pattern="\d{10}" required title="Please enter a 10-digit phone number">
 
             
-            <button  type="button" onclick="signup()">Signup</button>
-           
+            <button type="submit">Sign Up</button>
         </form>
-        <div id="result"></div>
+     
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<script src="./javascript/signup.js"></script>
+
 </body>
 </html>
