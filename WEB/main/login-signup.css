@@ -1,0 +1,65 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.form-container {
+    max-width: 300px;
+    margin: 0 auto;
+    margin-top: 100px;
+    
+}
+
+
+.signup-container,.login-container {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px; /* Rounded corners */
+    padding: 20px;
+    margin-bottom: 20px;
+    
+}
+
+#image {
+    display: block;
+    margin: 0 auto; /* Center the image horizontally */
+    margin-bottom: 20px; /* Add some space between the icon and the form */
+}
+
+.form-container h2 {
+    text-align: center;
+    color: #add8e6; /* Baby blue color */
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.form-container input {
+    width: 95%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 12px; /* Increase border-radius for curved text input */
+    border: 1px solid #ccc; /* Optional: Add a border for a distinct look */
+}
+
+.form-container button {
+    background-color: #add8e6; /* Baby blue color */
+    color: #fff;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px; /* Rounded corners for the button */
+    width: 100%;
+}
+
+.form-container button:hover {
+    background-color: #87ceeb; /* Lighter shade of baby blue on hover */
+}
+
+.form-container p {
+    text-align: center;
+    margin-top: 10px;
+}

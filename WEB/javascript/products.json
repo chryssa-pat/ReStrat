@@ -1,0 +1,12 @@
+[
+    {
+        "category": "Beverages", 
+        "items": ["Tea", "Coffee", "Juice"]
+    },
+
+    {
+    "category": "Sanitaries", 
+    "items": ["Soap", "Toothpaste", "Shampoo"]
+   }
+    
+]
