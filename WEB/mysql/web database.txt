@@ -108,3 +108,15 @@ VALUES
 ('Beverages', 'juice', 'orange', '5'),
 ('Babies Stuff','bottle', 'for milk','8'),
 ('First Aid','bandage', 'small','10');
+
+
+
+
+
+('Groceries'),
+('Sanitaries'),
+('Children Toy'),
+('Clothing'),
+('Personal Hygiene'),
+('Others');
+
