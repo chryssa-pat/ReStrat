@@ -100,3 +100,11 @@ CREATE TABLE ANNOUNCEMENTS(
 	CONSTRAINT ANNOUNCE_OFFER FOREIGN KEY(announce_product) REFERENCES OFFERS(offer_product)
 	ON DELETE CASCADE ON UPDATE CASCADE
 	)AUTO_INCREMENT=3000;
+
+
+INSERT INTO PRODUCTS (product_id, category, item, description, available) 
+VALUES
+('Beverages','water', 'zagori', '5'),
+('Beverages', 'juice', 'orange', '5'),
+('Babies Stuff','bottle', 'for milk','8'),
+('First Aid','bandage', 'small','10');
