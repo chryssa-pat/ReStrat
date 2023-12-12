@@ -1,5 +1,4 @@
-
-document.getElementById('logoutButton').addEventListener('click', function() {
+document.getElementById('logoutButton').addEventListener('click', function () {
     var confirmLogout = confirm('Are you sure you want to logout?');
     if (confirmLogout) {
         // Redirect to another page
@@ -7,48 +6,70 @@ document.getElementById('logoutButton').addEventListener('click', function() {
     }
 });
 
-// Function to fetch JSON data from a file
-async function fetchJsonFile(url) {
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
-}
+document.addEventListener('DOMContentLoaded', function () {
+    let data; // Declare data in a higher scope
+    let itemDropdown; // Declare itemDropdown in a higher scope
 
-// Populate the categories dropdown from the JSON file
-const categoryDropdown = document.getElementById("category");
-fetchJsonFile('products.json')
-    .then(data => {
-        data.forEach(category => {
-            const option = document.createElement("option");
-            option.value = category.category;
-            option.textContent = category.category;
-            categoryDropdown.appendChild(option);
-        });
-    })
-    .catch(error => console.error('Error fetching JSON:', error));
+    function fetchData(url) {
+        return fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .catch(error => console.error('Fetch Error:', error));
+    }
 
-// Function to populate the items dropdown based on the selected category
-function populateItems() {
-    const selectedCategory = document.getElementById("category").value;
-    const itemsDropdown = document.getElementById("item");
+    function populateDropdown(dropdown, items) {
+        dropdown.innerHTML = '';
+        if (items && items.length) {
+            items.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item;
+                option.text = item;
+                dropdown.appendChild(option);
+            });
+        } else {
+            // Handle the case where items are undefined or empty
+            console.error('Items data is undefined or empty');
+        }
+    }
 
-    // Clear existing options
-    itemsDropdown.innerHTML = '';
+    const categoryDropdown = document.getElementById('category');
 
-    // Find the selected category in the data array
-    fetchJsonFile('products.json')
-        .then(data => {
-            const selectedCategoryData = data.find(category => category.category === selectedCategory);
+    // Fetch data from the server
+    fetchData('fetch_data.php')
+        .then(responseData => {
+            data = responseData; // Assign the response to the higher-scoped data variable
 
-            // Populate items if the category is found
-            if (selectedCategoryData) {
-                selectedCategoryData.items.forEach(item => {
-                    const option = document.createElement("option");
-                    option.value = item;
-                    option.textContent = item;
-                    itemsDropdown.appendChild(option);
-                });
+            // Populate category dropdown
+            populateDropdown(categoryDropdown, data.categories);
+
+            // Populate items for the first category
+            itemDropdown = document.getElementById('item'); // Initialize itemDropdown
+            const initialCategory = data.categories[0];
+
+            if (initialCategory && data.items && data.items[initialCategory]) {
+                populateDropdown(itemDropdown, data.items[initialCategory]);
+            } else {
+                console.error('Initial category or items data is missing or empty');
             }
-        })
-        .catch(error => console.error('Error fetching JSON:', error));
-}
+
+            
+
+        });
+
+    // Update items when category changes
+    categoryDropdown.addEventListener('change', function () {
+        const selectedCategory = this.value;
+
+        // Ensure data is defined before using it
+        if (data && data.items && data.items[selectedCategory]) {
+            // Populate items for the selected category
+            populateDropdown(itemDropdown, data.items[selectedCategory]);
+        } else {
+            console.error(`Data or items for category ${selectedCategory} is missing or empty`);
+        }
+    });
+});
