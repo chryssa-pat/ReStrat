@@ -122,33 +122,53 @@
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
     <script src="./javascript/map.js" charset="utf-8"></script>
+<!-- ... (your existing HTML code) ... -->
 
-    <script>
-        var map = L.map('map').setView([38.246639, 21.734573], 13); // Set your default coordinates and zoom level
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+<script>
+    var map = L.map('map').setView([38.246639, 21.734573], 13); // Set your default coordinates and zoom level
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
 
-        // Use the Geolocation API to get the user's current location
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                var userLat = position.coords.latitude;
-                var userLng = position.coords.longitude;
+    // Use the Geolocation API to get the user's current location
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var userLat = position.coords.latitude;
+            var userLng = position.coords.longitude;
 
+            // Set the map view to the user's current location
+            map.setView([userLat, userLng], 13);
 
-                // Set the map view to the user's current location
-                map.setView([userLat, userLng], 13);
+            // Add a marker at the user's current location
+            var userMarker = L.marker([userLat, userLng]).addTo(map);
 
-                // Add a marker at the user's current location
-                var marker = L.marker([userLat, userLng]).addTo(map);
-            });
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    </script>
+            // Fetch and display vehicle locations
+            fetch(`getVehicleLocation.php`)
+                .then(response => response.json())
+                .then(data => {
+                    // Create markers for each vehicle
+                    data.forEach(vehicle => {
+                        const vehicleId = vehicle.vehicle_id;
+                        const vehicleLat = vehicle.latitude_vehicle;
+                        const vehicleLng = vehicle.longitude_vehicle;
 
-    
+                        // Add a marker for each vehicle
+                        L.marker([vehicleLat, vehicleLng]).addTo(map)
+                            .bindPopup(`
+                                <strong>Vehicle ID:</strong> ${vehicleId}<br>
+                                <strong>Latitude:</strong> ${vehicleLat}<br>
+                                <strong>Longitude:</strong> ${vehicleLng}
+                            `);
+                    });
+                })
+                .catch(error => console.error('Error fetching vehicle locations:', error));
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+</script>
 </body>
 
 </html>
+

@@ -1,15 +1,16 @@
 CREATE TABLE USERS(
-         username VARCHAR(25) UNIQUE NOT NULL,
+     username VARCHAR(25) UNIQUE NOT NULL,
 	 password VARCHAR(25) NOT NULL,
 	 profile ENUM('civilian','administrator','volunteer') NOT NULL,
 	 PRIMARY KEY(username)
 	 );
      
 CREATE TABLE CIVILIAN(
-         civilian_user VARCHAR(25) UNIQUE NOT NULL,
+     civilian_user VARCHAR(25) UNIQUE NOT NULL,
 	 full_name VARCHAR(25) NOT NULL,
 	 phone CHAR(10) NOT NULL,
-	 location VARCHAR(25) NOT NULL,
+	 latitude DECIMAL(10, 8),
+     longitude DECIMAL(11, 8),
 	 PRIMARY KEY(civilian_user),
 	 CONSTRAINT CIVILIANUSER FOREIGN KEY(civilian_user) REFERENCES USERS(username)
 	 ON DELETE CASCADE ON UPDATE CASCADE
@@ -52,17 +53,11 @@ CREATE TABLE INQUIRY(
 	ON DELETE CASCADE ON UPDATE CASCADE
 	)AUTO_INCREMENT=2000;
 	
-CREATE TABLE LOCATION(
-	user_location VARCHAR(25) UNIQUE NOT NULL,
-	locations VARCHAR(25) NOT NULL, 
-	PRIMARY KEY(user_location, locations),
-	CONSTRAINT USERLOCATION FOREIGN KEY(user_location) REFERENCES CIVILIAN(civilian_user)
-	ON DELETE CASCADE ON UPDATE CASCADE
-);
+
 
 CREATE TABLE VOLUNTEER(
-        volunteer_user VARCHAR(25) UNIQUE NOT NULL,
-        vehicle VARCHAR(25) UNIQUE NOT NULL,
+    volunteer_user VARCHAR(25) UNIQUE NOT NULL,
+    vehicle VARCHAR(25) UNIQUE NOT NULL,
 	PRIMARY KEY(volunteer_user),
 	CONSTRAINT VOLUNTEERUSER FOREIGN KEY(volunteer_user) REFERENCES USERS(username)
 	ON DELETE CASCADE ON UPDATE CASCADE
@@ -72,7 +67,8 @@ CREATE TABLE VEHICLE(
 	vehicle_id VARCHAR(25) NOT NULL,
 	vehicle_inquiry_id INT(9) NOT NULL,
 	vehicle_offer_id INT(9) NOT NULL,
-	location VARCHAR(255) NOT NULL,
+	latitude_vehicle DECIMAL(10, 8),
+    longitude_vehicle DECIMAL(11, 8),
 	PRIMARY KEY(vehicle_id),
 	CONSTRAINT VEHICLE FOREIGN KEY(vehicle_id) REFERENCES VOLUNTEER(vehicle)
 	ON DELETE CASCADE ON UPDATE CASCADE,
@@ -102,17 +98,15 @@ CREATE TABLE ANNOUNCEMENTS(
 	)AUTO_INCREMENT=3000;
 
 
+
+	
+
 INSERT INTO PRODUCTS (category, item, description, available) 
 VALUES
-('Beverages','water', 'zagori', '5'),
-('Beverages', 'juice', 'orange', '5'),
-('Babies Stuff','bottle', 'for milk','8'),
-('First Aid','bandage', 'small','10');
-
-
-
-
-
+('Beverages','water', 'zagori', 5),
+('Beverages', 'juice', 'orange', 5),
+('Babies Stuff','bottle', 'for milk', 8),
+('First Aid','bandage', 'small', 10);
 ('Groceries'),
 ('Sanitaries'),
 ('Children Toy'),
@@ -120,3 +114,35 @@ VALUES
 ('Personal Hygiene'),
 ('Others');
 
+INSERT INTO USER VALUES
+('mariakouri','12345678', 'volunteer'),
+('chryssapateli','abcdefgh', 'volunteer'),
+('miltosmades', '00000000', 'civilian'),
+('babissougias', '10111213', 'civilian'),
+('aimilia1','1111111111','volunteer'),
+('admin', 'admin', 'administrator');
+
+INSERT INTO VOLUNTEER VALUES
+('mariakouri', 'ST1529'),
+('chryssapateli', 'AB1001'),
+('aimilia1','BO2222');
+
+
+INSERT INTO CIVILIAN VALUES
+('miltosmades', 'MILTIADIS MANTES', '1234567890', 38.24025570, 21.72685160),
+('babissougias', 'BABIS SOUGIAS', '0987654321', 38.24025570, 21.72685160);
+
+INSERT INTO INQUIRY (inquiry_status, inquiry_user, inquiry_product, inquiry_quantity) VALUES
+('approved', 'babissougias', 1000, 3),
+('finished', 'miltosmades', 1002, 5);
+
+INSERT INTO OFFERS (offer_status, offer_user, offer_product, offer_quantity) VALUES
+('approved', 'babissougias', 1001, 4),
+('finished', 'miltosmades', 1003, 3);
+
+
+INSERT INTO VEHICLE VALUES
+('ST1529', 0001, 2004, 38.24025570,21.72685160),
+('AB1001', 0002, 2005, 38.24025570, 21.72685160),
+('AC001', 0002, 2005, 38.24025579, 21.72685169),
+('BO2222', 0001, 2004, 39.24025570,20.72685160);

@@ -2,7 +2,7 @@
 session_start();
 
 // Establish a database connection 
-$conn = new mysqli("localhost", "root", "", "WEB");
+$conn = new mysqli("localhost", "root", "canmp168", "web");
 
 // Check the connection
 if ($conn->connect_error) {
@@ -24,10 +24,10 @@ if ($result->num_rows > 0) {
     // Redirect based on user type
     switch ($user['profile']) {
         case 'civilian':
-            header('Location: civilian.html');
+            header('Location: ../civilian/civilian.html');
             break;
         case 'volunteer':
-            header('Location: volunteer.html');
+            header('Location: ../volunteer/volunteer.html');
             break;
         case 'administrator':
             header('Location: administrator.html');
