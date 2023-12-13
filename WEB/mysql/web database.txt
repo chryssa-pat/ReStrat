@@ -102,7 +102,7 @@ CREATE TABLE ANNOUNCEMENTS(
 	)AUTO_INCREMENT=3000;
 
 
-INSERT INTO PRODUCTS (product_id, category, item, description, available) 
+INSERT INTO PRODUCTS (category, item, description, available) 
 VALUES
 ('Beverages','water', 'zagori', '5'),
 ('Beverages', 'juice', 'orange', '5'),
