@@ -2,7 +2,7 @@
 // Assuming you have a database connection already established
 
 // Establish a database connection using mysqli
-$conn = new mysqli("localhost", "root", "canmp168", "web");
+$conn = new mysqli("localhost", "root", "", "web");
 
 // Check the connection
 if ($conn->connect_error) {
