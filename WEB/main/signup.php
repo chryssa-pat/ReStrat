@@ -2,7 +2,7 @@
 session_start();
 
 // Establish a database connection
-$conn = new mysqli("localhost", "root", "canmp168", "web");
+$conn = new mysqli("localhost", "root", "", "web");
 
 // Check the connection
 if ($conn->connect_error) {
