@@ -1,21 +1,25 @@
 <?php
 session_start();
 
+// Database connection details
+$host = "localhost";
+$username = "root";
+$password = "";
+$database = "web";
+
 // Establish a database connection
-$conn = new mysqli("localhost", "root", "", "web");
+$conn = new mysqli($host, $username, $password, $database);
 
 // Check the connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch distinct categories
-$query_categories = "SELECT DISTINCT category FROM PRODUCTS";
-$result_categories = mysqli_query($conn, $query_categories);
-
-// Fetch items for each category
-$query_items = "SELECT category, item FROM PRODUCTS";
-$result_items = mysqli_query($conn, $query_items);
+// Fetch categories and products
+$query = "SELECT c.category_name, p.item, p.product_id, p.description, p.available 
+          FROM CATEGORIES c
+          JOIN PRODUCTS p ON c.category_id = p.category_id";
+$result = mysqli_query($conn, $query);
 
 // Prepare data for JSON response
 $data = [
@@ -23,29 +27,28 @@ $data = [
     'items' => [],
 ];
 
-// Keep track of unique categories
-$uniqueCategories = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $category = $row['category_name'];
+    $item = $row['item'];
+    $productId = $row['product_id'];
+    $description = $row['description'];
+    $available = $row['available'];
 
-while ($row = mysqli_fetch_assoc($result_categories)) {
-    $category = $row['category'];
-
-    // Add the category to the list if it hasn't been added before
-    if (!in_array($category, $uniqueCategories)) {
-        $uniqueCategories[] = $category;
+    // Add category if it's not already in the list
+    if (!in_array($category, $data['categories'])) {
         $data['categories'][] = $category;
     }
 
-    // Initialize the items array for the category
-    $data['items'][$category] = [];
-}
-
-// Populate items for each category
-while ($row = mysqli_fetch_assoc($result_items)) {
-    $category = $row['category'];
-    $item = $row['item'];
-
-    // Add the item to the list for the corresponding category
-    $data['items'][$category][] = $item;
+    // Add item to the category
+    if (!isset($data['items'][$category])) {
+        $data['items'][$category] = [];
+    }
+    $data['items'][$category][] = [
+        'id' => $productId,
+        'name' => $item,
+        'description' => $description,
+        'available' => $available
+    ];
 }
 
 // Send JSON response
