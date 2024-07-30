@@ -9,12 +9,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Retrieve data from the signup form
+// retrieve data from the signup form
 $username = $_POST['signup-username'];
 $fullname = $_POST['signup-fullname'];
 $password = $_POST['signup-password'];
 $phone = $_POST['signup-phone'];
-$latitude = $_POST['latitude'];  // Corrected from $Location
+$latitude = $_POST['latitude'];  // Corrected from $Location 
 $longitude = $_POST['longitude']; // Corrected from $Location
 
 // Insert into USERS table

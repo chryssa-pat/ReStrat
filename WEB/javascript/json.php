@@ -109,7 +109,7 @@ foreach ($data['items'] as $item) {
     }
 }
 
-// Close statement and connection
+// Close  connection
 if (isset($stmt)) {
     $stmt->close();
 }
