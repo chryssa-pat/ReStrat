@@ -4,7 +4,7 @@ $username = "root";
 $password = "";
 $dbname = "WEB";
 
-// Create connection
+// Create connection.
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
@@ -14,7 +14,7 @@ if ($conn->connect_error) {
 echo "Connected to the database<br>";
 
 // Read JSON file
-$json_file_path = 'C:/xampp/htdocs/WEB/javascript/products.json';
+$json_file_path = 'C:\xampp\htdocs\web\WEB\javascript\products.json';
 $json_data = file_get_contents($json_file_path);
 
 if ($json_data === false) {
