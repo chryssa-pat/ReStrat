@@ -1,4 +1,5 @@
 <?php
+include('../main/session_check.php');
 $host = "localhost";
 $username = "root";
 $password = "";
@@ -15,7 +16,8 @@ if ($conn->connect_error) {
 // Retrieve input data
 $announce_id = $_POST['announce_id'];
 $offer_quantity = $_POST['offer_quantity'];
-$offer_user = "chryssa"; // Set the user to "chryssa"
+$offer_user = $_SESSION['user']; 
+$offer_status = 'approved'; 
 
 // Debugging output
 error_log("Offer User: " . $offer_user);
@@ -58,9 +60,9 @@ if ($announce_quantity >= $offer_quantity) {
     $stmt->close();
 
     // Insert offer into the database
-    $sql = "INSERT INTO OFFERS (offer_status, offer_user, offer_product, offer_quantity) VALUES ('pending', ?, ?, ?)";
+    $sql = "INSERT INTO OFFERS (offer_status, offer_user, offer_product, offer_quantity) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sii", $offer_user, $announce_product, $offer_quantity);
+    $stmt->bind_param("ssii", $offer_status, $offer_user, $announce_product, $offer_quantity);
     if ($stmt->execute()) {
         echo json_encode(['success' => true]);
     } else {

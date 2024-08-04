@@ -1,14 +1,17 @@
-<?php include('../main/session_check.php'); ?> 
+<?php
+include('../main/session_check.php');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Announcements</title>
+    <title>History</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="announcements.css">
     <style>
         .center-title {
             text-align: center;
@@ -16,6 +19,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="container-fluid">
@@ -34,13 +38,13 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="announcements_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                             Announcements
                         </a>
                     </li>
                     <li>
-                        <a href="history_main.php" class="nav-link link-body-emphasis">
+                        <a href="history.php" class="nav-link active link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                             History
                         </a>
@@ -76,13 +80,13 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link active link-body-emphasis">
+                                <a href="announcements_main.php" class="nav-link active link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                                     Announcements
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="history_main.php" class="nav-link active link-body-emphasis">
+                                <a href="history.php" class="nav-link active link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                                     History
                                 </a>
@@ -102,32 +106,23 @@
                     </div>
                 </nav>
 
-                <main id="announcements-container">
-                    <h1 class="center-title">Announcements</h1>
-                    <!-- Announcements will be injected here by the AJAX call -->
+                <main>
+                    <h1 class="center-title">History</h1>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>User</th>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <!-- Τα δεδομένα θα φορτωθούν εδώ δυναμικά -->
+                        </tbody>
+                    </table>
                 </main>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="offerModalLabel">Make an Offer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="offerForm">
-                        <input type="hidden" id="announceId" name="announce_id">
-                        <div class="mb-3">
-                            <label for="offerQuantity" class="form-label">Quantity</label>
-                            <input type="number" class="form-control" id="offerQuantity" name="offer_quantity" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit Offer</button>
-                    </form>
-                </div>
             </div>
         </div>
     </div>
@@ -137,50 +132,32 @@
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
 
-    <!-- Ajax to request -->
     <script>
-        $.ajax({
-            url: 'announcements.php',
-            method: 'GET',
-            success: function(response) {
-                $('#announcements-container').append(response);
-            },
-            error: function(error) {
-                console.error('Error fetching data:', error);
-            }
-        });
-
-        // Handle announcement button click
-        $(document).on('click', '.announcement-button', function() {
-            var announceId = $(this).data('announce-id');
-            $('#announceId').val(announceId);
-            $('#offerModal').modal('show');
-        });
-
-        // Handle offer form submission
-        $('#offerForm').on('submit', function(e) {
-            e.preventDefault();
-            var formData = $(this).serialize();
+        $(document).ready(function() {
             $.ajax({
-                url: 'offer.php',
-                method: 'POST',
-                data: formData,
-                success: function(response) {
-                    var result = JSON.parse(response);
-                    if (result.success) {
-                        $('#offerModal').modal('hide');
-                        alert('Offer submitted successfully!');
-                        // Optionally, refresh the announcements list
-                    } else {
-                        alert(result.error);
-                    }
+                url: 'history.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var tbody = $('#history-table-body');
+                    data.forEach(function(offer) {
+                        var row = '<tr>' +
+                            '<td>' + offer.offer_status + '</td>' +
+                            '<td>' + offer.offer_user + '</td>' +
+                            '<td>' + offer.item + '</td>' +
+                            '<td>' + offer.offer_quantity + '</td>' +
+                            '<td>' + offer.offer_date + '</td>' +
+                            '</tr>';
+                        tbody.append(row);
+                    });
                 },
                 error: function(error) {
-                    console.error('Error submitting offer:', error);
+                    console.error('Error fetching history data:', error);
                 }
             });
         });
     </script>
-    
+
 </body>
+
 </html>

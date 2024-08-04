@@ -40,7 +40,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="announcements_main.php" class="nav-link active">
+                        <a href="announcements_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#speedometer2"></use>
                             </svg>
@@ -48,7 +48,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="history_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#grid"></use>
                             </svg>
@@ -92,7 +92,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="announcements_main.php" class="nav-link active">
+                                <a href="announcements_main.php" class="nav-link active link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16">
                                         <use xlink:href="#speedometer2"></use>
                                     </svg>
@@ -100,7 +100,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link active link-body-emphasis">
+                                <a href="history_main.php" class="nav-link active link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16">
                                         <use xlink:href="#grid"></use>
                                     </svg>

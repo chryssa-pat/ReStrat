@@ -24,13 +24,13 @@ if ($result->num_rows > 0) {
     // Redirect based on user type
     switch ($user['profile']) {
         case 'civilian':
-            header('Location: ../civilian/civilian.html');
+            header('Location: ../civilian/civilian_main.php');
             break;
         case 'volunteer':
             header('Location: ../volunteer/volunteer.html');
             break;
         case 'administrator':
-            header('Location: administrator.html');
+            header('Location: ../admin/announcement.php');
             break;
         default:
             // Redirect to a default page if user type is not recognized
