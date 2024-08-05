@@ -137,8 +137,7 @@
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
 
-    <!-- Ajax to request -->
-    <script>
+        <script>
         $.ajax({
             url: 'announcements.php',
             method: 'GET',
@@ -180,13 +179,6 @@
                 }
             });
         });
-        document.getElementById('logoutButton').addEventListener('click', function () {
-    var confirmLogout = confirm('Are you sure you want to logout?');
-    if (confirmLogout) {
-        // Redirect to another page
-        window.location.href = "../main/main.html"; // Replace 'logout.php' with the actual URL you want to redirect to
-    }
-    });
     </script>
     
 </body>
