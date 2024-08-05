@@ -1,6 +1,13 @@
 <?php
 session_start();
 
+// Check if the user is logged in and has administrator privileges
+if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'administrator') {
+    header('HTTP/1.0 403 Forbidden');
+    echo json_encode(['error' => 'Access denied']);
+    exit;
+}
+
 // Database connection details
 $host = "localhost";
 $username = "root";
@@ -12,14 +19,23 @@ $conn = new mysqli($host, $username, $password, $database);
 
 // Check the connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    header('HTTP/1.0 500 Internal Server Error');
+    echo json_encode(['error' => "Connection failed: " . $conn->connect_error]);
+    exit;
 }
 
 // Fetch categories and products
-$query = "SELECT c.category_name, p.item, p.product_id, p.description, p.available 
+$query = "SELECT c.category_name, p.item, p.product_id, p.available 
           FROM CATEGORIES c
           JOIN PRODUCTS p ON c.category_id = p.category_id";
-$result = mysqli_query($conn, $query);
+$result = $conn->query($query);
+
+if (!$result) {
+    header('HTTP/1.0 500 Internal Server Error');
+    echo json_encode(['error' => "Query failed: " . $conn->error]);
+    $conn->close();
+    exit;
+}
 
 // Prepare data for JSON response
 $data = [
@@ -27,11 +43,10 @@ $data = [
     'items' => [],
 ];
 
-while ($row = mysqli_fetch_assoc($result)) {
+while ($row = $result->fetch_assoc()) {
     $category = $row['category_name'];
     $item = $row['item'];
     $productId = $row['product_id'];
-    $description = $row['description'];
     $available = $row['available'];
 
     // Add category if it's not already in the list
@@ -46,7 +61,6 @@ while ($row = mysqli_fetch_assoc($result)) {
     $data['items'][$category][] = [
         'id' => $productId,
         'name' => $item,
-        'description' => $description,
         'available' => $available
     ];
 }

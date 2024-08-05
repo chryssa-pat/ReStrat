@@ -32,7 +32,7 @@ function getProductIdByName($conn, $itemName) {
     $itemName = trim($itemName);
     $itemName = strtolower($itemName);
 
- 
+
 
     $stmt = $conn->prepare("SELECT product_id FROM PRODUCTS WHERE product_id = ?");
     if ($stmt) {

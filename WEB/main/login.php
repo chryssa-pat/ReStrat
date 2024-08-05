@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Establish a database connection
+// Establish a database connection 
 $conn = new mysqli("localhost", "root", "", "web");
 
 // Check the connection
@@ -10,20 +10,16 @@ if ($conn->connect_error) {
 }
 
 // Validate login credentials against the database
-$username = $_POST['login-username'];
-$password = $_POST['login-password'];
+$username = $_POST['login-username'];  // Update field name here
+$password = $_POST['login-password'];  // Update field name here
 
-// Use prepared statements to prevent SQL injection
-$sql = "SELECT * FROM users WHERE username = ? AND password = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ss", $username, $password);
-$stmt->execute();
-$result = $stmt->get_result();
+$sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
+$result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     $user = $result->fetch_assoc();
     $_SESSION['user'] = $user['username'];
-    $_SESSION['role'] = $user['profile'];
+    $_SESSION['profile'] = $user['profile'];
 
     // Redirect based on user type
     switch ($user['profile']) {
@@ -34,20 +30,21 @@ if ($result->num_rows > 0) {
             header('Location: ../volunteer/volunteer.html');
             break;
         case 'administrator':
-            header('Location: ../administrator/announcement.php');
+            header('Location: ../admin/announcement.php');
             break;
         default:
+            // Redirect to a default page if user type is not recognized
             header('Location: default_dashboard.php');
             break;
     }
+
     exit;
 } else {
     $_SESSION['login_message'] = 'Invalid username or password.';
-    header('Location: login.php');
+    header('Location: login.html');
     exit;
 }
 
 // Close the database connection
-$stmt->close();
 $conn->close();
 ?>
