@@ -32,9 +32,15 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="announcement.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                             Announcements
+                        </a>
+                    </li>
+                    <li>
+                        <a href="warehouse_main.php" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Warehouse
                         </a>
                     </li>
                     <li>
@@ -77,9 +83,15 @@
                               </a>
                           </li>
                           <li class="nav-item">
-                            <a href="#" class="nav-link activelink-body-emphasis">
+                            <a href="announcement.php" class="nav-link activelink-body-emphasis">
                                 <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                                 Announcements
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="warehouse_main.php" class="nav-link active link-body-emphasis">
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                               Warehouse
                             </a>
                         </li>
                         <li class="nav-item">
@@ -88,6 +100,8 @@
                                 Create Account
                             </a>
                         </li>
+                        
+                        
                         
                         <hr>
                 

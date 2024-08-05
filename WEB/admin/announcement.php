@@ -22,7 +22,8 @@
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li><a href="#" class="nav-link link-body-emphasis">Map</a></li>
                     <li><a href="#" class="nav-link link-body-emphasis">Announcements</a></li>
-                    <li><a href="#" class="nav-link link-body-emphasis">Create Account</a></li>
+                    <li><a href="warehouse_main.php" class="nav-link link-body-emphasis">Warehouse</a></li>
+                    <li><a href="createuser_admin_main.php" class="nav-link link-body-emphasis">Create Account</a></li>
                     <hr>
                 </ul>
                 <div class="dropdown">
@@ -47,7 +48,8 @@
                       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                           <li class="nav-item"><a href="#" class="nav-link active link-body-emphasis">Map</a></li>
                           <li class="nav-item"><a href="#" class="nav-link active link-body-emphasis">Announcements</a></li>
-                          <li class="nav-item"><a href="#" class="nav-link active link-body-emphasis">Create Account</a></li>
+                          <li class="nav-item"><a href="warehouse_main.php"  class="nav-link active link-body-emphasis">Warehouse</a></li>
+                          <li class="nav-item"><a href="createuser_admin_main.php" class="nav-link active link-body-emphasis">Create Account</a></li>
                           <hr>
                       </ul>
                       <div class="dropdown">
