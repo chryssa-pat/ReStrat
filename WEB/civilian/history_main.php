@@ -44,13 +44,13 @@ include('../main/session_check.php');
                         </a>
                     </li>
                     <li>
-                        <a href="history_.php" class="nav-link active link-body-emphasis">
+                        <a href="history_main.php" class="nav-link active link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                             Offers History
                         </a>
                     </li>
                     <li>
-                        <a href="history_inquiries.php" class="nav-link active link-body-emphasis">
+                        <a href="history_inquiry_main.php" class="nav-link active link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                             Inquiries History 
                         </a>
@@ -92,13 +92,13 @@ include('../main/session_check.php');
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="history.php" class="nav-link active link-body-emphasis">
+                                <a href="history_main.php" class="nav-link active link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                                     Offers History
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="history_inquiries.php" class="nav-link active link-body-emphasis">
+                                <a href="history_inquiry_main.php" class="nav-link active link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                                     Inquiries History 
                                 </a>
