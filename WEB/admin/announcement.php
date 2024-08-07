@@ -23,7 +23,7 @@
                     <li><a href="#" class="nav-link link-body-emphasis">Map</a></li>
                     <li><a href="#" class="nav-link link-body-emphasis">Announcements</a></li>
                     <li><a href="warehouse_main.php" class="nav-link link-body-emphasis">Warehouse</a></li>
-                    <li><a href="createuser_admin_main.php" class="nav-link link-body-emphasis">Create Account</a></li>
+                    <li><a href="#" class="nav-link link-body-emphasis">Create Account</a></li>
                     <hr>
                 </ul>
                 <div class="dropdown">
@@ -49,7 +49,7 @@
                           <li class="nav-item"><a href="#" class="nav-link active link-body-emphasis">Map</a></li>
                           <li class="nav-item"><a href="#" class="nav-link active link-body-emphasis">Announcements</a></li>
                           <li class="nav-item"><a href="warehouse_main.php" class="nav-link active link-body-emphasis">Warehouse</a></li>
-                          <li class="nav-item"><a href="createuser_admin_main.php" class="nav-link active link-body-emphasis">Create Account</a></li>
+                          <li class="nav-item"><a href="#" class="nav-link active link-body-emphasis">Create Account</a></li>
                           <hr>
                       </ul>
                       <div class="dropdown">
@@ -66,7 +66,7 @@
                     <h2 style="text-align: center;">Create Announcement</h2>
                     <form id="Form" action="create_announcement.php" method="POST">
                         <label for="category">Select Category:</label>
-                        <select id="category" name="category_id">
+                        <select id="category">
                             <!-- Categories will be populated dynamically -->
                         </select>
 
@@ -78,7 +78,6 @@
                         <label for="quantity">Quantity:</label>
                         <input type="number" id="quantity" name="quantity" class="form-control" min="1" required>
                     </form>
-
                     <div>
                         <button id="createAnnouncementButton" class="btn btn-primary">Create Announcement</button>
                     </div>
@@ -175,11 +174,7 @@
                 return null;
             }
 
-            $('#createAnnouncementButton').click(function () {
-        $('#Form').submit();  // Trigger form submission manually
-    });
-
-    $('#Form').submit(function (e) {
+            $('#Form').submit(function (e) {
         e.preventDefault();
 
         var itemName = $('#item').val();
@@ -195,6 +190,7 @@
             return;
         }
 
+        // Proceed with form submission
         $.ajax({
             url: 'create_announcement.php',
             type: 'POST',
@@ -212,7 +208,7 @@
             }
         });
     });
-});
+        });
     </script>
 </body>
 </html>
