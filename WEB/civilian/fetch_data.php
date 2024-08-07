@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 }
 
 // Fetch categories and products
-$query = "SELECT c.category_name, p.item, p.product_id, p.description, p.available 
+$query = "SELECT c.category_name, p.item, p.product_id, p.available 
           FROM CATEGORIES c
           JOIN PRODUCTS p ON c.category_id = p.category_id";
 $result = mysqli_query($conn, $query);
@@ -31,7 +31,6 @@ while ($row = mysqli_fetch_assoc($result)) {
     $category = $row['category_name'];
     $item = $row['item'];
     $productId = $row['product_id'];
-    $description = $row['description'];
     $available = $row['available'];
 
     // Add category if it's not already in the list
@@ -46,7 +45,6 @@ while ($row = mysqli_fetch_assoc($result)) {
     $data['items'][$category][] = [
         'id' => $productId,
         'name' => $item,
-        'description' => $description,
         'available' => $available
     ];
 }
