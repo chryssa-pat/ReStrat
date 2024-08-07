@@ -1,12 +1,7 @@
 <?php
 session_start();
 
-// Check if the user is logged in and has administrator privileges
-if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'administrator') {
-    header('HTTP/1.0 403 Forbidden');
-    echo json_encode(['error' => 'Access denied']);
-    exit;
-}
+
 
 // Database connection details
 $host = "localhost";
