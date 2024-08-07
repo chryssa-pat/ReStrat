@@ -1,6 +1,4 @@
-<?php
-include('../main/session_check.php');
-?>
+<?php include('../main/session_check.php'); ?> 
 
 <!DOCTYPE html>
 <html lang="en">
@@ -44,9 +42,15 @@ include('../main/session_check.php');
                         </a>
                     </li>
                     <li>
-                        <a href="history.php" class="nav-link active link-body-emphasis">
+                        <a href="history_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                            History
+                            Offers History
+                        </a>
+                    </li>
+                    <li>
+                        <a href="history_inquiry_main.php" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                            Inquiries History
                         </a>
                     </li>
                     <hr>
@@ -86,9 +90,15 @@ include('../main/session_check.php');
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="history.php" class="nav-link active link-body-emphasis">
+                                <a href="history_main.php" class="nav-link active link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                                    History
+                                    Offers History
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="history_inquiry.php" class="nav-link active link-body-emphasis">
+                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                                    Inquiries History
                                 </a>
                             </li>
                             <hr>
@@ -134,28 +144,34 @@ include('../main/session_check.php');
 
     <script>
         $(document).ready(function() {
-            $.ajax({
-                url: 'history.php',
-                method: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    var tbody = $('#history-table-body');
-                    data.forEach(function(offer) {
+        $.ajax({
+            url: 'history.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var tbody = $('#history-table-body');
+                tbody.empty(); // Clear existing data
+                
+                if (Array.isArray(data)) {
+                    data.forEach(function(inquiry) {
                         var row = '<tr>' +
-                            '<td>' + offer.offer_status + '</td>' +
-                            '<td>' + offer.offer_user + '</td>' +
-                            '<td>' + offer.item + '</td>' +
-                            '<td>' + offer.offer_quantity + '</td>' +
-                            '<td>' + offer.offer_date + '</td>' +
+                            '<td>' + inquiry.inquiry_status + '</td>' +
+                            '<td>' + inquiry.inquiry_user + '</td>' +
+                            '<td>' + inquiry.item + '</td>' +
+                            '<td>' + inquiry.inquiry_quantity + '</td>' +
+                            '<td>' + inquiry.inquiry_date + '</td>' +
                             '</tr>';
                         tbody.append(row);
                     });
-                },
-                error: function(error) {
-                    console.error('Error fetching history data:', error);
+                } else {
+                    console.error('Unexpected data format:', data);
                 }
-            });
+            },
+            error: function(error) {
+                console.error('Error fetching history data:', error);
+            }
         });
+    });
     </script>
 
 </body>

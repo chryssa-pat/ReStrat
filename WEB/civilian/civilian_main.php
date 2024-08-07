@@ -1,4 +1,5 @@
 <?php include('../main/session_check.php'); ?> 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -48,14 +49,18 @@
                         </a>
                     </li>
                     <li>
+                    <li>
                         <a href="history_main.php" class="nav-link link-body-emphasis">
-                            <svg class="bi pe-none me-2" width="16" height="16">
-                                <use xlink:href="#grid"></use>
-                            </svg>
-                            History
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                            Offers History
                         </a>
                     </li>
-
+                    <li>
+                        <a href="history_inquiry_main.php" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                            Inquiries History
+                        </a>
+                    </li>
                     <hr>
                 </ul>
                 <div class="dropdown">
@@ -101,10 +106,14 @@
                             </li>
                             <li class="nav-item">
                                 <a href="history_main.php" class="nav-link active link-body-emphasis">
-                                    <svg class="bi pe-none me-2" width="16" height="16">
-                                        <use xlink:href="#grid"></use>
-                                    </svg>
-                                    History
+                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                                    Offers History
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="history_inquiry.php" class="nav-link active link-body-emphasis">
+                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                                    Inquiries History
                                 </a>
                             </li>
 
@@ -128,7 +137,7 @@
                 <div id="orderFrame">
                     <h2 style="text-align: center;">Inquiry Form</h2>
 
-                    <form id="orderForm">
+                    <form id="orderForm" method="post" action="submit_inquiry.php">
                         <label for="category">Select Category:</label>
                         <select id="category">
                             <!-- Categories will be populated dynamically -->
@@ -208,8 +217,8 @@
                         function addSearchToSelect(select, options) {
                             select.select2({
                                 data: options.map(option => {
-                                    return typeof option === 'object' ? 
-                                        { id: option.id, text: option.name } : 
+                                    return typeof option === 'object' ?
+                                        { id: option.id, text: option.name } :
                                         { id: option, text: option };
                                 }),
                                 placeholder: 'Search...',
@@ -248,15 +257,47 @@
                         });
                     });
                     document.getElementById('logoutButton').addEventListener('click', function () {
-                            var confirmLogout = confirm('Are you sure you want to logout?');
-                            if (confirmLogout) {
-                                // Redirect to another page
-                                window.location.href = "../main/main.html"; // Replace 'logout.php' with the actual URL you want to redirect to
-                            }
+                        var confirmLogout = confirm('Are you sure you want to logout?');
+                        if (confirmLogout) {
+                            // Redirect to another page
+                            window.location.href = "../main/main.html"; // Replace 'logout.php' with the actual URL you want to redirect to
+                        }
                     });
+
+
+                    $('#orderForm').submit(function (e) {
+                    e.preventDefault();
+
+                    var formData = {
+                        category: $('#category').val(),
+                        item: $('#item').val(),
+                        quantity: $('#quantity').val(),
+                        address: $('#address').val()
+                    };
+
+                    $.ajax({
+                        type: 'POST',
+                        url: 'submit_inquiry.php',
+                        data: formData,
+                        dataType: 'json',
+                        encode: true
+                    })
+                    .done(function (data) {
+                        if (data.success) {
+                            alert('Inquiry submitted successfully!');
+                            $('#orderForm')[0].reset();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .fail(function () {
+                        alert('An error occurred. Please try again.');
+                    });
+                });
+
                 </script>
 
-          
+
             </div>
         </div>
     </div>
