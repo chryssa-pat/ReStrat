@@ -46,13 +46,13 @@ include('../main/session_check.php');
                     <li>
                         <a href="history_.php" class="nav-link active link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                            History Offers
+                            Offers History
                         </a>
                     </li>
                     <li>
                         <a href="history_inquiries.php" class="nav-link active link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                            History Inquiries
+                            Inquiries History 
                         </a>
                     </li>
                     <hr>
@@ -94,13 +94,13 @@ include('../main/session_check.php');
                             <li class="nav-item">
                                 <a href="history.php" class="nav-link active link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                                    History
+                                    Offers History
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="history_inquiries.php" class="nav-link active link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                                    History Inquiries
+                                    Inquiries History 
                                 </a>
                             </li>
                             <hr>
