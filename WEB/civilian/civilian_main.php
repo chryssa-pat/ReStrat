@@ -153,8 +153,7 @@
 
                         <label for="address">Select Address:</label>
                         <select id="address" name="address" required>
-                            <option value="Maizonos 13">Maizonos 13</option>
-                            <option value="Korinthou 68">Korinthou 68</option>
+                           <!-- Address will be populated dynamically -->
                         </select>
 
                         <button class="form_button" type="submit">Submit</button>
@@ -193,14 +192,20 @@
                             addSearchToSelect(itemSelect, []);
                         });
 
+                        // Fetch addresses
+                        $.getJSON('fetch_addresses.php', function (addresses) {
+                            var addressSelect = $('#address');
+                            // Convert latitude and longitude to readable addresses if necessary
+                            var addressOptions = addresses.map(function(address) {
+                                return `Lat: ${address.latitude}, Lon: ${address.longitude}`;
+                            });
+                            populateSelect(addressSelect, addressOptions);
+                        });
+
                         function populateSelect(select, options) {
                             select.empty().append($('<option></option>').attr('value', '').text('Choose an option'));
                             $.each(options, function (index, option) {
-                                if (typeof option === 'object') {
-                                    select.append($('<option></option>').attr('value', option.id).text(option.name));
-                                } else {
-                                    select.append($('<option></option>').attr('value', option).text(option));
-                                }
+                                select.append($('<option></option>').attr('value', option).text(option));
                             });
                         }
 
@@ -217,9 +222,7 @@
                         function addSearchToSelect(select, options) {
                             select.select2({
                                 data: options.map(option => {
-                                    return typeof option === 'object' ?
-                                        { id: option.id, text: option.name } :
-                                        { id: option, text: option };
+                                    return { id: option, text: option };
                                 }),
                                 placeholder: 'Search...',
                                 allowClear: true,
@@ -252,52 +255,43 @@
                         // Handle form submission
                         $('#orderForm').submit(function (e) {
                             e.preventDefault();
-                            // Add your form submission logic here
-                            alert('Form submitted!');
+
+                            var formData = {
+                                category: $('#category').val(),
+                                item: $('#item').val(),
+                                quantity: $('#quantity').val(),
+                                address: $('#address').val()
+                            };
+
+                            $.ajax({
+                                type: 'POST',
+                                url: 'submit_inquiry.php',
+                                data: formData,
+                                dataType: 'json',
+                                encode: true
+                            })
+                            .done(function (data) {
+                                if (data.success) {
+                                    alert('Inquiry submitted successfully!');
+                                    $('#orderForm')[0].reset();
+                                } else {
+                                    alert('Error: ' + data.message);
+                                }
+                            })
+                            .fail(function () {
+                                alert('An error occurred. Please try again.');
+                            });
+                        });
+
+                        document.getElementById('logoutButton').addEventListener('click', function () {
+                            var confirmLogout = confirm('Are you sure you want to logout?');
+                            if (confirmLogout) {
+                                // Redirect to another page
+                                window.location.href = "../main/main.html"; // Replace 'logout.php' with the actual URL you want to redirect to
+                            }
                         });
                     });
-                    document.getElementById('logoutButton').addEventListener('click', function () {
-                        var confirmLogout = confirm('Are you sure you want to logout?');
-                        if (confirmLogout) {
-                            // Redirect to another page
-                            window.location.href = "../main/main.html"; // Replace 'logout.php' with the actual URL you want to redirect to
-                        }
-                    });
-
-
-                    $('#orderForm').submit(function (e) {
-                    e.preventDefault();
-
-                    var formData = {
-                        category: $('#category').val(),
-                        item: $('#item').val(),
-                        quantity: $('#quantity').val(),
-                        address: $('#address').val()
-                    };
-
-                    $.ajax({
-                        type: 'POST',
-                        url: 'submit_inquiry.php',
-                        data: formData,
-                        dataType: 'json',
-                        encode: true
-                    })
-                    .done(function (data) {
-                        if (data.success) {
-                            alert('Inquiry submitted successfully!');
-                            $('#orderForm')[0].reset();
-                        } else {
-                            alert('Error: ' + data.message);
-                        }
-                    })
-                    .fail(function () {
-                        alert('An error occurred. Please try again.');
-                    });
-                });
-
                 </script>
-
-
             </div>
         </div>
     </div>
