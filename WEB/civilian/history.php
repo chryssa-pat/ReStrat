@@ -1,39 +1,52 @@
 <?php
-include('../main/session_check.php');
+session_start();
+header('Content-Type: application/json');
+
+// Check if the user is logged in
+if (!isset($_SESSION['user'])) {
+    echo json_encode(['success' => false, 'message' => 'User not logged in']);
+    exit();
+}
+
+// Database connection details
 $host = "localhost";
 $username = "root";
 $password = "";
 $database = "web";
 
-// Establish connection
+// Establish a database connection
 $conn = new mysqli($host, $username, $password, $database);
 
-// Check connection
+// Check the connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die(json_encode(['success' => false, 'message' => 'Connection failed: ' . $conn->connect_error]));
 }
 
-$offer_user = $_SESSION['user']; 
+// Get the logged-in user
+$loggedInUser = $_SESSION['user'];
 
-$sql = "SELECT offer_status, offer_user, PRODUCTS.item AS item, offer_quantity, offer_date 
-        FROM OFFERS 
-        JOIN PRODUCTS ON OFFERS.offer_product = PRODUCTS.product_id
-        WHERE offer_user = ?";
+// Fetch inquiries for the logged-in user
+$sql = "SELECT inquiry_status, inquiry_user, p.item, inquiry_quantity, inquiry_date
+        FROM INQUIRY i
+        JOIN PRODUCTS p ON i.inquiry_product = p.product_id
+        WHERE i.inquiry_user = ?";
 $stmt = $conn->prepare($sql);
-if (!$stmt) {
-    die("Prepare statement failed: " . $conn->error);
-}
-$stmt->bind_param("s", $offer_user);
-$stmt->execute();
-$result = $stmt->get_result();
 
-$offers = [];
-while ($row = $result->fetch_assoc()) {
-    $offers[] = $row;
+if ($stmt) {
+    $stmt->bind_param("s", $loggedInUser);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    $inquiries = [];
+    while ($row = $result->fetch_assoc()) {
+        $inquiries[] = $row;
+    }
+    
+    echo json_encode($inquiries);
+    $stmt->close();
+} else {
+    echo json_encode(['success' => false, 'message' => 'Database query failed']);
 }
 
-$stmt->close();
 $conn->close();
-
-echo json_encode($offers);
 ?>
