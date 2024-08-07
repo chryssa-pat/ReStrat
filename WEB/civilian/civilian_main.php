@@ -151,10 +151,10 @@
                         <label for="quantity">Quantity:</label>
                         <input type="number" id="quantity" name="quantity" min="1" required>
 
-                        <label for="address">Select Address:</label>
-                        <select id="address" name="address" required>
-                           <!-- Address will be populated dynamically -->
-                        </select>
+                        <label for="address">Address:</label>
+                        <div id="addressDisplay">
+                            <!-- Address will be displayed here -->
+                        </div>
 
                         <button class="form_button" type="submit">Submit</button>
                     </form>
@@ -167,131 +167,138 @@
                 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
                 <script>
-                    $(document).ready(function () {
-                        var data;
+                $(document).ready(function () {
+                    var data;
 
-                        // Fetch categories and items
-                        $.getJSON('fetch_data.php', function (fetchedData) {
-                            data = fetchedData;
-                            var categorySelect = $('#category');
-                            var itemSelect = $('#item');
+                    // Fetch categories and items
+                    $.getJSON('fetch_data.php', function (fetchedData) {
+                        data = fetchedData;
+                        var categorySelect = $('#category');
+                        var itemSelect = $('#item');
 
-                            // Populate categories
-                            populateSelect(categorySelect, data.categories);
+                        // Populate categories
+                        populateSelect(categorySelect, data.categories);
 
-                            // Update items when category changes
-                            categorySelect.change(function () {
-                                var selectedCategory = $(this).val();
-                                updateItems(selectedCategory);
-                            });
-
-                            // Add search functionality to category select
-                            addSearchToSelect(categorySelect, data.categories);
-
-                            // Add search functionality to item select
-                            addSearchToSelect(itemSelect, []);
+                        // Update items when category changes
+                        categorySelect.change(function () {
+                            var selectedCategory = $(this).val();
+                            updateItems(selectedCategory);
                         });
 
-                        // Fetch addresses
-                        $.getJSON('fetch_addresses.php', function (addresses) {
-                            var addressSelect = $('#address');
-                            // Convert latitude and longitude to readable addresses if necessary
-                            var addressOptions = addresses.map(function(address) {
-                                return `Lat: ${address.latitude}, Lon: ${address.longitude}`;
-                            });
-                            populateSelect(addressSelect, addressOptions);
-                        });
+                        // Add search functionality to category select
+                        addSearchToSelect(categorySelect, data.categories);
 
-                        function populateSelect(select, options) {
-                            select.empty().append($('<option></option>').attr('value', '').text('Choose an option'));
-                            $.each(options, function (index, option) {
-                                select.append($('<option></option>').attr('value', option).text(option));
-                            });
-                        }
+                        // Add search functionality to item select
+                        addSearchToSelect(itemSelect, []);
+                    });
 
-                        function updateItems(selectedCategory) {
-                            var itemSelect = $('#item');
-                            if (selectedCategory in data.items) {
-                                populateSelect(itemSelect, data.items[selectedCategory]);
-                                addSearchToSelect(itemSelect, data.items[selectedCategory]);
+                    function populateSelect(select, options) {
+                        select.empty().append($('<option></option>').attr('value', '').text('Choose an option'));
+                        $.each(options, function (index, option) {
+                            if (typeof option === 'object') {
+                                select.append($('<option></option>').attr('value', option.id).text(option.name));
                             } else {
-                                itemSelect.empty().append($('<option></option>').attr('value', '').text('Choose an item'));
+                                select.append($('<option></option>').attr('value', option).text(option));
                             }
+                        });
+                    }
+
+                    function updateItems(selectedCategory) {
+                        var itemSelect = $('#item');
+                        if (selectedCategory in data.items) {
+                            populateSelect(itemSelect, data.items[selectedCategory]);
+                            addSearchToSelect(itemSelect, data.items[selectedCategory]);
+                        } else {
+                            itemSelect.empty().append($('<option></option>').attr('value', '').text('Choose an item'));
+                        }
+                    }
+
+                    function addSearchToSelect(select, options) {
+                        select.select2({
+                            data: options.map(option => {
+                                return typeof option === 'object' ?
+                                    { id: option.id, text: option.name } :
+                                    { id: option, text: option };
+                            }),
+                            placeholder: 'Search...',
+                            allowClear: true,
+                            matcher: matchCustom
+                        });
+                    }
+
+                    function matchCustom(params, data) {
+                        if ($.trim(params.term) === '') {
+                            return data;
                         }
 
-                        function addSearchToSelect(select, options) {
-                            select.select2({
-                                data: options.map(option => {
-                                    return { id: option, text: option };
-                                }),
-                                placeholder: 'Search...',
-                                allowClear: true,
-                                matcher: matchCustom
-                            });
-                        }
-
-                        function matchCustom(params, data) {
-                            // If there are no search terms, return all of the data
-                            if ($.trim(params.term) === '') {
-                                return data;
-                            }
-
-                            // Do not display the item if there is no 'text' property
-                            if (typeof data.text === 'undefined') {
-                                return null;
-                            }
-
-                            // `params.term` should be the term that is used for searching
-                            // `data.text` is the text that is displayed for the data object
-                            if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
-                                var modifiedData = $.extend({}, data, true);
-                                return modifiedData;
-                            }
-
-                            // Return `null` if the term should not be displayed
+                        if (typeof data.text === 'undefined') {
                             return null;
                         }
 
-                        // Handle form submission
-                        $('#orderForm').submit(function (e) {
-                            e.preventDefault();
+                        if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
+                            var modifiedData = $.extend({}, data, true);
+                            return modifiedData;
+                        }
 
-                            var formData = {
-                                category: $('#category').val(),
-                                item: $('#item').val(),
-                                quantity: $('#quantity').val(),
-                                address: $('#address').val()
-                            };
+                        return null;
+                    }
 
-                            $.ajax({
-                                type: 'POST',
-                                url: 'submit_inquiry.php',
-                                data: formData,
-                                dataType: 'json',
-                                encode: true
-                            })
-                            .done(function (data) {
-                                if (data.success) {
-                                    alert('Inquiry submitted successfully!');
-                                    $('#orderForm')[0].reset();
-                                } else {
-                                    alert('Error: ' + data.message);
-                                }
-                            })
-                            .fail(function () {
-                                alert('An error occurred. Please try again.');
+                    // Fetch addresses and display them
+                    $.getJSON('fetch_addresses.php', function (addresses) {
+                        var addressDisplay = $('#addressDisplay');
+                        if (addresses.length > 0) {
+                            var addressHtml = '<ul>';
+                            $.each(addresses, function (index, address) {
+                                addressHtml += 'Latitude: ' + address.latitude + ', Longitude: ' + address.longitude + '</li>';
                             });
-                        });
+                            addressHtml += '</ul>';
+                            addressDisplay.html(addressHtml);
+                        } else {
+                            addressDisplay.html('<p>No addresses available</p>');
+                        }
+                    });
 
-                        document.getElementById('logoutButton').addEventListener('click', function () {
-                            var confirmLogout = confirm('Are you sure you want to logout?');
-                            if (confirmLogout) {
-                                // Redirect to another page
-                                window.location.href = "../main/main.html"; // Replace 'logout.php' with the actual URL you want to redirect to
+                    // Handle form submission
+                    $('#orderForm').submit(function (e) {
+                        e.preventDefault();
+
+                        var formData = {
+                            category: $('#category').val(),
+                            item: $('#item').val(),
+                            quantity: $('#quantity').val(),
+                            address: $('#address').val()
+                        };
+
+                        $.ajax({
+                            type: 'POST',
+                            url: 'submit_inquiry.php',
+                            data: formData,
+                            dataType: 'json',
+                            encode: true
+                        })
+                        .done(function (data) {
+                            if (data.success) {
+                                alert('Inquiry submitted successfully!');
+                                $('#orderForm')[0].reset();
+                            } else {
+                                alert('Error: ' + data.message);
                             }
+                        })
+                        .fail(function () {
+                            alert('An error occurred. Please try again.');
                         });
                     });
+
+                    document.getElementById('logoutButton').addEventListener('click', function () {
+                        var confirmLogout = confirm('Are you sure you want to logout?');
+                        if (confirmLogout) {
+                            window.location.href = "../main/main.html"; // Replace 'logout.php' with the actual URL you want to redirect to
+                        }
+                    });
+                });
                 </script>
+
+
             </div>
         </div>
     </div>
