@@ -48,8 +48,6 @@ CREATE TABLE PRODUCT_DETAILS (
 
 CREATE TABLE INQUIRY (
     inquiry_id INT AUTO_INCREMENT,
-    inquiry_status ENUM('approved', 'finished', 'disapproved', 'cancelled') NOT NULL,
-    inquiry_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     inquiry_user VARCHAR(25) NOT NULL,
     inquiry_product INT NOT NULL,
     inquiry_quantity INT NOT NULL,
@@ -60,11 +58,15 @@ CREATE TABLE INQUIRY (
 	 ON DELETE CASCADE ON UPDATE CASCADE
 ) AUTO_INCREMENT=1;
 
-
+CREATE TABLE INQUIRY_DETAILS(
+    details_id INT
+    inquiry_status ENUM('pending','approved' 'finished', 'disapproved', 'cancelled') NOT NULL,
+    inquiry_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT INQUIRYDETAILS FOREIGN KEY(details_id) REFERENCES INQUIRY(inquiry_id)
+	ON DELETE CASCADE ON UPDATE CASCADE
+);
 CREATE TABLE OFFERS (
     offer_id INT AUTO_INCREMENT,
-    offer_status ENUM('approved', 'finished', 'disapproved', 'cancelled') NOT NULL,
-    offer_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     offer_user VARCHAR(25) NOT NULL,
     offer_product INT NOT NULL,
     offer_quantity INT NOT NULL,
@@ -74,6 +76,14 @@ CREATE TABLE OFFERS (
 	CONSTRAINT PRODUCT_OFFER FOREIGN KEY(offer_product) REFERENCES PRODUCTS(product_id)
 	ON DELETE CASCADE ON UPDATE CASCADE
 ) AUTO_INCREMENT=2000;
+
+CREATE TABLE OFFERS_DETAILS(
+    details_id INT
+    offer_status ENUM('pending','approved' 'finished', 'disapproved', 'cancelled') NOT NULL,
+    offer_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT OFFERDETAILS FOREIGN KEY(details_id) REFERENCES OFFERS(offer_id)
+	ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 
 CREATE TABLE VOLUNTEER (
