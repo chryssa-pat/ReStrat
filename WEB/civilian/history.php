@@ -15,10 +15,13 @@ if ($conn->connect_error) {
 
 $offer_user = $_SESSION['user']; 
 
-$sql = "SELECT offer_status, offer_user, PRODUCTS.item AS item, offer_quantity, offer_date 
-        FROM OFFERS 
-        JOIN PRODUCTS ON OFFERS.offer_product = PRODUCTS.product_id
-        WHERE offer_user = ?";
+$sql = "SELECT od.offer_status, o.offer_user, p.item, o.offer_quantity, od.offer_date 
+        FROM OFFERS o
+        JOIN OFFERS_DETAILS od ON o.offer_id = od.details_id
+        JOIN PRODUCTS p ON o.offer_product = p.product_id
+        WHERE o.offer_user = ?
+        ORDER BY od.offer_date DESC";
+
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
     die("Prepare statement failed: " . $conn->error);

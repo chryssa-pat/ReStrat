@@ -72,3 +72,22 @@ footer {
 #announcements-container .announcement-frame:hover {
     transform: translateY(-5px);
 }
+.announcement-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 20px;
+}
+.announcement-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.announcement-button {
+    transition: all 0.2s;
+}
+.announcement-button:hover {
+    transform: scale(1.05);
+}
+
+.center-title {
+    text-align: center;
+    margin-top: 20px;
+}

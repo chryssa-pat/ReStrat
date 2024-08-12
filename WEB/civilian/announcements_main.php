@@ -9,12 +9,6 @@
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="announcements.css">
-    <style>
-        .center-title {
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
 </head>
 <body>
 
@@ -122,75 +116,81 @@
         </div>
     </div>
 
-    <!-- Modal -->
     <div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="offerModalLabel">Make an Offer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="offerForm">
-                        <input type="hidden" id="announceId" name="announce_id">
-                        <div class="mb-3">
-                            <label for="offerQuantity" class="form-label">Quantity</label>
-                            <input type="number" class="form-control" id="offerQuantity" name="offer_quantity" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit Offer</button>
-                    </form>
-                </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="offerModalLabel">Make an Offer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="offerForm">
+                    <input type="hidden" id="announceId" name="announce_id">
+                    <input type="hidden" id="productId" name="product_id">
+                    <div class="mb-3">
+                        <label for="offerQuantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="offerQuantity" name="offer_quantity" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Offer</button>
+                </form>
             </div>
         </div>
     </div>
-
+</div>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
 
         <script>
-        $.ajax({
-            url: 'announcements.php',
-            method: 'GET',
-            success: function(response) {
-                $('#announcements-container').append(response);
-            },
-            error: function(error) {
-                console.error('Error fetching data:', error);
+         $.ajax({
+        url: 'announcements.php',
+        method: 'GET',
+        success: function(response) {
+            $('#announcements-container').append(response);
+        },
+        error: function(error) {
+            console.error('Error fetching data:', error);
+        }
+    });
+
+    // Handle announcement button click
+    $(document).on('click', '.announcement-button', function() {
+    var announceId = $(this).data('announce-id');
+    var productId = $(this).data('product-id');
+    $('#announceId').val(announceId);
+    $('#productId').val(productId);
+    $('#offerModal').modal('show');
+});
+
+$('#offerForm').on('submit', function(e) {
+    e.preventDefault();
+    var formData = $(this).serialize();
+    console.log("Form data being sent:", formData); // Debug log
+
+    $.ajax({
+        url: 'offer.php',
+        method: 'POST',
+        data: formData,
+        dataType: 'json', // Expect JSON response
+        success: function(response) {
+            console.log("Response received:", response); // Debug log
+            if (response.success) {
+                $('#offerModal').modal('hide');
+                alert('Offer submitted successfully!');
+                // Refresh the announcements list
+                location.reload();
+            } else {
+                alert(response.error || 'An error occurred while submitting the offer.');
             }
-        });
-
-        // Handle announcement button click
-        $(document).on('click', '.announcement-button', function() {
-            var announceId = $(this).data('announce-id');
-            $('#announceId').val(announceId);
-            $('#offerModal').modal('show');
-        });
-
-        // Handle offer form submission
-        $('#offerForm').on('submit', function(e) {
-            e.preventDefault();
-            var formData = $(this).serialize();
-            $.ajax({
-                url: 'offer.php',
-                method: 'POST',
-                data: formData,
-                success: function(response) {
-                    var result = JSON.parse(response);
-                    if (result.success) {
-                        $('#offerModal').modal('hide');
-                        alert('Offer submitted successfully!');
-                        // Optionally, refresh the announcements list
-                    } else {
-                        alert(result.error);
-                    }
-                },
-                error: function(error) {
-                    console.error('Error submitting offer:', error);
-                }
-            });
-        });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error submitting offer:', textStatus, errorThrown);
+            console.log('Response Text:', jqXHR.responseText); // Log the full response
+            alert('An error occurred while submitting the offer. Please check the console for details.');
+        }
+    });
+});
     </script>
     
 </body>

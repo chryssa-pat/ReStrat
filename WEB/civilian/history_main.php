@@ -8,7 +8,7 @@ include('../main/session_check.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>History</title>
+    <title>Offers History</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
@@ -16,6 +16,16 @@ include('../main/session_check.php');
         .center-title {
             text-align: center;
             margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -119,19 +129,18 @@ include('../main/session_check.php');
                 </nav>
 
                 <main>
-                    <h1 class="center-title">History</h1>
-                    <table class="table table-bordered">
-                        <thead>
+                    <h1 class="center-title">Offers History</h1>
+                    <table class="table table-striped table-hover">
+                        <thead class="table-primary">
                             <tr>
                                 <th>Status</th>
-                                <th>User</th>
                                 <th>Item</th>
                                 <th>Quantity</th>
                                 <th>Date</th>
                             </tr>
                         </thead>
                         <tbody id="history-table-body">
-                            <!-- Τα δεδομένα θα φορτωθούν εδώ δυναμικά -->
+                            <!-- Data will be loaded here dynamically -->
                         </tbody>
                     </table>
                 </main>
@@ -153,21 +162,38 @@ include('../main/session_check.php');
                 success: function(data) {
                     var tbody = $('#history-table-body');
                     data.forEach(function(offer) {
+                        var statusClass = getStatusClass(offer.offer_status);
                         var row = '<tr>' +
-                            '<td>' + offer.offer_status + '</td>' +
-                            '<td>' + offer.offer_user + '</td>' +
+                            '<td><span class="status-badge ' + statusClass + '">' + offer.offer_status + '</span></td>' +
                             '<td>' + offer.item + '</td>' +
                             '<td>' + offer.offer_quantity + '</td>' +
-                            '<td>' + offer.offer_date + '</td>' +
+                            '<td>' + formatDate(offer.offer_date) + '</td>' +
                             '</tr>';
                         tbody.append(row);
                     });
                 },
                 error: function(error) {
                     console.error('Error fetching history data:', error);
+                    $('#history-table-body').html('<tr><td colspan="4" class="text-center">Error loading data. Please try again later.</td></tr>');
                 }
             });
         });
+
+        function getStatusClass(status) {
+            switch(status.toLowerCase()) {
+                case 'pending': return 'bg-warning text-dark';
+                case 'approved': return 'bg-success text-white';
+                case 'finished': return 'bg-info text-white';
+                case 'disapproved': return 'bg-danger text-white';
+                case 'cancelled': return 'bg-secondary text-white';
+                default: return 'bg-light text-dark';
+            }
+        }
+
+        function formatDate(dateString) {
+            var date = new Date(dateString);
+            return date.toLocaleString();
+        }
     </script>
 
 </body>
