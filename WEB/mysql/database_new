@@ -121,15 +121,23 @@ CREATE TABLE ADMIN (
 );
 
 
+
 CREATE TABLE ANNOUNCEMENTS (
-    announce_id INT NOT NULL UNIQUE AUTO_INCREMENT,
-    announce_product INT NOT NULL,
-    announce_quantity INT NOT NULL,
-    PRIMARY KEY(announce_id),
-	CONSTRAINT ANNOUNCE_OFFER FOREIGN KEY(announce_product) REFERENCES products(product_id)
-	ON DELETE CASCADE ON UPDATE CASCADE
+    announce_id INT NOT NULL AUTO_INCREMENT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(announce_id)
 ) AUTO_INCREMENT=3000;
 
+CREATE TABLE ANNOUNCEMENT_ITEMS (
+    announce_id INT NOT NULL,
+    announce_product INT NOT NULL,
+    quantity INT NOT NULL,
+    PRIMARY KEY(item_id),
+    FOREIGN KEY ANNOUNCE(announce_id) REFERENCES ANNOUNCEMENTS(announce_id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ANNOUNCE_OFFER(announce_product) REFERENCES products(product_id) 
+    ON DELETE CASCADE ON UPDATE CASCADE
+);
 insert into users values("admin","admin","administrator")
 
 insert into admin values("admin", 38.264100945783525, 21.754283452141237);

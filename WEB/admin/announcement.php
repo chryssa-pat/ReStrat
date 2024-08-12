@@ -56,7 +56,7 @@
                           <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Account</button>
                           <ul class="dropdown-menu">
                               <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                              <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
+                              <li><a classdropdown-item" id="logoutButton" href="#">Logout</a></li>
                           </ul>
                       </div>
                   </div>
@@ -77,15 +77,23 @@
 
                         <label for="quantity">Quantity:</label>
                         <input type="number" id="quantity" name="quantity" class="form-control" min="1" required>
+                        
+                        <button type="button" id="addItemButton" class="btn btn-secondary">Add Item</button>
                     </form>
-                    <div>
-                        <button id="createAnnouncementButton" class="btn btn-primary">Create Announcement</button>
-                    </div>
                 </div>
                 <div>
                     <div id="checkoutFrame" class="announcement-frame">
-                        <!-- This area can be used to display added items or other information -->
+                        <!-- This area will be used to display added items -->
                     </div>
+                    <div>
+                        <button id="createAnnouncementButton" class="btn btn-primary">Create Announcement</button>
+                    </div>
+                    <!-- Custom Alert -->
+                        <div id="customAlert" class="alert alert-success alert-dismissible fade" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+                        <span id="alertMessage"></span>
+                        <button type="button" class="btn-close" aria-label="Close" onclick="closeAlert()"></button>
+                        </div>
+
                 </div>
             </div>
         </div>
@@ -94,93 +102,96 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function () {
-            var data;
+    var data;
+    var items = [];
 
-            // Fetch categories and items
-            $.getJSON('fetch_data.php', function (fetchedData) {
-                data = fetchedData;
-                var categorySelect = $('#category');
-                var itemSelect = $('#item');
+    // Fetch categories and items
+    $.getJSON('fetch_data.php', function (fetchedData) {
+        data = fetchedData;
+        var categorySelect = $('#category');
+        var itemSelect = $('#item');
 
-                // Populate categories
-                populateSelect(categorySelect, data.categories);
+        // Populate categories
+        populateSelect(categorySelect, data.categories);
 
-                // Update items when category changes
-                categorySelect.change(function () {
-                    var selectedCategory = $(this).val();
-                    updateItems(selectedCategory);
-                });
+        // Update items when category changes
+        categorySelect.change(function () {
+            var selectedCategory = $(this).val();
+            updateItems(selectedCategory);
+        });
 
-                // Add search functionality to category select
-                addSearchToSelect(categorySelect, data.categories);
+        // Add search functionality to category select
+        addSearchToSelect(categorySelect, data.categories);
 
-                // Add search functionality to item select
-                addSearchToSelect(itemSelect, []);
-            });
+        // Add search functionality to item select
+        addSearchToSelect(itemSelect, []);
+    });
 
-            function populateSelect(select, options) {
-                select.empty().append($('<option></option>').attr('value', '').text('Choose an option'));
-                $.each(options, function (index, option) {
-                    if (typeof option === 'object') {
-                        select.append($('<option></option>').attr('value', option.id).text(option.name));
-                    } else {
-                        select.append($('<option></option>').attr('value', option).text(option));
-                    }
-                });
+    function populateSelect(select, options) {
+        select.empty().append($('<option></option>').attr('value', '').text('Choose an option'));
+        $.each(options, function (index, option) {
+            if (typeof option === 'object') {
+                select.append($('<option></option>').attr('value', option.id).text(option.name));
+            } else {
+                select.append($('<option></option>').attr('value', option).text(option));
             }
+        });
+    }
 
-            function updateItems(selectedCategory) {
-                var itemSelect = $('#item');
-                if (selectedCategory in data.items) {
-                    populateSelect(itemSelect, data.items[selectedCategory]);
-                    addSearchToSelect(itemSelect, data.items[selectedCategory]);
-                } else {
-                    itemSelect.empty().append($('<option></option>').attr('value', '').text('Choose an item'));
-                }
-            }
+    function updateItems(selectedCategory) {
+        var itemSelect = $('#item');
+        if (selectedCategory in data.items) {
+            populateSelect(itemSelect, data.items[selectedCategory]);
+            addSearchToSelect(itemSelect, data.items[selectedCategory]);
+        } else {
+            itemSelect.empty().append($('<option></option>').attr('value', '').text('Choose an item'));
+        }
+    }
 
-            function addSearchToSelect(select, options) {
-                select.select2({
-                    data: options.map(option => {
-                        return typeof option === 'object' ? 
-                            { id: option.id, text: option.name } : 
-                            { id: option, text: option };
-                    }),
-                    placeholder: 'Search...',
-                    allowClear: true,
-                    matcher: matchCustom
-                });
-            }
+    function addSearchToSelect(select, options) {
+        select.select2({
+            data: options.map(option => {
+                return typeof option === 'object' ? 
+                    { id: option.id, text: option.name } : 
+                    { id: option, text: option };
+            }),
+            placeholder: 'Search...',
+            allowClear: true,
+            matcher: matchCustom
+        });
+    }
 
-            function matchCustom(params, data) {
-                // If there are no search terms, return all of the data
-                if ($.trim(params.term) === '') {
-                    return data;
-                }
+    function matchCustom(params, data) {
+        // If there are no search terms, return all of the data
+        if ($.trim(params.term) === '') {
+            return data;
+        }
 
-                // Do not display the item if there is no 'text' property
-                if (typeof data.text === 'undefined') {
-                    return null;
-                }
+        // Do not display the item if there is no 'text' property
+        if (typeof data.text === 'undefined') {
+            return null;
+        }
 
-                // `params.term` should be the term that is used for searching
-                // `data.text` is the text that is displayed for the data object
-                if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
-                    var modifiedData = $.extend({}, data, true);
-                    return modifiedData;
-                }
+        // params.term should be the term that is used for searching
+        // data.text is the text that is displayed for the data object
+        if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
+            var modifiedData = $.extend({}, data, true);
+            return modifiedData;
+        }
 
-                // Return `null` if the term should not be displayed
-                return null;
-            }
+        // Return null if the term should not be displayed
+        return null;
+    }
 
-            $('#Form').submit(function (e) {
-        e.preventDefault();
-
-        var itemName = $('#item').val();
+    $('#addItemButton').click(function() {
+        var itemId = $('#item').val();
+        var itemName = $('#item option:selected').text();
         var quantity = $('#quantity').val();
 
-        if (!itemName) {
+        console.log('Selected item:', itemName, '(ID:', itemId, ')');
+        console.log('Entered quantity:', quantity);
+
+        if (!itemId || itemName === 'Choose an option') {
             alert('Please select an item.');
             return;
         }
@@ -190,25 +201,100 @@
             return;
         }
 
-        // Proceed with form submission
-        $.ajax({
-            url: 'create_announcement.php',
-            type: 'POST',
-            data: $(this).serialize(),
-            success: function (response) {
-                var result = JSON.parse(response);
-                if (result.success) {
-                    $('#checkoutFrame').html('<div class="alert alert-success">' + result.message + '</div>');
-                } else {
-                    $('#checkoutFrame').html('<div class="alert alert-danger">' + result.error + '</div>');
-                }
-            },
-            error: function () {
-                $('#checkoutFrame').html('<div class="alert alert-danger">An error occurred while submitting the form.</div>');
-            }
+        items.push({
+            id: itemId,  // Store as 'id' to match the structure you're using
+            name: itemName,  // Store the name as well
+            quantity: parseInt(quantity)
         });
+        console.log('Items after adding:', JSON.stringify(items, null, 2));
+        updateCheckoutFrame();
+
+        // Clear the form
+        $('#category').val('').trigger('change');
+        $('#item').val('').trigger('change');
+        $('#quantity').val('');
     });
+
+    function updateCheckoutFrame() {
+        console.log('Current items:', JSON.stringify(items, null, 2)); // Log the entire items array
+
+        var html = '<h3>Added Items:</h3>';
+        items.forEach(function(item, index) {
+            var itemId = item.itemId || item.id; // Use itemId if available, otherwise use id
+            var itemName = item.itemName || item.name || 'Unknown Item';
+            
+            if (itemName === 'Unknown Item') {
+                // If the item name is not stored, try to fetch it from the select options
+                var selectOption = $('#item option[value="' + itemId + '"]');
+                if (selectOption.length) {
+                    itemName = selectOption.text();
+                }
+            }
+
+            html += '<div>Item ID: ' + itemId + ' (' + itemName + ') - Quantity: ' + item.quantity + 
+                    ' <button class="btn btn-sm btn-danger remove-item" data-index="' + index + '">Remove</button></div>';
         });
+        $('#checkoutFrame').html(html);
+    }
+
+    $(document).on('click', '.remove-item', function() {
+        var index = $(this).data('index');
+        items.splice(index, 1);
+        updateCheckoutFrame();
+    });
+
+    function showAlert(message, type) {
+    var alertDiv = $('#customAlert');
+    var alertMessage = $('#alertMessage');
+    
+    alertMessage.text(message);
+    alertDiv.removeClass('alert-success alert-danger').addClass('alert-' + type);
+    alertDiv.addClass('show');
+    
+    setTimeout(function() {
+        alertDiv.removeClass('show');
+    }, 3000); // Auto-hide after 3 seconds
+}
+
+$('#createAnnouncementButton').click(function() {
+    if (items.length === 0) {
+        showAlert('Please add at least one item before creating an announcement.', 'danger');
+        return;
+    }
+
+   
+
+    $.ajax({
+        url: 'create_announcement.php',
+        type: 'POST',
+        data: JSON.stringify({ items: items }),
+        contentType: 'application/json',
+        success: function(response) {
+            try {
+                var parsedResponse = JSON.parse(response);
+                console.log('Received response:', parsedResponse);
+                if (parsedResponse.success) {
+                    showAlert(parsedResponse.message, 'success');
+                    items = []; // Clear the items array
+                    updateCheckoutFrame(); // Update the display
+                } else {
+                    showAlert(parsedResponse.error, 'danger');
+                }
+            } catch (e) {
+                console.error('Parsing error:', e);
+                showAlert('Error parsing server response.', 'danger');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Ajax error:', status, error);
+            showAlert('An error occurred while submitting the form: ' + error, 'danger');
+        }
+    });
+});
+
+
+    });
+
     </script>
 </body>
 </html>

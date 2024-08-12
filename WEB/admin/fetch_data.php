@@ -19,7 +19,7 @@ if ($conn->connect_error) {
     exit;
 }
 
-// Fetch categories and products
+
 $query = "SELECT c.category_name, p.item, p.product_id, p.available 
           FROM CATEGORIES c
           JOIN PRODUCTS p ON c.category_id = p.category_id";
@@ -32,24 +32,23 @@ if (!$result) {
     exit;
 }
 
-// Prepare data for JSON response
 $data = [
     'categories' => [],
     'items' => [],
 ];
 
+$rowCount = 0;
 while ($row = $result->fetch_assoc()) {
+    $rowCount++;
     $category = $row['category_name'];
     $item = $row['item'];
     $productId = $row['product_id'];
     $available = $row['available'];
 
-    // Add category if it's not already in the list
     if (!in_array($category, $data['categories'])) {
         $data['categories'][] = $category;
     }
 
-    // Add item to the category
     if (!isset($data['items'][$category])) {
         $data['items'][$category] = [];
     }
@@ -60,10 +59,14 @@ while ($row = $result->fetch_assoc()) {
     ];
 }
 
-// Send JSON response
+$data['debug'] = [
+    'rowCount' => $rowCount,
+    'categoriesCount' => count($data['categories']),
+    'itemsCount' => count($data['items']),
+];
+
 header('Content-Type: application/json');
 echo json_encode($data);
 
-// Close the database connection
 $conn->close();
 ?>

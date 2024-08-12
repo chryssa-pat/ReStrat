@@ -8,81 +8,52 @@ $database = "web";
 // Establish a database connection
 $conn = new mysqli($host, $username, $password, $database);
 
-// Check the connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    error_log("Connection failed: " . $conn->connect_error);
+    die(json_encode(['success' => false, 'error' => "Connection failed: " . $conn->connect_error]));
 }
 
-// Get the form data
-$categoryId = isset($_POST['category_id']) ? intval($_POST['category_id']) : 0;
-$itemName = isset($_POST['item_name']) ? $_POST['item_name'] : '';
-$quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 0;
+// Decode the JSON input
+$input = json_decode(file_get_contents('php://input'), true);
+error_log("Decoded input: " . print_r($input, true));
 
-// Log received data for debugging
-error_log("Received data: category_id=$categoryId, item_name='$itemName', quantity=$quantity");
-
-// Check if itemName is empty
-if (empty($itemName)) {
-    echo json_encode(['success' => false, 'error' => 'Item name is empty']);
-    exit();
+if (!isset($input['items']) || !is_array($input['items'])) {
+    error_log("Invalid input structure");
+    die(json_encode(['success' => false, 'error' => "Invalid input structure"]));
 }
 
-// Function to get product_id from item name
-function getProductIdByName($conn, $itemName) {
-    $itemName = trim($itemName);
-    $itemName = strtolower($itemName);
+$items = $input['items'];
 
+// Start transaction
+$conn->begin_transaction();
 
+try {
+    // Insert into ANNOUNCEMENTS table
+    $stmt = $conn->prepare("INSERT INTO ANNOUNCEMENTS (created_at) VALUES (NOW())");
+    if (!$stmt->execute()) {
+        throw new Exception("Failed to create announcement: " . $stmt->error);
+    }
+    $announceId = $conn->insert_id;
+    $stmt->close();
 
-    $stmt = $conn->prepare("SELECT product_id FROM PRODUCTS WHERE product_id = ?");
-    if ($stmt) {
-        $stmt->bind_param("s", $itemName);
-        $stmt->execute();
-        $stmt->bind_result($productId);
-
-        if ($stmt->fetch()) {
-            $stmt->close();
-            return $productId;
+    // Insert items into ANNOUNCEMENT_ITEMS table
+    foreach ($items as $item) {
+        $stmt = $conn->prepare("INSERT INTO ANNOUNCEMENT_ITEMS (announce_id, announce_product, quantity) VALUES (?, ?, ?)");
+        $stmt->bind_param("iii", $announceId, $item['id'], $item['quantity']);
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to insert item: " . $stmt->error);
         }
         $stmt->close();
     }
-    return null;
+
+    // Commit transaction
+    $conn->commit();
+    echo json_encode(['success' => true, 'message' => 'Announcement created successfully']);
+} catch (Exception $e) {
+    // Rollback transaction on error
+    $conn->rollback();
+    error_log("Error: " . $e->getMessage());
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
 
-
-// Get the product_id from item name
-$productId = getProductIdByName($conn, $itemName);
-
-if ($productId === null) {
-    echo json_encode(['success' => false, 'error' => 'Product not found for item: ' . $itemName]);
-    exit();
-}
-
-if ($quantity > 0) {
-    // Prepare the SQL statement
-    $stmt = $conn->prepare("INSERT INTO ANNOUNCEMENTS (announce_product, announce_quantity) VALUES (?, ?)");
-    if ($stmt) {
-        $stmt->bind_param("ii", $productId, $quantity);
-
-        // Execute the statement
-        if ($stmt->execute()) {
-            error_log("Announcement created successfully with Product ID: $productId and Quantity: $quantity");
-            echo json_encode(['success' => true, 'message' => 'Announcement created successfully!']);
-        } else {
-            error_log("SQL Error: " . $stmt->error);
-            echo json_encode(['success' => false, 'error' => 'SQL Error: ' . $stmt->error]);
-        }
-
-        // Close the statement
-        $stmt->close();
-    } else {
-        error_log("Failed to prepare the SQL statement");
-        echo json_encode(['success' => false, 'error' => 'Failed to prepare the SQL statement']);
-    }
-} else {
-    echo json_encode(['success' => false, 'error' => 'Invalid quantity']);
-}
-
-// Close the connection
 $conn->close();
-?>
