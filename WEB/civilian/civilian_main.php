@@ -1,4 +1,10 @@
-<?php include('../main/session_check.php'); ?> 
+
+<?php
+session_start();
+include_once('../main/session_check.php');
+
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">

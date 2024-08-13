@@ -19,7 +19,10 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     $user = $result->fetch_assoc();
     $_SESSION['user'] = $user['username'];
-    $_SESSION['profile'] = $user['profile'];
+    $_SESSION['user_profile'] = $user['profile'];
+    
+    // Clear any previous login messages
+    unset($_SESSION['login_message']);
 
     // Redirect based on user type
     switch ($user['profile']) {
