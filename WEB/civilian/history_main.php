@@ -12,22 +12,7 @@ include('../main/session_check.php');
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <style>
-        .center-title {
-            text-align: center;
-            margin-top: 20px;
-            margin-bottom: 30px;
-        }
-        .table th, .table td {
-            text-align: center;
-            vertical-align: middle;
-        }
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="./history_offers.css">
 </head>
 
 <body>
@@ -133,10 +118,12 @@ include('../main/session_check.php');
                     <table class="table table-striped table-hover">
                         <thead class="table-primary">
                             <tr>
-                                <th>Status</th>
+                                <th>Offer ID</th>
                                 <th>Item</th>
                                 <th>Quantity</th>
-                                <th>Date</th>
+                                <th>Current Status</th>
+                                <th>Last Updated</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="history-table-body">
@@ -144,6 +131,30 @@ include('../main/session_check.php');
                         </tbody>
                     </table>
                 </main>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusModalLabel">Offer Status History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="statusModalBody">
+                            <!-- Status history will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -160,24 +171,93 @@ include('../main/session_check.php');
                 method: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    var tbody = $('#history-table-body');
-                    data.forEach(function(offer) {
-                        var statusClass = getStatusClass(offer.offer_status);
-                        var row = '<tr>' +
-                            '<td><span class="status-badge ' + statusClass + '">' + offer.offer_status + '</span></td>' +
-                            '<td>' + offer.item + '</td>' +
-                            '<td>' + offer.offer_quantity + '</td>' +
-                            '<td>' + formatDate(offer.offer_date) + '</td>' +
-                            '</tr>';
-                        tbody.append(row);
-                    });
+                    console.log("Received data:", data); // Debug: Log received data
+                    renderOffers(data);
                 },
-                error: function(error) {
+                error: function(xhr, status, error) {
                     console.error('Error fetching history data:', error);
-                    $('#history-table-body').html('<tr><td colspan="4" class="text-center">Error loading data. Please try again later.</td></tr>');
+                    console.log('Response:', xhr.responseText); // Debug: Log full response
+                    $('#history-table-body').html('<tr><td colspan="6" class="text-center">Error loading data. Please try again later.</td></tr>');
                 }
             });
         });
+
+        function renderOffers(groupedOffers) {
+            var tbody = $('#history-table-body');
+            tbody.empty();
+            
+            groupedOffers.forEach(function(offer) {
+                var latestStatus = offer.statuses[0]; // Assuming statuses are sorted desc
+                var row = $('<tr>').append(
+                    $('<td>').text(offer.id),
+                    $('<td>').text(offer.item),
+                    $('<td>').text(offer.quantity),
+                    $('<td>').append($('<span>').addClass('status-badge ' + getStatusClass(latestStatus.status)).text(latestStatus.status)),
+                    $('<td>').text(formatDate(latestStatus.date)),
+                    $('<td>').append(
+                        $('<button>').addClass('btn btn-outline-primary btn-sm view-history-btn').text('View History').data('offer', offer),
+                        latestStatus.status.toLowerCase() === 'pending' ? 
+                            $('<button>').addClass('btn btn-danger btn-sm cancel-btn ms-2').text('Cancel').data('offer-id', offer.id) :
+                            ''
+                    )
+                );
+                
+                tbody.append(row);
+            });
+            
+            // Add click event for view history buttons
+            $('.view-history-btn').on('click', function() {
+                var offer = $(this).data('offer');
+                showStatusHistory(offer);
+            });
+
+            // Add click event for cancel buttons
+            $('.cancel-btn').on('click', function(e) {
+                e.stopPropagation();
+                var offerId = $(this).data('offer-id');
+                if (confirm('Are you sure you want to cancel this offer?')) {
+                    cancelOffer(offerId, $(this));
+                }
+            });
+        }
+
+        function showStatusHistory(offer) {
+            var modalBody = $('#statusModalBody');
+            modalBody.empty();
+            
+            offer.statuses.forEach(function(status) {
+                var statusRow = $('<tr>').append(
+                    $('<td>').append($('<span>').addClass('status-badge ' + getStatusClass(status.status)).text(status.status)),
+                    $('<td>').text(formatDate(status.date))
+                );
+                modalBody.append(statusRow);
+            });
+
+            $('#statusModalLabel').text('Offer Status History - ID: ' + offer.id);
+            var modal = new bootstrap.Modal(document.getElementById('statusModal'));
+            modal.show();
+        }
+
+        function cancelOffer(offerId, buttonElement) {
+            $.ajax({
+                url: 'cancel_offer.php',
+                method: 'POST',
+                data: { offer_id: offerId },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        // Refresh the entire table
+                        location.reload();
+                    } else {
+                        alert('Failed to cancel offer: ' + response.error);
+                    }
+                },
+                error: function(error) {
+                    console.error('Error cancelling offer:', error);
+                    alert('An error occurred while cancelling the offer. Please try again later.');
+                }
+            });
+        }
 
         function getStatusClass(status) {
             switch(status.toLowerCase()) {

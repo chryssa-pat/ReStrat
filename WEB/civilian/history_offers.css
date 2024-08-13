@@ -1,0 +1,38 @@
+.center-title {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-weight: bold;
+}
+
+.cancel-btn {
+    padding: 2px 5px;
+    font-size: 0.8rem;
+}
+
+.view-history-btn {
+    padding: 2px 5px;
+    font-size: 0.8rem;
+}
+
+.btn-outline-primary {
+    color: #007bff;
+    border-color: #007bff;
+    background-color: transparent;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}

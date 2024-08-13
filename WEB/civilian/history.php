@@ -15,12 +15,12 @@ if ($conn->connect_error) {
 
 $offer_user = $_SESSION['user']; 
 
-$sql = "SELECT od.offer_status, o.offer_user, p.item, o.offer_quantity, od.offer_date 
+$sql = "SELECT o.offer_id, od.offer_status, o.offer_user, p.item, o.offer_quantity, od.offer_date 
         FROM OFFERS o
         JOIN OFFERS_DETAILS od ON o.offer_id = od.details_id
         JOIN PRODUCTS p ON o.offer_product = p.product_id
         WHERE o.offer_user = ?
-        ORDER BY od.offer_date DESC";
+        ORDER BY o.offer_id DESC, od.offer_date DESC";
 
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
@@ -38,5 +38,26 @@ while ($row = $result->fetch_assoc()) {
 $stmt->close();
 $conn->close();
 
-echo json_encode($offers);
+// Group offers by ID
+$groupedOffers = [];
+foreach ($offers as $offer) {
+    if (!isset($groupedOffers[$offer['offer_id']])) {
+        $groupedOffers[$offer['offer_id']] = [
+            'id' => $offer['offer_id'],
+            'item' => $offer['item'],
+            'quantity' => $offer['offer_quantity'],
+            'statuses' => []
+        ];
+    }
+    $groupedOffers[$offer['offer_id']]['statuses'][] = [
+        'status' => $offer['offer_status'],
+        'date' => $offer['offer_date']
+    ];
+}
+
+// Debug: Log the grouped offers
+error_log("Grouped Offers: " . print_r($groupedOffers, true));
+
+// Send the grouped offers as JSON
+echo json_encode(array_values($groupedOffers));
 ?>
