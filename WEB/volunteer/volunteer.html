@@ -11,6 +11,76 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+     <style>
+         .custom-div-icon .marker-pin {
+             width: 30px;
+             height: 30px;
+             border-radius: 50% 50% 50% 0;
+             position: absolute;
+             transform: rotate(-45deg);
+             left: 50%;
+             top: 50%;
+             margin: -15px 0 0 -15px;
+         }
+ 
+         .custom-div-icon i {
+             position: absolute;
+             width: 22px;
+             font-size: 22px;
+             left: 0;
+             right: 0;
+             margin: 10px auto;
+             text-align: center;
+         }
+ 
+         .custom-div-icon .marker-pin::after {
+             content: '';
+             width: 24px;
+             height: 24px;
+             margin: 3px 0 0 3px;
+             background: #fff;
+             position: absolute;
+             border-radius: 50%;
+         }
+
+         .car-icon {
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            text-align: center;
+        }
+
+        .car-icon i {
+            font-size: 20px;
+            margin-top: 5px;
+            color: #000000;
+        }
+
+        .marker-pin.pending {
+            background-color: #DB4437; /* Κόκκινο */
+        }
+
+        .marker-pin.approved {
+            background-color: #F4B400; /* Κίτρινο */
+        }
+
+        .marker-pin.completed {
+            background-color: #0F9D58; /* Πράσινο */
+        }
+
+        .custom-div-icon i.pending {
+            color: #DB4437; /* Κόκκινο */
+        }
+
+        .custom-div-icon i.approved {
+            color: #F4B400; /* Κίτρινο */
+        }
+
+        .custom-div-icon i.completed {
+            color: #0F9D58; /* Πράσινο */
+        }
+     </style>
 </head>
 
 <body>
@@ -34,9 +104,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="load_management.html" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                            Load Managment
+                            Load Management
                         </a>
                     </li>
                     <li>
@@ -122,53 +192,255 @@
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
     <script src="./javascript/map.js" charset="utf-8"></script>
-<!-- ... (your existing HTML code) ... -->
 
-<script>
-    var map = L.map('map').setView([38.246639, 21.734573], 13); // Set your default coordinates and zoom level
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+    <script>
+        var map;
+        var carIcon = L.divIcon({
+        className: 'car-icon',
+        html: '<i class="fas fa-car"></i>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
+        });
+        var volunteerMarker;
+        var baseMarker;
+        var civilianMarkers = [];
+    
+        // Ορίζουμε τα εικονίδια για τις διαφορετικές πινέζες
+        var inquiryApprovedIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#4285F4;' class='marker-pin'></div><i class='fa fa-question' style='color:#4285F4;'></i>",
+            iconSize: [30, 42],
+            iconAnchor: [15, 42]
+        });
 
-    // Use the Geolocation API to get the user's current location
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var userLat = position.coords.latitude;
-            var userLng = position.coords.longitude;
+        var inquiryPendingIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#DB4437;' class='marker-pin'></div><i class='fa fa-question' style='color:#DB4437;'></i>",
+            iconSize: [30, 42],
+            iconAnchor: [15, 42]
+        });
 
-            // Set the map view to the user's current location
-            map.setView([userLat, userLng], 13);
+        var offerApprovedIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#0F9D58;' class='marker-pin'></div><i class='fa fa-gift' style='color:#0F9D58;'></i>",
+            iconSize: [30, 42],
+            iconAnchor: [15, 42]
+        });
 
-            // Add a marker at the user's current location
-            var userMarker = L.marker([userLat, userLng]).addTo(map);
+        var offerPendingIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#F4B400;' class='marker-pin'></div><i class='fa fa-gift' style='color:#F4B400;'></i>",
+            iconSize: [30, 42],
+            iconAnchor: [15, 42]
+        });
+    
+        function initMap() {
+            map = L.map('map').setView([38.246639, 21.734573], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+    
+            getBaseLocation();
+            getVolunteerLocation();
+            getApprovedCivilians();
+        }
+    
+        function getVolunteerLocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+                    
+                    if (volunteerMarker) {
+                        volunteerMarker.setLatLng([lat, lng]);
+                    } else {
+                        volunteerMarker = L.marker([lat, lng], {icon: carIcon, draggable: true}).addTo(map);
+                        addPermanentLabel(volunteerMarker, "Volunteer Location<br>Lat: " + lat.toFixed(6) + "<br>Lng: " + lng.toFixed(6));
+                    }
 
-            // Fetch and display vehicle locations
-            fetch(`getVehicleLocation.php`)
+                    updateLocation(lat, lng);
+
+                    volunteerMarker.on('dragend', function(event) {
+                        var position = volunteerMarker.getLatLng();
+                        updateLocation(position.lat, position.lng);
+                        updateLabel(volunteerMarker, "Volunteer Location<br>Lat: " + position.lat.toFixed(6) + "<br>Lng: " + position.lng.toFixed(6));
+                    });
+
+                    fitMapToAllMarkers();
+                });
+            }
+        }
+    
+        function getBaseLocation() {
+            fetch('get_base_location.php')
                 .then(response => response.json())
                 .then(data => {
-                    // Create markers for each vehicle
-                    data.forEach(vehicle => {
-                        const vehicleId = vehicle.vehicle_id;
-                        const vehicleLat = vehicle.latitude_vehicle;
-                        const vehicleLng = vehicle.longitude_vehicle;
-
-                        // Add a marker for each vehicle
-                        L.marker([vehicleLat, vehicleLng]).addTo(map)
-                            .bindPopup(`
-                                <strong>Vehicle ID:</strong> ${vehicleId}<br>
-                                <strong>Latitude:</strong> ${vehicleLat}<br>
-                                <strong>Longitude:</strong> ${vehicleLng}
-                            `);
-                    });
+                    if (data.success) {
+                        var lat = parseFloat(data.latitude);
+                        var lng = parseFloat(data.longitude);
+                        
+                        if (baseMarker) {
+                            baseMarker.setLatLng([lat, lng]);
+                        } else {
+                            baseMarker = L.marker([lat, lng]).addTo(map);
+                            addPermanentLabel(baseMarker, "Base Location<br>Lat: " + lat.toFixed(6) + "<br>Lng: " + lng.toFixed(6));
+                        }
+    
+                        fitMapToAllMarkers();
+                    } else {
+                        console.error('Failed to get base location:', data.error);
+                    }
                 })
-                .catch(error => console.error('Error fetching vehicle locations:', error));
-        });
-    } else {
-        alert("Geolocation is not supported by this browser.");
-    }
-</script>
+                .catch(error => console.error('Error:', error));
+        }
+
+        function getApprovedCivilians() {
+            fetch('get_approved_civilians.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Clear existing markers
+                        civilianMarkers.forEach(marker => map.removeLayer(marker));
+                        civilianMarkers = [];
+
+                        data.coordinates.forEach((coord) => {
+                            var icon;
+                            if (coord.type === 'inquiry') {
+                                icon = coord.status === 'approved' ? inquiryApprovedIcon : inquiryPendingIcon;
+                            } else {
+                                icon = coord.status === 'approved' ? offerApprovedIcon : offerPendingIcon;
+                            }
+
+                            var marker = L.marker([coord.latitude, coord.longitude], {icon: icon})
+                                .bindPopup(() => createPopupContent(coord))
+                                .addTo(map);
+                            
+                            civilianMarkers.push(marker);
+                        });
+                        fitMapToAllMarkers();
+                    } else {
+                        console.error('Failed to get civilian coordinates:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function updatePopupContent(type, id, status) {
+            // Αυτή η συνάρτηση θα ενημερώνει το περιεχόμενο του popup
+            // Για παράδειγμα, μπορείτε να αλλάξετε το κείμενο της κατάστασης
+            const statusElement = document.querySelector(`#popup-${id} .status`);
+            if (statusElement) {
+                statusElement.textContent = `Status: ${status}`;
+            }
+        }
+
+        function createPopupContent(coord) {
+            let content = `<div id="popup-${coord.id}">
+                <strong>${coord.type.charAt(0).toUpperCase() + coord.type.slice(1)}</strong><br>
+                Name: ${coord.full_name || 'N/A'}<br>
+                Phone: ${coord.phone || 'N/A'}<br>
+                Registration Date: ${coord.registration_date || 'N/A'}<br>
+                Product: ${coord.product || 'N/A'}<br>
+                Quantity: ${coord.quantity || 'N/A'}<br>
+                <span class="status">Status: ${coord.status || 'N/A'}</span><br>`;
+            
+            if (coord.status === 'pending') {
+                content += `<button id="accept-btn-${coord.id}" onclick="handleAccept('${coord.type}', ${coord.id})">Accept</button>`;
+            } else if (coord.status === 'approved') {
+                content += `<button onclick="handleFinish('${coord.type}', ${coord.id})">Finish</button>`;
+            }
+            
+            content += `</div>`;
+            
+            return content;
+        }
+
+        function handleAccept(type, id) {
+            const acceptBtn = document.getElementById(`accept-btn-${id}`);
+            acceptBtn.disabled = true; // Απενεργοποίηση του κουμπιού αμέσως μετά το κλικ
+
+            fetch('accept_request.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `type=${type}&id=${id}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Request approved successfully');
+                    acceptBtn.remove(); // Διαγραφή του κουμπιού Accept
+                    
+                    // Δημιουργία και προσθήκη του κουμπιού Finish
+                    const finishBtn = document.createElement('button');
+                    finishBtn.textContent = 'Finish';
+                    finishBtn.onclick = () => handleFinish(type, id);
+                    acceptBtn.parentNode.appendChild(finishBtn);
+                    
+                    // Ενημέρωση του κειμένου στο popup
+                    updatePopupContent(type, id, 'approved');
+                } else {
+                    console.error('Failed to approve request:', data.error);
+                    acceptBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                acceptBtn.disabled = false;
+            });
+        }
+
+        function handleFinish(type, id) {
+            // Εδώ θα προσθέσετε τη λογική για το τι θα συμβεί όταν πατηθεί το κουμπί Finish
+            console.log(`Finish button clicked for ${type} with id ${id}`);
+            // Για παράδειγμα, μπορείτε να κάνετε ένα νέο αίτημα στον server για να ενημερώσετε την κατάσταση σε "completed"
+            // και να κλείσετε το popup ή να ενημερώσετε το UI ανάλογα
+        }
+    
+        function addPermanentLabel(marker, content) {
+            marker.bindTooltip(content, {
+                permanent: true,
+                direction: 'top',
+                offset: L.point(0, -30)
+            }).openTooltip();
+        }
+    
+        function updateLabel(marker, content) {
+            marker.setTooltipContent(content);
+        }
+    
+        function updateLocation(lat, lng) {
+            fetch('update_location.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'latitude=' + lat + '&longitude=' + lng
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Location updated successfully');
+                    updateLabel(volunteerMarker, "Volunteer Location<br>Lat: " + lat.toFixed(6) + "<br>Lng: " + lng.toFixed(6));
+                } else {
+                    console.error('Failed to update location:', data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    
+        function fitMapToAllMarkers() {
+            var allMarkers = [volunteerMarker, baseMarker, ...civilianMarkers].filter(Boolean);
+            if (allMarkers.length > 0) {
+                var group = new L.featureGroup(allMarkers);
+                map.fitBounds(group.getBounds().pad(0.1));
+            } else {
+                console.log("No markers to fit");
+            }
+        }
+    
+        window.onload = initMap;
+    </script>
 </body>
-
 </html>
-
