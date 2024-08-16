@@ -1,0 +1,69 @@
+.center-title {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    color: #000000; 
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-weight: bold;
+}
+
+.view-history-btn {
+    padding: 2px 5px;
+    font-size: 0.8rem;
+}
+
+.table-responsive {
+    margin-top: 20px;
+}
+
+/* Bootstrap badge colors (if not already provided by Bootstrap) */
+.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.badge-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.table thead th {
+    background-color: #cfe2ff; /* Light blue background */
+    color: #000000; /* Black text */
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px;
+    border: 1px solid #dee2e6; /* Light gray border */
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light gray for even rows */
+}
+
+.table tbody tr:nth-child(odd) {
+    background-color: #ffffff; /* White for odd rows */
+}
+
+.table tbody tr:hover {
+    background-color: #e6e6e6; /* Slightly darker gray on hover */
+}

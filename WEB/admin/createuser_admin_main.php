@@ -1,4 +1,5 @@
-<?php include('../main/session_check.php'); ?> <!DOCTYPE html>
+<?php include('../main/session_check.php'); ?> 
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -26,7 +27,7 @@
                
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="admin_map_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
                             Map
                         </a>
@@ -77,7 +78,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                           <li class="nav-item">
-                              <a href="#" class="nav-link active link-body-emphasis">
+                              <a href="admin_map_main.php" class="nav-link active link-body-emphasis">
                                   <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
                                   Map
                               </a>
@@ -119,27 +120,40 @@
                   </div>
                 </nav>
 
-                <br>
-                <h2 class="text-center">Add User</h2>
+                <div class="container mt-5">
+                    <h2 class="text-center mb-4">Create New User</h2>
 
-                <div id="message" class="alert" style="display:none;"></div>
+                    <div id="message" class="alert" style="display:none;"></div>
 
-                <form id="createUserForm">
-                    <label for="username">Username:</label>
-                    <input type="text" name="username" required><br>
-                
-                    <label for="password">Password:</label>
-                    <input type="password" name="password" required><br>
-                
-                    <label for="profile">Profile:</label>
-                    <select name="profile" class="form-select">
-                        <option value="volunteer">Volunteer</option>
-                        <option value="civilian">Civilian</option>
-                        <option value="administrator">Administrator</option>
-                    </select>
-                    <br>
-                    <input type="submit" class="form_button" value="Create User">
-                </form>
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <form id="createUserForm">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="username" name="username" required>
+                                </div>
+                            
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                </div>
+                            
+                                <div class="mb-3">
+                                    <label for="profile" class="form-label">Profile</label>
+                                    <select name="profile" id="profile" class="form-select">
+                                        <option value="volunteer">Volunteer</option>
+                                        <option value="civilian">Civilian</option>
+                                        <option value="administrator">Administrator</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Create User</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

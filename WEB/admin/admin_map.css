@@ -1,0 +1,8 @@
+#map {
+    height: 90vh; /* 80% of the viewport height */
+    width: 100%;
+    max-height: 800px; /* Maximum height */
+}
+.map_container {
+    padding: 20px;
+}
