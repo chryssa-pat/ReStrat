@@ -10,12 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <style>
-        .center-title {
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="./history_inquiry.css">
 </head>
 
 <body>
@@ -119,19 +114,18 @@
                 <main>
                     <h1 class="center-title">History</h1>
                     <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Status</th>
-                                <th>User</th>
-                                <th>Item</th>
-                                <th>Quantity</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="history-table-body">
-                            <!-- Τα δεδομένα θα φορτωθούν εδώ δυναμικά -->
-                        </tbody>
-                    </table>
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <!-- Data will be loaded here dynamically -->
+                    </tbody>
+                </table>
                 </main>
             </div>
         </div>
@@ -142,36 +136,35 @@
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
 
-    <script>
+        <script>
         $(document).ready(function() {
-        $.ajax({
-            url: 'history_inquiry.php',
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                var tbody = $('#history-table-body');
-                tbody.empty(); // Clear existing data
-                
-                if (Array.isArray(data)) {
-                    data.forEach(function(inquiry) {
-                        var row = '<tr>' +
-                            '<td>' + inquiry.inquiry_status + '</td>' +
-                            '<td>' + inquiry.inquiry_user + '</td>' +
-                            '<td>' + inquiry.item + '</td>' +
-                            '<td>' + inquiry.inquiry_quantity + '</td>' +
-                            '<td>' + inquiry.inquiry_date + '</td>' +
-                            '</tr>';
-                        tbody.append(row);
-                    });
-                } else {
-                    console.error('Unexpected data format:', data);
+            $.ajax({
+                url: 'history_inquiry.php', // Make sure this matches your PHP file name
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var tbody = $('#history-table-body');
+                    tbody.empty(); // Clear existing data
+                    
+                    if (Array.isArray(data)) {
+                        data.forEach(function(inquiry) {
+                            var row = '<tr>' +
+                                '<td>' + inquiry.inquiry_status + '</td>' +
+                                '<td>' + inquiry.item + '</td>' +
+                                '<td>' + inquiry.inquiry_quantity + '</td>' +
+                                '<td>' + inquiry.inquiry_date + '</td>' +
+                                '</tr>';
+                            tbody.append(row);
+                        });
+                    } else {
+                        console.error('Unexpected data format:', data);
+                    }
+                },
+                error: function(error) {
+                    console.error('Error fetching history data:', error);
                 }
-            },
-            error: function(error) {
-                console.error('Error fetching history data:', error);
-            }
+            });
         });
-    });
     </script>
 
 </body>

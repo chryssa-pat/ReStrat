@@ -26,22 +26,24 @@ if ($conn->connect_error) {
 $loggedInUser = $_SESSION['user'];
 
 // Fetch inquiries for the logged-in user
-$sql = "SELECT inquiry_status, inquiry_user, p.item, inquiry_quantity, inquiry_date
+$sql = "SELECT id.inquiry_status, p.item, i.inquiry_quantity, id.inquiry_date
         FROM INQUIRY i
         JOIN PRODUCTS p ON i.inquiry_product = p.product_id
-        WHERE i.inquiry_user = ?";
-$stmt = $conn->prepare($sql);
+        JOIN INQUIRY_DETAILS id ON i.inquiry_id = id.details_id
+        WHERE i.inquiry_user = ?
+        ORDER BY id.inquiry_date DESC";
 
+$stmt = $conn->prepare($sql);
 if ($stmt) {
     $stmt->bind_param("s", $loggedInUser);
     $stmt->execute();
     $result = $stmt->get_result();
-    
+   
     $inquiries = [];
     while ($row = $result->fetch_assoc()) {
         $inquiries[] = $row;
     }
-    
+   
     echo json_encode($inquiries);
     $stmt->close();
 } else {
