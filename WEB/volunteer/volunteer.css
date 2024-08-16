@@ -1,59 +1,76 @@
-#orderFrame {
-    border: 2px solid #ddd;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-   
-  }
-  
-  form {
-  max-width: 400px;
-  margin: 0 auto;
-  }
-  label {
-  display: block;
-  margin-bottom: 8px;
-  }
-  
-  select, input, .form_button {
+#map {
+  height: 90vh; 
   width: 100%;
-  padding: 8px;
-  margin-bottom: 12px;
-  box-sizing: border-box;
-  }
-  
-  .form_button{
-  background-color: rgb(11, 93, 212); 
-  color: #fff;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px; /* Rounded corners for the button */
-  width: 100%;
-  
-  }
-  .form_button:hover {
-  background-color: rgb(7, 65, 151);
-  }
-  
-  .map_container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    height: 800px; /* Set a fixed height */
-    position: relative;
-    border: 2px solid #ddd;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  #map {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
+  max-height: 800px; /* Maximum height */
+}
+.map_container {
+  padding: 20px;
+}
+
+.custom-div-icon .marker-pin {
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 50% 0;
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 50%;
+  top: 50%;
+  margin: -15px 0 0 -15px;
+}
+
+.custom-div-icon i {
+  position: absolute;
+  width: 22px;
+  font-size: 22px;
+  left: 0;
+  right: 0;
+  margin: 10px auto;
+  text-align: center;
+}
+
+.custom-div-icon .marker-pin::after {
+  content: '';
+  width: 24px;
+  height: 24px;
+  margin: 3px 0 0 3px;
+  background: #fff;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.car-icon {
+ background-color: #ffffff;
+ border: 2px solid #000000;
+ border-radius: 50%;
+ text-align: center;
+}
+
+.car-icon i {
+ font-size: 20px;
+ margin-top: 5px;
+ color: #000000;
+}
+
+.marker-pin.pending {
+ background-color: #DB4437; /* Κόκκινο */
+}
+
+.marker-pin.approved {
+ background-color: #F4B400; /* Κίτρινο */
+}
+
+.marker-pin.completed {
+ background-color: #0F9D58; /* Πράσινο */
+}
+
+.custom-div-icon i.pending {
+ color: #DB4437; /* Κόκκινο */
+}
+
+.custom-div-icon i.approved {
+ color: #F4B400; /* Κίτρινο */
+}
+
+.custom-div-icon i.completed {
+ color: #0F9D58; /* Πράσινο */
+}
