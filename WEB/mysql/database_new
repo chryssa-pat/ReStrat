@@ -60,7 +60,7 @@ CREATE TABLE INQUIRY (
 
 CREATE TABLE INQUIRY_DETAILS(
     details_id INT
-    inquiry_status ENUM('pending','approved' 'finished', 'disapproved', 'cancelled') NOT NULL,
+    inquiry_status ENUM('pending','approved','finished') NOT NULL,
     inquiry_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT INQUIRYDETAILS FOREIGN KEY(details_id) REFERENCES INQUIRY(inquiry_id)
 	ON DELETE CASCADE ON UPDATE CASCADE
@@ -79,7 +79,7 @@ CREATE TABLE OFFERS (
 
 CREATE TABLE OFFERS_DETAILS(
     details_id INT
-    offer_status ENUM('pending','approved' 'finished', 'disapproved', 'cancelled') NOT NULL,
+    offer_status ENUM('pending','approved', 'finished', 'disapproved', 'cancelled') NOT NULL,
     offer_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT OFFERDETAILS FOREIGN KEY(details_id) REFERENCES OFFERS(offer_id)
 	ON DELETE CASCADE ON UPDATE CASCADE
