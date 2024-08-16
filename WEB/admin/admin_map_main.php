@@ -10,6 +10,7 @@
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="admin_map.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -139,6 +140,15 @@
         let map;
         let baseMarker;
         let isDragging = false;
+        let volunteerMarkers = [];
+
+        // Add car icon
+        var carIcon = L.divIcon({
+            className: 'car-icon',
+            html: '<i class="fas fa-car"></i>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+        });
 
         function initMap() {
             console.log("Initializing map...");
@@ -148,6 +158,7 @@
             }).addTo(map);
 
             getBaseLocation();
+            getVolunteerLocations();
 
             // Add click event to the map
             map.on('click', onMapClick);
@@ -182,6 +193,40 @@
                     }
                 })
                 .catch(error => console.error('Error:', error));
+        }
+
+        function getVolunteerLocations() {
+            console.log("Fetching volunteer locations...");
+            fetch('get_volunteer_locations.php')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Volunteer data received:", data);
+                    if (data.success) {
+                        data.volunteers.forEach(volunteer => {
+                            var lat = parseFloat(volunteer.latitude_vehicle);
+                            var lng = parseFloat(volunteer.longitude_vehicle);
+                            
+                            console.log("Volunteer location:", lat, lng);
+                            
+                            var marker = L.marker([lat, lng], {icon: carIcon}).addTo(map);
+                            marker.bindPopup("Volunteer: " + volunteer.volunteer_user + "<br>Vehicle: " + volunteer.vehicle_id).openPopup();
+                            volunteerMarkers.push(marker);
+                        });
+
+                        fitMapToAllMarkers();
+                    } else {
+                        console.error('Failed to get volunteer locations:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function fitMapToAllMarkers() {
+            var allMarkers = [baseMarker, ...volunteerMarkers].filter(Boolean);
+            if (allMarkers.length > 0) {
+                var group = new L.featureGroup(allMarkers);
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
         }
 
         function onMapClick(e) {
