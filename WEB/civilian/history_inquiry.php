@@ -26,7 +26,7 @@ if ($conn->connect_error) {
 $loggedInUser = $_SESSION['user'];
 
 // Fetch inquiries for the logged-in user
-$sql = "SELECT id.inquiry_status, p.item, i.inquiry_quantity, id.inquiry_date
+$sql = "SELECT i.inquiry_id, p.item, i.inquiry_quantity, id.inquiry_status, id.inquiry_date as last_updated
         FROM INQUIRY i
         JOIN PRODUCTS p ON i.inquiry_product = p.product_id
         JOIN INQUIRY_DETAILS id ON i.inquiry_id = id.details_id

@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>History</title>
+    <title>Inquiries History</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
@@ -14,7 +14,6 @@
 </head>
 
 <body>
-
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3 col-lg-3 d-none d-md-flex flex-column p-3 bg-body-tertiary" style="width: 280px; min-height:100vh;">
@@ -112,20 +111,24 @@
                 </nav>
 
                 <main>
-                    <h1 class="center-title">History</h1>
-                    <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Status</th>
-                            <th>Item</th>
-                            <th>Quantity</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="history-table-body">
-                        <!-- Data will be loaded here dynamically -->
-                    </tbody>
-                </table>
+                    <h1 class="center-title">Inquiries History</h1>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Offer ID</th>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Current Status</th>
+                                    <th>Last Updated</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body">
+                                <!-- Data will be loaded here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
                 </main>
             </div>
         </div>
@@ -136,23 +139,26 @@
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
 
-        <script>
+    <script>
         $(document).ready(function() {
             $.ajax({
-                url: 'history_inquiry.php', // Make sure this matches your PHP file name
+                url: 'history_inquiry.php',
                 method: 'GET',
                 dataType: 'json',
                 success: function(data) {
                     var tbody = $('#history-table-body');
-                    tbody.empty(); // Clear existing data
+                    tbody.empty();
                     
                     if (Array.isArray(data)) {
                         data.forEach(function(inquiry) {
+                            var statusClass = getStatusClass(inquiry.inquiry_status);
                             var row = '<tr>' +
-                                '<td>' + inquiry.inquiry_status + '</td>' +
+                                '<td>' + inquiry.inquiry_id + '</td>' +
                                 '<td>' + inquiry.item + '</td>' +
                                 '<td>' + inquiry.inquiry_quantity + '</td>' +
-                                '<td>' + inquiry.inquiry_date + '</td>' +
+                                '<td><span class="status-badge ' + statusClass + '">' + inquiry.inquiry_status + '</span></td>' +
+                                '<td>' + inquiry.last_updated + '</td>' +
+                                '<td><button class="btn btn-sm btn-primary view-history-btn" data-id="' + inquiry.inquiry_id + '">View History</button></td>' +
                                 '</tr>';
                             tbody.append(row);
                         });
@@ -164,9 +170,23 @@
                     console.error('Error fetching history data:', error);
                 }
             });
+
+            function getStatusClass(status) {
+                switch(status.toLowerCase()) {
+                    case 'pending': return 'badge-warning';
+                    case 'approved': return 'badge-success';
+                    case 'rejected': return 'badge-danger';
+                    default: return 'badge-secondary';
+                }
+            }
+
+            // Event delegation for view history buttons
+            $(document).on('click', '.view-history-btn', function() {
+                var inquiryId = $(this).data('id');
+                // Add your logic here to view the history for the specific inquiry
+                console.log('View history for inquiry ID:', inquiryId);
+            });
         });
     </script>
-
 </body>
-
 </html>

@@ -2,6 +2,7 @@
     text-align: center;
     margin-top: 20px;
     margin-bottom: 30px;
+    color: #000000; 
 }
 
 .table th, .table td {
@@ -15,24 +16,42 @@
     font-weight: bold;
 }
 
-.cancel-btn {
-    padding: 2px 5px;
-    font-size: 0.8rem;
-}
-
 .view-history-btn {
     padding: 2px 5px;
     font-size: 0.8rem;
 }
 
-.btn-outline-primary {
-    color: #007bff;
-    border-color: #007bff;
-    background-color: transparent;
+.table-responsive {
+    margin-top: 20px;
 }
 
-.btn-outline-primary:hover {
+
+.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-success {
+    background-color: #28a745;
     color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.badge-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.table thead th {
+    background-color: #cfe2ff; 
+    color: #000000; 
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px;
+    border: 1px solid #dee2e6; 
 }
