@@ -150,6 +150,9 @@ CREATE TABLE ANNOUNCEMENT_ITEMS (
     FOREIGN KEY ANNOUNCE_OFFER(announce_product) REFERENCES products(product_id) 
     ON DELETE CASCADE ON UPDATE CASCADE
 );
+
 insert into users values("admin","admin","administrator")
 
 insert into admin values("admin", 38.264100945783525, 21.754283452141237)
+
+insert into users values("maria","123","civilian")
