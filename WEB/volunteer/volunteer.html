@@ -342,7 +342,7 @@
                 Registration Date: ${coord.registration_date || 'N/A'}<br>
                 Product: ${coord.product || 'N/A'}<br>
                 Quantity: ${coord.quantity || 'N/A'}<br>
-                <span class="status">Status: ${coord.status || 'N/A'}</span><br>`;
+                <span class="status"></span><br>`;
             
             if (coord.status === 'pending') {
                 content += `<button id="accept-btn-${coord.id}" onclick="handleAccept('${coord.type}', ${coord.id})">Accept</button>`;
