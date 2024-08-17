@@ -180,9 +180,11 @@ INSERT INTO VEHICLE (vehicle_id, latitude_vehicle, longitude_vehicle) VALUES
 
 insert into inquiry values("1","miltos","16","5");
 insert into inquiry values("2","sokratis","18","2");
+insert into inquiry values("3","mariak","17","3");
 
 insert into inquiry_details values("1","pending","2024-08-13 16:01:35");
 insert into inquiry_details values("2","pending","2024-08-15 15:09:51");
+insert into inquiry_details values("3","approved","2024-08-17 11:29:51");
 
 insert into offers values("2000","mariak","17","2");
 
