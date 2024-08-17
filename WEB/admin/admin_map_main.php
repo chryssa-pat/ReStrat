@@ -10,12 +10,126 @@
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="admin_map.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
          crossorigin=""/>
    
 </head>
+<style>
+.car-icon {
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 50%;
+    text-align: center;
+ }
+   
+.car-icon i {
+    font-size: 20px;
+    margin-top: 5px;
+    color: #000000;
+}
+
+.custom-div-icon i.pending {
+ color: #DB4437; /* Κόκκινο */
+}
+
+.custom-div-icon i.approved {
+ color: #F4B400; /* Κίτρινο */
+}
+
+.inquiry-icon {
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 50%;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.inquiry-icon.pending {
+    border-color: #DB4437; /* Red */
+}
+
+.inquiry-icon.approved {
+    border-color: #F4B400; /* Yellow */
+}
+
+.inquiry-icon i {
+    font-size: 16px;
+}
+
+.inquiry-icon i.pending {
+    color: #DB4437; /* Red */
+}
+
+.inquiry-icon i.approved {
+    color: #F4B400; /* Yellow */
+}
+
+.offer-icon {
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 50%;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.offer-icon.pending {
+    border-color: #4285F4; /* Blue */
+}
+
+.offer-icon.approved {
+    border-color: #0F9D58; /* Green */
+}
+
+.offer-icon i {
+    font-size: 16px;
+}
+
+.offer-icon i.pending {
+    color: #4285F4; /* Blue */
+}
+
+.offer-icon i.approved {
+    color: #0F9D58; /* Green */
+}
+
+.custom-div-icon .marker-pin {
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0;
+    background: #c30b82;
+    position: absolute;
+    transform: rotate(-45deg);
+    left: 50%;
+    top: 50%;
+    margin: -15px 0 0 -15px;
+}
+
+.custom-div-icon i {
+    position: absolute;
+    width: 22px;
+    font-size: 22px;
+    left: 0;
+    right: 0;
+    margin: 10px auto;
+    text-align: center;
+}
+
+.custom-div-icon i.fa-gift {
+    font-size: 16px;
+    margin: 12px auto;
+}
+</style>
 
 <body>
     <div class="container-fluid">
@@ -50,6 +164,12 @@
                         <a href="createuser_admin_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                             Create Account
+                        </a>
+                    </li>
+                    <li>
+                        <a href="statistics_main.php" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Statistics
                         </a>
                     </li>
                     <hr>
@@ -103,6 +223,12 @@
                                     Create Account
                                 </a>
                             </li>
+                            <li>
+                                <a href="statistics_main.php" class="nav-link link-body-emphasis">
+                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                                    Statistics
+                                </a>
+                            </li>
                             <hr>
                         </ul>
 
@@ -136,9 +262,48 @@
 
     <!-- Add map initialization script -->
     <script>
+        
         let map;
         let baseMarker;
         let isDragging = false;
+        let vehicleMarkers = [];
+        let inquiryMarkers = [];
+        let offerMarkers = [];
+
+        var carIcon = L.divIcon({
+        className: 'car-icon',
+        html: '<i class="fas fa-car"></i>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
+        });
+
+        var inquiryApprovedIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#4285F4;' class='marker-pin'></div><i class='fa fa-question' style='color:#4285F4;'></i>",
+            iconSize: [30, 42],
+            iconAnchor: [15, 42]
+        });
+
+        var inquiryPendingIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#DB4437;' class='marker-pin'></div><i class='fa fa-question' style='color:#DB4437;'></i>",
+            iconSize: [30, 42],
+            iconAnchor: [15, 42]
+        });
+
+        var offerApprovedIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#0F9D58;' class='marker-pin'></div><i class='fa fa-gift' style='color:#ffffff;'></i>",
+            iconSize: [30, 42],
+            iconAnchor: [15, 42]
+        });
+
+        var offerPendingIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#F4B400;' class='marker-pin'></div><i class='fa fa-gift' style='color:#ffffff;'></i>",
+            iconSize: [30, 42],
+            iconAnchor: [15, 42]
+        });
 
         function initMap() {
             console.log("Initializing map...");
@@ -147,7 +312,12 @@
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
+            console.log("Map initialized:", map); 
+
             getBaseLocation();
+            getVehicleLocations();
+            getInquiries();
+            getOffers();
 
             // Add click event to the map
             map.on('click', onMapClick);
@@ -169,7 +339,7 @@
                             baseMarker.setLatLng([lat, lng]);
                         } else {
                             baseMarker = L.marker([lat, lng], {draggable: true}).addTo(map);
-                            baseMarker.bindPopup("Base Location<br>Lat: " + lat.toFixed(6) + "<br>Lng: " + lng.toFixed(6)).openPopup();
+                            baseMarker.bindPopup("<strong>Base Location</strong><br>Lat: " + lat.toFixed(6) + "<br>Lng: " + lng.toFixed(6)).openPopup();
                             
                             // Add drag events to the marker
                             baseMarker.on('dragstart', onDragStart);
@@ -182,6 +352,108 @@
                     }
                 })
                 .catch(error => console.error('Error:', error));
+        }
+
+        function getVehicleLocations() {
+            console.log("Fetching vehicle locations...");
+            fetch('get_vehicle_locations.php')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Vehicle data received:", data);
+                    if (data.success) {
+                        data.vehicles.forEach(vehicle => {
+                            var lat = parseFloat(vehicle.latitude_vehicle);
+                            var lng = parseFloat(vehicle.longitude_vehicle);
+                            var marker = L.marker([lat, lng], {icon: carIcon}).addTo(map);
+                            marker.bindPopup("<strong>Volunteer Location</strong><br>Vehicle ID: " + vehicle.vehicle_id);
+                            vehicleMarkers.push(marker);
+                        });
+                        fitMapToAllMarkers();
+                    } else {
+                        console.error('Failed to get vehicle locations:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function getInquiries() {
+            console.log("Fetching inquiries...");
+            fetch('get_inquiries.php')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Inquiries data received:", data);
+                    if (data.success) {
+                        data.inquiries.forEach(inquiry => {
+                            var lat = parseFloat(inquiry.latitude);
+                            var lng = parseFloat(inquiry.longitude);
+                            var status = inquiry.status.toLowerCase();
+                            var marker = L.marker([lat, lng], {
+                                icon: L.divIcon({
+                                    className: `inquiry-icon ${status}`,
+                                    html: `<i class="fas fa-question ${status}"></i>`,
+                                    iconSize: [30, 30],
+                                    iconAnchor: [15, 15]
+                                })
+                            }).addTo(map);
+                            marker.bindPopup(`<strong>Inquiry</strong><br>
+                                Name: ${inquiry.full_name}<br>
+                                Phone: ${inquiry.phone}<br>
+                                Product: ${inquiry.product}<br>
+                                Quantity: ${inquiry.quantity}<br>
+                                Status: ${inquiry.status}<br>
+                                Date: ${inquiry.registration_date}`);
+                            inquiryMarkers.push(marker);
+                        });
+                        fitMapToAllMarkers();
+                    } else {
+                        console.error('Failed to get inquiries:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function getOffers() {
+            console.log("Fetching offers...");
+            fetch('get_offers.php')
+                .then(response => {
+                    console.log("Raw response:", response);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Offers data received:", data);
+                    if (data.success) {
+                        console.log("Number of offers:", data.offers.length);
+                        data.offers.forEach(offer => {
+                            console.log("Processing offer:", offer);
+                            var lat = parseFloat(offer.latitude);
+                            var lng = parseFloat(offer.longitude);
+                            var status = offer.status.toLowerCase();
+                            var icon = status === 'approved' ? offerApprovedIcon : offerPendingIcon;
+                            
+                            var marker = L.marker([lat, lng], {icon: icon}).addTo(map);
+                            marker.bindPopup(`<strong>Offer</strong><br>
+                                Name: ${offer.full_name}<br>
+                                Phone: ${offer.phone}<br>
+                                Product: ${offer.product}<br>
+                                Quantity: ${offer.quantity}<br>
+                                Status: ${status}<br>
+                                Date: ${offer.registration_date}`);
+                            offerMarkers.push(marker);
+                        });
+                        fitMapToAllMarkers();
+                    } else {
+                        console.error('Failed to get offers:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        function fitMapToAllMarkers() {
+            var allMarkers = [baseMarker, ...vehicleMarkers, ...inquiryMarkers, ...offerMarkers].filter(Boolean);
+            if (allMarkers.length > 0) {
+                var group = new L.featureGroup(allMarkers);
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
         }
 
         function onMapClick(e) {
@@ -246,8 +518,12 @@
                 getBaseLocation(); // Reset to the original location
             });
         }
-
-        window.onload = initMap;
+            
+        window.onload = function() {
+            console.log("Window loaded, initializing map...");
+            initMap();
+            
+        };
     </script>
 </body>
 

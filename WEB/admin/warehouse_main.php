@@ -47,6 +47,12 @@
                             Create Account
                         </a>
                     </li>
+                    <li>
+                        <a href="statistics_main.php" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                            Statistics
+                        </a>
+                    </li>
                     <hr>
                 </ul>
                 <div class="dropdown">
@@ -96,6 +102,12 @@
                                 <a href="createuser_admin_main.php" class="nav-link active link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                                     Create Account
+                                </a>
+                            </li>
+                            <li>
+                                <a href="statistics_main.php" class="nav-link link-body-emphasis">
+                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                                    Statistics
                                 </a>
                             </li>
                             <hr>

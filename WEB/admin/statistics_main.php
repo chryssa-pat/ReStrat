@@ -5,12 +5,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create User</title>
+    <title>Statistics</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="createuser_admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 </head>
+
 
 <body>
 
@@ -45,13 +48,13 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="createuser_admin_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                             Create Account
                         </a>
                     </li>
                     <li>
-                        <a href="statistics_main.php" class="nav-link link-body-emphasis">
+                        <a href="#" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                             Statistics
                         </a>
@@ -101,17 +104,15 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link active link-body-emphasis">
+                            <a href="createuser_admin_main.php" class="nav-link active link-body-emphasis">
                                 <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                                 Create Account
                             </a>
                         </li>
-                        <li>
-                            <a href="statistics_main.php" class="nav-link link-body-emphasis">
-                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                                Statistics
-                            </a>
-                        </li>
+                        <a href="#" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Statistics
+                        </a>
                         
                         
                         <hr>
@@ -130,37 +131,17 @@
                   </div>
                 </nav>
 
-                <div class="container mt-5">
-                    <h2 class="text-center mb-4">Create New User</h2>
-
-                    <div id="message" class="alert" style="display:none;"></div>
-
-                    <div class="card shadow">
-                        <div class="card-body">
-                            <form id="createUserForm">
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="username" name="username" required>
-                                </div>
-                            
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" name="password" required>
-                                </div>
-                            
-                                <div class="mb-3">
-                                    <label for="profile" class="form-label">Profile</label>
-                                    <select name="profile" id="profile" class="form-select">
-                                        <option value="volunteer">Volunteer</option>
-                                        <option value="civilian">Civilian</option>
-                                        <option value="administrator">Administrator</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">Create User</button>
-                                </div>
-                            </form>
+                <div class="col-md-9 col-lg-9">
+                    <h1 class="mt-4 mb-4">Statistics</h1>
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+                            <div class="mb-3">
+                                <label for="daterange" class="form-label">Select Date Range:</label>
+                                <input type="text" id="daterange" name="daterange" class="form-control" />
+                            </div>
+                            <div style="height: 400px;">
+                                <canvas id="inquiriesChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -172,43 +153,117 @@
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous">
     </script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
     <script>
-        document.getElementById('createUserForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the form from submitting normally
+    let chart;
 
-            var formData = new FormData(this);
+    $(function() {
+        $('input[name="daterange"]').daterangepicker({
+            opens: 'left',
+            startDate: moment().subtract(7, 'days'),
+            endDate: moment(),
+            ranges: {
+               'Today': [moment(), moment()],
+               'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+               'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+               'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+               'This Month': [moment().startOf('month'), moment().endOf('month')],
+               'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        }, function(start, end, label) {
+            fetchDataAndUpdateChart(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+        });
 
-            fetch('createuser_admin.php', {
-                method: 'POST',
-                body: formData
-            })
+        // Initial chart load
+        fetchDataAndUpdateChart(moment().subtract(7, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'));
+    });
+
+    function fetchDataAndUpdateChart(startDate, endDate) {
+        fetch(`get_statistics.php?start=${startDate}&end=${endDate}`)
             .then(response => response.json())
             .then(data => {
-                var messageElement = document.getElementById('message');
-                if (data.success) {
-                    messageElement.className = 'alert alert-success';
-                    messageElement.textContent = data.message;
-                } else {
-                    messageElement.className = 'alert alert-danger';
-                    messageElement.textContent = data.message;
-                }
-                messageElement.style.display = 'block';
+                updateChart(data);
             })
-            .catch(error => {
-                var messageElement = document.getElementById('message');
-                messageElement.className = 'alert alert-danger';
-                messageElement.textContent = 'An error occurred: ' + error;
-                messageElement.style.display = 'block';
-            });
-        });
-        document.getElementById('logoutButton').addEventListener('click', function () {
-    var confirmLogout = confirm('Are you sure you want to logout?');
-    if (confirmLogout) {
-        // Redirect to another page
-        window.location.href = "../main/main.html"; // Replace 'logout.php' with the actual URL you want to redirect to
+            .catch(error => console.error('Error:', error));
     }
-    });
+
+    function updateChart(data) {
+        const ctx = document.getElementById('inquiriesChart').getContext('2d');
+        
+        if (chart) {
+            chart.destroy();
+        }
+        
+        chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Pending', 'Approved', 'Finished'],
+                datasets: [{
+                    label: 'Inquiries',
+                    data: [data.inquiries.pending, data.inquiries.approved, data.inquiries.finished],
+                    backgroundColor: '#cc0066', // Deep pink
+                    borderColor: '#cc0066',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Offers',
+                    data: [data.offers.pending, data.offers.approved, data.offers.finished],
+                    backgroundColor: '#000099', // Deep blue
+                    borderColor: '#000099',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Inquiries and Offers Statistics',
+                        font: {
+                            size: 18,
+                            weight: 'bold'
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 30
+                        }
+                    }
+                },
+                barThickness: 40
+            }
+        });
+    }
     </script>
+
 </body>
 
 </html>

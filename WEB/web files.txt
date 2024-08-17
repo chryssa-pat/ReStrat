@@ -1,0 +1,11 @@
+WEB\admin\admin_map_main.php			map html
+WEB\admin\admin_map.css 				map css
+
+WEB\civilian\fetch_addresses.php		fetch location of the user_inquiry form 
+WEB\civilian\fetch_data.php				fetch products to display the categories at the inquiry form
+WEB\civilian\submit_inquiry.php			create inquiry php  
+WEB\civilian\history_inquiry_main.php	inquiry history html
+WEB\civilian\history_inquiry.css		inquiry history css
+WEB\civilian\history_inquiry.php		fetch data at inquiry (vioew history)
+WEB\admin\save_base_location.php		new location of the base drag and drop php
+WEB\admin\get_volunteer_locations.php	fetch location to display to the map of admin 
