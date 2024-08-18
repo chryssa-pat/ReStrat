@@ -1,4 +1,8 @@
-<?php include('../main/session_check.php'); ?> 
+<?php
+session_start();
+require_once('../main/session_check.php');
+checkSessionAndRedirect();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -118,15 +122,15 @@
                 
                       </ul>
           
-                      <div class="dropdown ">
-                          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                              Account
-                          </button>
-                          <ul class="dropdown-menu">
-                              <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                              <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                          </ul>
-                      </div>
+                      <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Account
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="settings.html">Settings</a></li>
+                                <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
+                            </ul>
+                        </div>
                   </div>
                 </nav>
 
@@ -168,11 +172,18 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous">
-    </script>
+        crossorigin="anonymous"></script>
     <script>
+        document.getElementById('logoutButton').addEventListener('click', function (e) {
+                      e.preventDefault();
+                      var confirmLogout = confirm('Are you sure you want to logout?');
+                      if (confirmLogout) {
+                          window.location.href = "../main/logout.php";
+                      }
+                  });
         document.getElementById('createUserForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the form from submitting normally
 
@@ -201,13 +212,7 @@
                 messageElement.style.display = 'block';
             });
         });
-        document.getElementById('logoutButton').addEventListener('click', function () {
-    var confirmLogout = confirm('Are you sure you want to logout?');
-    if (confirmLogout) {
-        // Redirect to another page
-        window.location.href = "../main/main.html"; // Replace 'logout.php' with the actual URL you want to redirect to
-    }
-    });
+       
     </script>
 </body>
 

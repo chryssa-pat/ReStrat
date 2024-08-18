@@ -1,9 +1,7 @@
-
 <?php
 session_start();
-include_once('../main/session_check.php');
-
-
+require_once('../main/session_check.php');
+checkSessionAndRedirect();
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +37,7 @@ include_once('../main/session_check.php');
 
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="../main/login.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#table"></use>
                             </svg>
@@ -95,7 +93,7 @@ include_once('../main/session_check.php');
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a href="#" class="nav-link active link-body-emphasis">
+                                <a href="../main/login.php" class="nav-link active link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16">
                                         <use xlink:href="#table"></use>
                                     </svg>
@@ -295,10 +293,11 @@ include_once('../main/session_check.php');
                         });
                     });
 
-                    document.getElementById('logoutButton').addEventListener('click', function () {
+                    document.getElementById('logoutButton').addEventListener('click', function (e) {
+                        e.preventDefault();
                         var confirmLogout = confirm('Are you sure you want to logout?');
                         if (confirmLogout) {
-                            window.location.href = "../main/main.html"; // Replace 'logout.php' with the actual URL you want to redirect to
+                            window.location.href = "../main/logout.php";
                         }
                     });
                 });

@@ -1,4 +1,8 @@
-<?php include('../main/session_check.php'); ?> 
+<?php
+session_start();
+require_once('../main/session_check.php');
+checkSessionAndRedirect();
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -140,6 +144,14 @@
         crossorigin="anonymous"></script>
 
     <script>
+        
+        document.getElementById('logoutButton').addEventListener('click', function (e) {
+            e.preventDefault();
+            var confirmLogout = confirm('Are you sure you want to logout?');
+            if (confirmLogout) {
+                window.location.href = "../main/logout.php";
+            }
+        });
         $(document).ready(function() {
             $.ajax({
                 url: 'history_inquiry.php',
