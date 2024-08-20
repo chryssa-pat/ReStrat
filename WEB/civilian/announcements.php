@@ -10,10 +10,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Update SQL query to exclude items with quantity 0
 $sql = "SELECT a.announce_id, ai.announce_product, ai.quantity, p.item
         FROM ANNOUNCEMENTS a 
         JOIN ANNOUNCEMENT_ITEMS ai ON a.announce_id = ai.announce_id
         JOIN products p ON ai.announce_product = p.product_id
+        WHERE ai.quantity > 0  -- Exclude items with quantity 0
         ORDER BY a.created_at DESC, a.announce_id DESC";
 
 $result = $conn->query($sql);

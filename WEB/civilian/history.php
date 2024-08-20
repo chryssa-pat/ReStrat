@@ -15,12 +15,12 @@ if ($conn->connect_error) {
 
 $offer_user = $_SESSION['user']; 
 
-$sql = "SELECT o.offer_id, od.offer_status, o.offer_user, p.item, o.offer_quantity, od.offer_date 
+$sql = "SELECT o.offer_id, oh.history_status, o.offer_user, p.item, o.offer_quantity, oh.timestamp
         FROM OFFERS o
-        JOIN OFFERS_DETAILS od ON o.offer_id = od.details_id
+        JOIN OFFER_HISTORY oh ON o.offer_id = oh.offer_history_id 
         JOIN PRODUCTS p ON o.offer_product = p.product_id
         WHERE o.offer_user = ?
-        ORDER BY o.offer_id DESC, od.offer_date DESC";
+        ORDER BY o.offer_id DESC, oh.timestamp DESC";
 
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
@@ -50,8 +50,8 @@ foreach ($offers as $offer) {
         ];
     }
     $groupedOffers[$offer['offer_id']]['statuses'][] = [
-        'status' => $offer['offer_status'],
-        'date' => $offer['offer_date']
+        'status' => $offer['history_status'],
+        'date' => $offer['timestamp']
     ];
 }
 

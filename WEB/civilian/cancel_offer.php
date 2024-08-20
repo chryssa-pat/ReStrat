@@ -24,10 +24,12 @@ if (!$offer_id) {
 $conn->begin_transaction();
 
 try {
-    // Check if the offer belongs to the current user and is in 'pending' status
-    $sql = "SELECT o.offer_id FROM OFFERS o
-            JOIN OFFERS_DETAILS od ON o.offer_id = od.details_id
-            WHERE o.offer_id = ? AND o.offer_user = ? AND od.offer_status = 'pending'";
+    // Check if the offer belongs to the current user and is in 'pending' or 'approved' status
+    $sql = "SELECT o.offer_id, o.offer_quantity, a.quantity, o.announce_id, o.offer_product 
+            FROM OFFERS o
+            JOIN OFFER_HISTORY oh ON o.offer_id = oh.offer_history_id
+            JOIN ANNOUNCEMENT_ITEMS a ON o.announce_id = a.announce_id AND o.offer_product = a.announce_product
+            WHERE o.offer_id = ? AND o.offer_user = ? AND (oh.history_status = 'pending' OR oh.history_status = 'approved')";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("is", $offer_id, $offer_user);
     $stmt->execute();
@@ -37,12 +39,33 @@ try {
         throw new Exception('Offer not found or not eligible for cancellation');
     }
 
-    // Insert a new 'cancelled' status entry
-    $sql = "INSERT INTO OFFERS_DETAILS (details_id, offer_status, offer_date) VALUES (?, 'cancelled', NOW())";
+    $row = $result->fetch_assoc();
+    $offer_quantity = $row['offer_quantity'];
+    $announcement_quantity = $row['quantity'];
+    $announce_id = $row['announce_id'];
+    $offer_product = $row['offer_product']; // Get the product ID
+
+    // Debugging output
+    error_log("Offer Quantity: " . $offer_quantity);
+    error_log("Announcement Quantity: " . $announcement_quantity);
+    
+    // Update the announcement item quantity for the specific product
+    $new_quantity = $announcement_quantity + $offer_quantity;
+    error_log("New Quantity: " . $new_quantity);
+
+    $sql = "UPDATE ANNOUNCEMENT_ITEMS SET quantity = ? WHERE announce_id = ? AND announce_product = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iii", $new_quantity, $announce_id, $offer_product); // Update only for the specific product
+    if (!$stmt->execute()) {
+        throw new Exception('Failed to update announcement item quantity: ' . $stmt->error);
+    }
+
+    // Insert a new 'cancelled' status entry into OFFER_HISTORY
+    $sql = "INSERT INTO OFFER_HISTORY (offer_history_id, history_status) VALUES (?, 'cancelled')";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $offer_id);
     if (!$stmt->execute()) {
-        throw new Exception('Failed to insert cancelled status');
+        throw new Exception('Failed to insert cancelled status: ' . $stmt->error);
     }
 
     // Commit transaction
