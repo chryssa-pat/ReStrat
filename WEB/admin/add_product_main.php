@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
 
@@ -84,7 +87,7 @@
             </div>
 
             <!-- Content area (for all screens) -->
-            <div class="col-md-9 col-lg-9 ">
+            <div class="col-md-9 col-lg-9">
                 <!-- Navbar (for smaller screens) -->
                 <nav class="navbar navbar-expand-lg navbar-light bg-light d-md-none">
                     <div class="container-fluid">
@@ -110,7 +113,7 @@
                         </li>
                         <li class="nav-item">
                             <a href="warehouse_main.php" class="nav-link active link-body-emphasis">
-                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                                Warehouse
                             </a>
                         </li>
@@ -154,26 +157,35 @@
                   </div>
                 </nav>
 
-                <div class="container mt-4">
-                        <div class="card">
-                        <div class="card-body text-center">
-                            <h2 class="card-title mb-4">Add New Category</h2>
-                            <p class="card-text">
-                                Add a new category to the database. This will create a new entry in the CATEGORIES table.
-                            </p>
-                            <form id="addCategoryForm">
-                                <div class="mb-3">
-                                    <input type="number" class="form-control" id="categoryId" name="categoryId" placeholder="Enter category ID" required>
-                                </div>
-                                <div class="mb-3">
-                                    <input type="text" class="form-control" id="categoryName" name="categoryName" placeholder="Enter category name" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-lg">Add Category</button>
-                            </form>
+                <!-- New buttons with descriptions and frames -->
+                <div class="mt-4 mb-4">
+                    <h3 class="mb-3 text-center">Product Management Options</h3>
+                    <div class="col-lg-8 mx-auto">
+                        <div class="card mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Add New Category</h5>
+                                <p class="card-text">Create a new product category for better organization.</p>
+                                <a href="new_category.php" class="btn btn-primary">New Category</a>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Add New Product</h5>
+                                <p class="card-text">Add a new product to your inventory.</p>
+                                <a href="new_product.php" class="btn btn-primary">New Product</a>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Manage Quantity</h5>
+                                <p class="card-text">Update the quantity of existing products.</p>
+                                <a href="quantity.php" class="btn btn-primary">Manage Quantity</a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
+            </div>
                 
 
             </div>
@@ -188,37 +200,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
-    <script>
-    
-    document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    var formData = new FormData(this);
-    
-    fetch('add_category_product.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            // Optionally, you can reset the form or update the UI here
-            document.getElementById('categoryName').value = '';
-        } else {
-            alert('Error: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while adding the category.');
-    });
-});
-
-
-        
-    </script>
 
 </body>
 

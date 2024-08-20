@@ -9,9 +9,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
 
@@ -60,7 +62,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="update_products_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                             Update Products from JSON
                         </a>
@@ -68,7 +70,7 @@
                     <li>
                         <a href="add_product_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                            Manage Products 
+                            Manage Products
                         </a>
                     </li>
                     <hr>
@@ -128,7 +130,7 @@
                         </a>
                         </li>
                         <li class="nav-item">
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="update_products_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                             Update Products from JSON
                         </a>
@@ -156,37 +158,28 @@
                 </nav>
 
                 <div class="container mt-4">
-                    <!-- New section for JSON upload -->
-                    <div class="card mb-4">
+                        <div class="card">
                         <div class="card-body text-center">
-                            <h2 class="card-title mb-4">Update Database from JSON File</h2>
+                            <h2 class="card-title mb-4">Add New Category</h2>
                             <p class="card-text">
-                                Upload a JSON file to update the database. This will only update existing records and add new ones without deleting any data.
+                                Add a new category to the database. This will create a new entry in the CATEGORIES table.
                             </p>
-                            <form id="jsonUploadForm" enctype="multipart/form-data">
+                            <form id="addCategoryForm">
                                 <div class="mb-3">
-                                    <input type="file" class="form-control" id="jsonFile" name="jsonFile" accept=".json" required>
+                                    <input type="number" class="form-control" id="categoryId" name="categoryId" placeholder="Enter category ID" required>
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-lg">Upload and Update</button>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control" id="categoryName" name="categoryName" placeholder="Enter category name" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg">Add Category</button>
                             </form>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Existing section for updating from predefined JSON -->
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h2 class="card-title mb-4">Update Database - C.E.I.D. Products</h2>
-                            <p class="card-text">
-                                To ensure that your database is always up-to-date with the latest product descriptions and categories, simply click the button below. This will automatically load and integrate the data from the provided JSON file. Keep your inventory accurate and current with just one click.
-                            </p>
-                            <div class="d-flex justify-content-center">
-                                <button id="updateDatabaseBtn" class="btn btn-primary btn-lg">Update Database</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-               </div>
 
+                
+            </div>
                 
 
             </div>
@@ -203,61 +196,33 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <script>
-    document.getElementById('updateDatabaseBtn').addEventListener('click', function() {
-        fetch('update_database_from_ceid.php')
-            .then(response => response.text())
-            .then(data => {
-                alert(data); // Show a message with the result
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while updating the database.');
-            });
-    });
-
-    // New script for handling JSON file upload
-    document.getElementById('jsonUploadForm').addEventListener('submit', function(e) {
+    
+        document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
         e.preventDefault();
+        
         var formData = new FormData(this);
-        fetch('update_database_from_json.php', {
+        
+        fetch('add_category_product.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.text())
+        .then(response => response.json())
         .then(data => {
-            alert(data); // Show a message with the result
+            if (data.success) {
+                alert(data.message);
+                // Optionally, you can reset the form or update the UI here
+                document.getElementById('categoryName').value = '';
+            } else {
+                alert('Error: ' + data.message);
+            }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred while updating the database.');
+            alert('An error occurred while adding the category.');
         });
     });
 
-
-    document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
-    e.preventDefault();
     
-    var formData = new FormData(this);
-    
-    fetch('add_category_product.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            // Optionally, you can reset the form or update the UI here
-            document.getElementById('categoryName').value = '';
-        } else {
-            alert('Error: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while adding the category.');
-    });
-});
 
 
         
