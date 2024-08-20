@@ -1,0 +1,44 @@
+{
+    "categories": [
+      {
+        "id": 1,
+        "category_name": "Food"
+      },
+      {
+        "id": 2,
+        "category_name": "Clothing"
+      }
+    ],
+    "items": [
+      {
+        "id": 101,
+        "name": "Rice",
+        "category": 1,
+        "details": [
+          {
+            "detail_name": "Weight",
+            "detail_value": "1 kg"
+          },
+          {
+            "detail_name": "Type",
+            "detail_value": "Basmati"
+          }
+        ]
+      },
+      {
+        "id": 201,
+        "name": "T-Shirt",
+        "category": 2,
+        "details": [
+          {
+            "detail_name": "Size",
+            "detail_value": "Medium"
+          },
+          {
+            "detail_name": "Color",
+            "detail_value": "Blue"
+          }
+        ]
+      }
+    ]
+  }

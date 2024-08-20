@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistics</title>
+    <title>Update Products</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
@@ -54,13 +54,13 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="statistics_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                             Statistics
                         </a>
                     </li>
                     <li>
-                        <a href="update_products_main.php" class="nav-link link-body-emphasis">
+                        <a href="#" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                             Update Products
                         </a>
@@ -116,16 +116,16 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#"  class="nav-link active link-body-emphasis">
-                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                                Statistics
-                            </a>
+                        <a href="#" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Statistics
+                        </a>
                         </li>
                         <li class="nav-item">
-                            <a href="update_products_main.php" class="nav-link active link-body-emphasis">
-                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                                Update Products
-                            </a>
+                        <a href="#" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Update Products
+                        </a>
                         </li>
                         <hr>
                 
@@ -143,20 +143,37 @@
                   </div>
                 </nav>
 
-                <div class="col-md-9 col-lg-9">
-                    <h1 class="mt-4 mb-4">Statistics</h1>
-                    <div class="row">
-                        <div class="col-md-8 offset-md-2">
-                            <div class="mb-3">
-                                <label for="daterange" class="form-label">Select Date Range:</label>
-                                <input type="text" id="daterange" name="daterange" class="form-control" />
-                            </div>
-                            <div style="height: 400px;">
-                                <canvas id="inquiriesChart"></canvas>
+                <div class="container mt-4">
+                    <!-- New section for JSON upload -->
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <h2 class="card-title mb-4">Update Database from JSON File</h2>
+                            <p class="card-text">
+                                Upload a JSON file to update the database. This will only update existing records and add new ones without deleting any data.
+                            </p>
+                            <form id="jsonUploadForm" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <input type="file" class="form-control" id="jsonFile" name="jsonFile" accept=".json" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg">Upload and Update</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Existing section for updating from predefined JSON -->
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h2 class="card-title mb-4">Update Database - C.E.I.D. Products</h2>
+                            <p class="card-text">
+                                To ensure that your database is always up-to-date with the latest product descriptions and categories, simply click the button below. This will automatically load and integrate the data from the provided JSON file. Keep your inventory accurate and current with just one click.
+                            </p>
+                            <div class="d-flex justify-content-center">
+                                <button id="updateDatabaseBtn" class="btn btn-primary btn-lg">Update Database</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -171,109 +188,35 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <script>
-    let chart;
-
-    $(function() {
-        $('input[name="daterange"]').daterangepicker({
-            opens: 'left',
-            startDate: moment().subtract(7, 'days'),
-            endDate: moment(),
-            ranges: {
-               'Today': [moment(), moment()],
-               'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-               'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-               'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-               'This Month': [moment().startOf('month'), moment().endOf('month')],
-               'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            }
-        }, function(start, end, label) {
-            fetchDataAndUpdateChart(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
-        });
-
-        // Initial chart load
-        fetchDataAndUpdateChart(moment().subtract(7, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'));
+    document.getElementById('updateDatabaseBtn').addEventListener('click', function() {
+        fetch('update_database_from_ceid.php')
+            .then(response => response.text())
+            .then(data => {
+                alert(data); // Show a message with the result
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the database.');
+            });
     });
 
-    function fetchDataAndUpdateChart(startDate, endDate) {
-        fetch(`get_statistics.php?start=${startDate}&end=${endDate}`)
-            .then(response => response.json())
-            .then(data => {
-                updateChart(data);
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    function updateChart(data) {
-        const ctx = document.getElementById('inquiriesChart').getContext('2d');
-        
-        if (chart) {
-            chart.destroy();
-        }
-        
-        chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Pending', 'Approved', 'Finished'],
-                datasets: [{
-                    label: 'Inquiries',
-                    data: [data.inquiries.pending, data.inquiries.approved, data.inquiries.finished],
-                    backgroundColor: '#cc0066', // Deep pink
-                    borderColor: '#cc0066',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Offers',
-                    data: [data.offers.pending, data.offers.approved, data.offers.finished],
-                    backgroundColor: '#000099', // Deep blue
-                    borderColor: '#000099',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1,
-                            precision: 0
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                },
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 20
-                        }
-                    },
-                    title: {
-                        display: true,
-                        text: 'Inquiries and Offers Statistics',
-                        font: {
-                            size: 18,
-                            weight: 'bold'
-                        },
-                        padding: {
-                            top: 10,
-                            bottom: 30
-                        }
-                    }
-                },
-                barThickness: 40
-            }
+    // New script for handling JSON file upload
+    document.getElementById('jsonUploadForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        fetch('update_database_from_json.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert(data); // Show a message with the result
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating the database.');
         });
-    }
+    });
     </script>
 
 </body>
