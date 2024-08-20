@@ -27,10 +27,15 @@ if ($conn->connect_error) {
     exit;
 }
 
-// Ενημερώνουμε τις συντεταγμένες στον πίνακα vehicle
-$sql = "UPDATE vehicle SET latitude_vehicle = ?, longitude_vehicle = ? WHERE vehicle_id = ?";
+// Ενημερώνουμε τις συντεταγμένες στον πίνακα VOLUNTEER
+$sql = "UPDATE VOLUNTEER SET latitude_vehicle = ?, longtitude_vehicle = ? WHERE volunteer_user = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ddi", $latitude, $longitude, $_SESSION['vehicle_id']);
+if (!$stmt) {
+    die("Error preparing statement: " . $conn->error);
+}
+
+// Assuming $_SESSION['user'] holds the volunteer_user
+$stmt->bind_param("dds", $latitude, $longitude, $_SESSION['user']);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true]);

@@ -22,7 +22,8 @@ $conn->begin_transaction();
 
 try {
     // Παίρνουμε το vehicle_id
-    $stmt = $conn->prepare("SELECT vehicle FROM VOLUNTEER LIMIT 1");
+    $stmt = $conn->prepare("SELECT vehicle FROM VOLUNTEER WHERE volunteer_user = ?"); // Get vehicle for logged-in user
+    $stmt->bind_param("s", $_SESSION['user']);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows === 0) {
@@ -112,12 +113,7 @@ try {
         throw new Exception("Αποτυχία ενημέρωσης πίνακα details");
     }
 
-    // Προσθέτουμε το approved_vehicle_id και το approved_timestamp
-    $stmt = $conn->prepare("ALTER TABLE $details_table ADD COLUMN IF NOT EXISTS approved_vehicle_id VARCHAR(10), ADD COLUMN IF NOT EXISTS approved_timestamp TIMESTAMP");
-    if (!$stmt->execute()) {
-        throw new Exception("Αποτυχία προσθήκης στηλών");
-    }
-
+    // Ενημερώνουμε approved_vehicle_id και approved_timestamp
     $stmt = $conn->prepare("UPDATE $details_table SET approved_vehicle_id = ?, approved_timestamp = ? WHERE details_id = ?");
     $stmt->bind_param("ssi", $vehicleId, $timestamp, $id);
     if (!$stmt->execute()) {
@@ -131,12 +127,22 @@ try {
         throw new Exception("Αποτυχία προσθήκης εγγραφής στο ιστορικό");
     }
 
+    // Fetch the approved_vehicle_id and approved_timestamp
+    $stmt = $conn->prepare("SELECT approved_vehicle_id, approved_timestamp FROM $details_table WHERE details_id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows === 0) {
+        throw new Exception("Δεν βρέθηκε το approved_vehicle_id και approved_timestamp");
+    }
+    $approved_data = $result->fetch_assoc();
+
     $conn->commit();
     echo json_encode([
         'success' => true, 
         'message' => 'Το αίτημα εγκρίθηκε επιτυχώς',
-        'vehicle_id' => $vehicleId,
-        'approved_timestamp' => $timestamp
+        'vehicle_id' => $approved_data['approved_vehicle_id'], // Fetch from the SELECT query
+        'approved_timestamp' => $approved_data['approved_timestamp'] // Fetch from the SELECT query
     ]);
 } catch (Exception $e) {
     $conn->rollback();

@@ -14,12 +14,29 @@ if ($conn->connect_error) {
     die(json_encode(['error' => 'Connection failed: ' . $conn->connect_error]));
 }
 
+// Get the vehicle_id associated with the logged-in user
+$userId = $_SESSION['user']; // Adjust this based on your session structure
+$stmt = $conn->prepare("SELECT vehicle FROM VOLUNTEER WHERE volunteer_user = ?");
+$stmt->bind_param("s", $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    echo json_encode(['success' => false, 'error' => 'No vehicle found for the user']);
+    exit;
+}
+
+$vehicleId = $result->fetch_assoc()['vehicle'];
+
+// Retrieve the load for the user's vehicle
 $sql = "SELECT vl.item, vl.quantity, p.description 
         FROM VEHICLE_LOAD vl
         JOIN PRODUCTS p ON vl.item = p.item
-        WHERE vl.vehicle_id = (SELECT vehicle FROM VOLUNTEER LIMIT 1)";
-
-$result = $conn->query($sql);
+        WHERE vl.vehicle_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $vehicleId);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result) {
     $products = [];
@@ -31,5 +48,6 @@ if ($result) {
     echo json_encode(['success' => false, 'error' => $conn->error]);
 }
 
+$stmt->close();
 $conn->close();
 ?>

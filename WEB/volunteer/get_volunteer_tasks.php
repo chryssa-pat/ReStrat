@@ -15,6 +15,20 @@ if ($conn->connect_error) {
     exit;
 }
 
+// Get the vehicle_id associated with the logged-in user
+$userId = $_SESSION['user']; // Adjust this based on your session structure
+$stmt = $conn->prepare("SELECT vehicle FROM VOLUNTEER WHERE volunteer_user = ?");
+$stmt->bind_param("s", $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    echo json_encode(['success' => false, 'error' => 'No vehicle found for the user']);
+    exit;
+}
+
+$vehicleId = $result->fetch_assoc()['vehicle'];
+
 // Παίρνουμε τα tasks με όλες τις ζητούμενες πληροφορίες, συμπεριλαμβανομένων των ημερομηνιών
 $sql = "
 SELECT * FROM (
@@ -30,6 +44,7 @@ SELECT * FROM (
     JOIN CIVILIAN c ON i.inquiry_user = c.civilian_user
     JOIN PRODUCTS p ON i.inquiry_product = p.product_id
     WHERE id.inquiry_status = 'approved'
+    AND id.approved_vehicle_id = ?  -- Filter by vehicle_id
     AND NOT EXISTS (
         SELECT 1 FROM INQUIRY_DETAILS id2 
         WHERE id2.details_id = id.details_id 
@@ -50,6 +65,7 @@ SELECT * FROM (
     JOIN CIVILIAN c ON o.offer_user = c.civilian_user
     JOIN PRODUCTS p ON o.offer_product = p.product_id
     WHERE od.offer_status = 'approved'
+    AND od.approved_vehicle_id = ?  -- Filter by vehicle_id
     AND NOT EXISTS (
         SELECT 1 FROM OFFERS_DETAILS od2 
         WHERE od2.details_id = od.details_id 
@@ -60,7 +76,10 @@ WHERE (total_entries = 1 AND status_sequence = 'approved')
    OR (total_entries % 2 = 1 AND status_sequence REGEXP '^approved(,pending,approved)*$')
 ";
 
-$result = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ss", $vehicleId, $vehicleId); // Bind vehicle_id for both inquiries and offers
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result) {
     $tasks = [];
@@ -72,5 +91,6 @@ if ($result) {
     echo json_encode(['success' => false, 'error' => $conn->error]);
 }
 
+$stmt->close();
 $conn->close();
 ?>
