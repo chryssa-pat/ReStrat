@@ -154,7 +154,6 @@ checkSessionAndRedirect();
     crossorigin=""></script>
     <script src="./javascript/map.js" charset="utf-8"></script>
 
-
     <script>
           document.getElementById('logoutButton').addEventListener('click', function (e) {
                       e.preventDefault();
@@ -549,3 +548,4 @@ checkSessionAndRedirect();
     </script>
 </body>
 </html>
+
