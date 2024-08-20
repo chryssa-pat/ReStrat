@@ -60,6 +60,12 @@ checkSessionAndRedirect();
                             Statistics
                         </a>
                     </li>
+                    <li>
+                        <a href="update_products_main.php" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Update Products
+                        </a>
+                    </li>
                     <hr>
                 </ul>
                 <div class="dropdown">
@@ -110,13 +116,18 @@ checkSessionAndRedirect();
                                 Create Account
                             </a>
                         </li>
-                        <li>
+                        <li class="nav-item">
                             <a href="statistics_main.php" class="nav-link link-body-emphasis">
                                 <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                                 Statistics
                             </a>
                         </li>
-                        
+                        <li class="nav-item">
+                        <a href="update_products_main.php" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Update Products
+                        </a>
+                    </li>
                         
                         <hr>
                 
