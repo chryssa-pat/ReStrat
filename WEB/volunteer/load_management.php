@@ -1,3 +1,8 @@
+<?php
+session_start();
+require_once('../main/session_check.php');
+checkSessionAndRedirect();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -120,6 +125,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+         document.getElementById('logoutButton').addEventListener('click', function (e) {
+                      e.preventDefault();
+                      var confirmLogout = confirm('Are you sure you want to logout?');
+                      if (confirmLogout) {
+                          window.location.href = "../main/logout.php";
+                      }
+                  });
         let map, volunteerMarker, baseMarker, distanceLine, distancePopup;
         const loadButton = document.getElementById('loadButton');
         const unloadButton = document.getElementById('unloadButton');
