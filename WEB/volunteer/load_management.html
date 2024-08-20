@@ -1,76 +1,139 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Load Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="volunteer.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        #map { height: 400px; }
+        #map { height: 350px; width: 100%; }
         .car-icon {
-            background-color: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 50%;
-            text-align: center;
+            color: #3388ff;
+            font-size: 24px;
         }
-        .car-icon i {
-            font-size: 20px;
-            margin-top: 5px;
-            color: #000000;
+        .leaflet-popup-content-wrapper {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid #3388ff;
+        }
+        .leaflet-popup-tip {
+            background-color: #3388ff;
+        }
+        .leaflet-popup-content {
+            margin: 5px 10px;
+            color: #3388ff;
+            font-weight: bold;
+        }
+        #productTableContainer {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+        }
+        
+        #productTable {
+            margin-bottom: 0;
+        }
+        
+        #productTable .table {
+            margin-bottom: 0;
+        }
+        
+        #productTable thead th {
+            position: sticky;
+            top: 0;
+            background-color: #f8f9fa;
+            z-index: 1;
+        }
+
+        .quantity-input {
+            width: 60px;
+            display: inline-block;
+            margin-left: 10px;
         }
     </style>
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="volunteer.html">Return to Map</a>
-        </div>
-    </nav>
-
-    <div class="container mt-4">
-        <h1>Load Management</h1>
-        
-        <div id="volunteerInfo" class="mb-3">
-            <!-- Εδώ θα εμφανιστούν οι πληροφορίες του εθελοντή -->
-        </div>
-
-        <div id="map" class="mb-4"></div>
-        
-        <div id="loadManagement" class="mt-4">
-            <h2>Current Vehicle Load</h2>
-            <div id="currentLoad" class="mb-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 col-lg-3 d-none d-md-flex flex-column p-3 bg-body-tertiary" style="width: 280px; min-height:100vh;">
+                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                    <span class="fs-4"><img src="../images/world.png" alt="logo" height="50"></span>
+                </a>
+                <hr>
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li>
+                        <a href="volunteer.html" class="nav-link link-body-emphasis">
+                            Map
+                        </a>
+                    </li>
+                    <li>
+                        <a href="load_management.html" class="nav-link active link-body-emphasis">
+                            Load Management
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tasks.html" class="nav-link link-body-emphasis">
+                            Tasks
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Account
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="settings.html" class="dropdown-item">Settings</a></li>
+                        <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>
 
-        <div id="loadProducts" class="mt-4">
-            <h2>Load Products</h2>
-            <button id="loadBtn" class="btn btn-primary">Load Products</button>
-            <div id="productList" class="mt-3"></div>
-            <button id="submitBtn" class="btn btn-success mt-3" style="display:none;">Submit Load</button>
+            <div class="col-md-9 col-lg-9">
+                <div class="row mt-5">
+                    <div class="col-md-7">
+                        <h3 class="mb-4">Load Management</h3>
+                        <div id="map"></div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="d-grid gap-2 mb-3">
+                            <button id="loadButton" class="btn btn-primary">Load</button>
+                            <button id="unloadButton" class="btn btn-secondary">Unload</button>
+                        </div>
+                        <div id="productTableContainer" class="mt-3">
+                            <div id="productTable"></div>
+                        </div>
+                        <div class="mt-4">
+                            <h4>Current Vehicle Load</h4>
+                            <div id="vehicleLoadTable"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        var map;
+        let map, volunteerMarker, baseMarker, distanceLine, distancePopup;
+        const loadButton = document.getElementById('loadButton');
+        const unloadButton = document.getElementById('unloadButton');
+        const productTable = document.getElementById('productTable');
+
         var carIcon = L.divIcon({
             className: 'car-icon',
             html: '<i class="fas fa-car"></i>',
             iconSize: [30, 30],
             iconAnchor: [15, 15]
         });
-        var volunteerMarker;
-        var baseMarker;
 
         function initMap() {
-            map = L.map('map').setView([38.246639, 21.734573], 13);
+            map = L.map('map');
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
@@ -92,8 +155,12 @@
                         addPermanentLabel(volunteerMarker, "Volunteer Location<br>Lat: " + lat.toFixed(6) + "<br>Lng: " + lng.toFixed(6));
                     }
 
+                    updateLocation(lat, lng);
+                    updateDistanceLine();
                     fitMapToAllMarkers();
                 });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
             }
         }
 
@@ -112,6 +179,7 @@
                             addPermanentLabel(baseMarker, "Base Location<br>Lat: " + lat.toFixed(6) + "<br>Lng: " + lng.toFixed(6));
                         }
 
+                        updateDistanceLine();
                         fitMapToAllMarkers();
                     } else {
                         console.error('Failed to get base location:', data.error);
@@ -120,12 +188,80 @@
                 .catch(error => console.error('Error:', error));
         }
 
+        function updateDistanceLine() {
+            if (volunteerMarker && baseMarker) {
+                if (distanceLine) {
+                    map.removeLayer(distanceLine);
+                }
+                if (distancePopup) {
+                    map.removeLayer(distancePopup);
+                }
+
+                var volunteerLatLng = volunteerMarker.getLatLng();
+                var baseLatLng = baseMarker.getLatLng();
+
+                distanceLine = L.polyline([volunteerLatLng, baseLatLng], {
+                    color: '#3388ff',
+                    dashArray: '5, 5',
+                    weight: 2,
+                    opacity: 0.6
+                }).addTo(map);
+
+                var distance = volunteerLatLng.distanceTo(baseLatLng);
+                var distanceInKm = distance / 1000; // Convert to km
+                var midPoint = L.latLng(
+                    (volunteerLatLng.lat + baseLatLng.lat) / 2,
+                    (volunteerLatLng.lng + baseLatLng.lng) / 2
+                );
+
+                distancePopup = L.popup({
+                    closeButton: false,
+                    autoClose: false,
+                    closeOnClick: false,
+                    className: 'distance-popup'
+                })
+                .setLatLng(midPoint)
+                .setContent(distanceInKm.toFixed(2) + ' km')
+                .openOn(map);
+
+                // Enable/disable buttons based on distance
+                if (distanceInKm <= 200) {
+                    loadButton.disabled = false;
+                    unloadButton.disabled = false;
+                } else {
+                    loadButton.disabled = true;
+                    unloadButton.disabled = true;
+                }
+
+                console.log('Distance:', distanceInKm, 'km'); // For debugging
+            }
+        }
+
         function addPermanentLabel(marker, content) {
             marker.bindTooltip(content, {
                 permanent: true,
                 direction: 'top',
                 offset: L.point(0, -30)
             }).openTooltip();
+        }
+
+        function updateLocation(lat, lng) {
+            fetch('update_location.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'latitude=' + lat + '&longitude=' + lng
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Location updated successfully');
+                } else {
+                    console.error('Failed to update location:', data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
 
         function fitMapToAllMarkers() {
@@ -138,85 +274,208 @@
             }
         }
 
-        function loadVehicleLoad() {
+        function updateVehicleLoadTable() {
             fetch('get_vehicle_load.php')
                 .then(response => response.json())
                 .then(data => {
-                    let loadHtml = '';
-                    
                     if (data.success) {
-                        if (data.vehicle_load.length === 0) {
-                            loadHtml = '<p>Vehicle is empty.</p>';
-                        } else {
-                            data.vehicle_load.forEach(item => {
-                                loadHtml += `<p>Product ID: ${item.product_id}, Quantity: ${item.quantity}</p>`;
-                            });
-                        }
+                        let html = '<table class="table table-striped table-hover">';
+                        html += '<thead class="table-secondary"><tr><th>Item</th><th>Quantity</th></tr></thead>';
+                        html += '<tbody>';
+                        data.products.forEach((product) => {
+                            html += `<tr>
+                                        <td>${product.item}</td>
+                                        <td>${product.quantity}</td>
+                                    </tr>`;
+                        });
+                        html += '</tbody></table>';
+                        document.getElementById('vehicleLoadTable').innerHTML = html;
                     } else {
-                        loadHtml = '<p>Σφάλμα κατά τη φόρτωση των δεδομένων.</p>';
-                        console.error('Failed to load vehicle load:', data.error);
+                        document.getElementById('vehicleLoadTable').innerHTML = '<p class="text-danger">Failed to load vehicle contents.</p>';
                     }
-                    
-                    document.getElementById('currentLoad').innerHTML = loadHtml;
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    document.getElementById('currentLoad').innerHTML = '<p>Σφάλμα κατά τη φόρτωση των δεδομένων.</p>';
+                    document.getElementById('vehicleLoadTable').innerHTML = '<p class="text-danger">An error occurred while loading vehicle contents.</p>';
                 });
         }
 
-        document.getElementById('loadBtn').addEventListener('click', function() {
-            fetch('load_vehicle.php')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        let html = '<form id="loadForm">';
-                        data.products.forEach(function(product) {
-                            html += `<div class="mb-3">
-                                <label>${product.item}</label>
-                                <input type="number" name="product_${product.product_id}" 
-                                       min="0" max="${product.quantity}" value="0" class="form-control">
-                                <span>(Max: ${product.quantity})</span>
-                            </div>`;
-                        });
-                        html += '</form>';
-                        document.getElementById('productList').innerHTML = html;
-                        document.getElementById('submitBtn').style.display = 'block';
-                    } else {
-                        alert(data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error loading products');
-                });
-        });
+        function updateProductQuantity(inputElement) {
+            const item = inputElement.dataset.item;
+            const quantity = parseInt(inputElement.value);
 
-        document.getElementById('submitBtn').addEventListener('click', function() {
-            let formData = new FormData(document.getElementById('loadForm'));
-            fetch('submit_load.php', {
+            fetch('update_product_quantity.php', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `item=${encodeURIComponent(item)}&quantity=${encodeURIComponent(quantity)}`
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Vehicle loaded successfully');
-                    loadVehicleLoad(); // Ανανέωση του τρέχοντος φορτίου
+                    alert(data.message);
+                    loadButton.click(); // Reload the products
+                    updateVehicleLoadTable(); // Update the vehicle load table
                 } else {
-                    alert(data.error);
+                    alert(`Σφάλμα: ${data.error}`);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error submitting load');
+                alert('Παρουσιάστηκε σφάλμα κατά την ενημέρωση της ποσότητας του προϊόντος.');
             });
+        }
+
+        function updateVehicleUnload(inputElement) {
+            const item = inputElement.dataset.item;
+            const quantity = parseInt(inputElement.value);
+
+            fetch('update_vehicle_unload.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `item=${encodeURIComponent(item)}&quantity=${encodeURIComponent(quantity)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    unloadButton.click(); // Reload the vehicle contents
+                    updateVehicleLoadTable(); // Update the vehicle load table
+                } else {
+                    alert(`Σφάλμα: ${data.error}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Παρουσιάστηκε σφάλμα κατά την εκφόρτωση του προϊόντος.');
+            });
+        }
+
+        loadButton.addEventListener('click', function() {
+            fetch('get_products.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let html = '<table class="table table-striped table-hover">';
+                        html += '<thead class="table-primary"><tr><th>Select</th><th>Item</th><th>Quantity</th><th>Load Quantity</th></tr></thead>';
+                        html += '<tbody>';
+                        data.products.forEach((product) => {
+                            html += `<tr>
+                                        <td><input type="checkbox" class="product-checkbox" data-item="${product.item}"></td>
+                                        <td>${product.item}</td>
+                                        <td>${product.available}</td>
+                                        <td><input type="number" class="form-control quantity-input" 
+                                            id="quantity-${product.item.replace(/\s+/g, '-')}" 
+                                            data-item="${product.item}"
+                                            min="1" max="${product.available}" disabled></td>
+                                    </tr>`;
+                        });
+                        html += '</tbody></table>';
+                        productTable.innerHTML = html;
+
+                        // Add event listeners to checkboxes
+                        document.querySelectorAll('.product-checkbox').forEach(checkbox => {
+                            checkbox.addEventListener('change', function() {
+                                const item = this.getAttribute('data-item');
+                                const quantityInput = document.getElementById(`quantity-${item.replace(/\s+/g, '-')}`);
+                                quantityInput.disabled = !this.checked;
+                                if (this.checked) {
+                                    quantityInput.value = 1;
+                                    quantityInput.focus();
+                                } else {
+                                    quantityInput.value = '';
+                                }
+                            });
+                        });
+
+                        // Add event listeners to quantity inputs
+                        document.querySelectorAll('.quantity-input').forEach(input => {
+                            input.addEventListener('keypress', function(e) {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    updateProductQuantity(this);
+                                }
+                            });
+                        });
+
+                        updateVehicleLoadTable(); // Update the vehicle load table
+                    } else {
+                        productTable.innerHTML = '<p class="text-danger">Failed to load products.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    productTable.innerHTML = '<p class="text-danger">An error occurred while loading products.</p>';
+                });
         });
 
+        unloadButton.addEventListener('click', function() {
+            fetch('get_vehicle_load.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let html = '<table class="table table-striped table-hover">';
+                        html += '<thead class="table-primary"><tr><th>Select</th><th>Item</th><th>Quantity</th><th>Unload Quantity</th></tr></thead>';
+                        html += '<tbody>';
+                        data.products.forEach((product) => {
+                            html += `<tr>
+                                        <td><input type="checkbox" class="product-checkbox" data-item="${product.item}"></td>
+                                        <td>${product.item}</td>
+                                        <td>${product.quantity}</td>
+                                        <td><input type="number" class="form-control quantity-input" 
+                                            id="unload-quantity-${product.item.replace(/\s+/g, '-')}" 
+                                            data-item="${product.item}"
+                                            min="1" max="${product.quantity}" disabled></td>
+                                    </tr>`;
+                        });
+                        html += '</tbody></table>';
+                        productTable.innerHTML = html;
+
+                        // Add event listeners to checkboxes
+                        document.querySelectorAll('.product-checkbox').forEach(checkbox => {
+                            checkbox.addEventListener('change', function() {
+                                const item = this.getAttribute('data-item');
+                                const quantityInput = document.getElementById(`unload-quantity-${item.replace(/\s+/g, '-')}`);
+                                quantityInput.disabled = !this.checked;
+                                if (this.checked) {
+                                    quantityInput.value = 1;
+                                    quantityInput.focus();
+                                } else {
+                                    quantityInput.value = '';
+                                }
+                            });
+                        });
+
+                        // Add event listeners to quantity inputs
+                        document.querySelectorAll('.quantity-input').forEach(input => {
+                            input.addEventListener('keypress', function(e) {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    updateVehicleUnload(this);
+                                }
+                            });
+                        });
+
+                        updateVehicleLoadTable(); // Update the vehicle load table
+                    } else {
+                        productTable.innerHTML = '<p class="text-danger">Failed to load vehicle contents.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    productTable.innerHTML = '<p class="text-danger">An error occurred while loading vehicle contents.</p>';
+                });
+        });
+
+        // Initialize the map and load the vehicle contents when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             initMap();
-            loadVehicleLoad();
+            updateVehicleLoadTable();
         });
     </script>
 </body>
 </html>
+

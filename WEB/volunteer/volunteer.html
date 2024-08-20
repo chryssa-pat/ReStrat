@@ -4,14 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Volunteer Map</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="volunteer.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+    </style>
 </head>
 
 <body>
@@ -41,7 +47,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="tasks.html" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                             Tasks
                         </a>
@@ -57,6 +63,22 @@
                         <li><a href="settings.html" class="dropdown-item">Settings</a></li>
                         <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
                     </ul>
+                </div>
+                <hr>
+                <div id="filters">
+                    <h5>Filters</h5>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="pendingFilter" checked>
+                        <label class="form-check-label" for="pendingFilter">Show Pending Offers/Inquiries</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="approvedFilter" checked>
+                        <label class="form-check-label" for="approvedFilter">Show Approved Offers/Inquiries</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="connectionLinesFilter">
+                        <label class="form-check-label" for="connectionLinesFilter">Show Connection Lines</label>
+                    </div>
                 </div>
             </div>
 
@@ -84,7 +106,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link active link-body-emphasis">
+                            <a href="tasks.html" class="nav-link active link-body-emphasis">
                                 <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                                 Tasks
                             </a>
@@ -135,6 +157,12 @@
         var volunteerMarker;
         var baseMarker;
         var civilianMarkers = [];
+        var filters = {
+            pending: false,
+            approved: false,
+            connectionLines: false
+        };
+        var connectionLines = {};
     
         // Ορίζουμε τα εικονίδια για τις διαφορετικές πινέζες
         var inquiryApprovedIcon = L.divIcon({
@@ -165,12 +193,38 @@
             iconAnchor: [15, 42]
         });
     
+
         function initMap() {
             map = L.map('map').setView([38.246639, 21.734573], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
-    
+
+            document.getElementById('pendingFilter').addEventListener('change', function() {
+    filters.pending = this.checked;
+            updateMarkers();
+            clearAllConnectionLines();
+            updateConnectionLines();
+        });
+
+        document.getElementById('approvedFilter').addEventListener('change', function() {
+            filters.approved = this.checked;
+            updateMarkers();
+            clearAllConnectionLines();
+            updateConnectionLines();
+        });
+
+        document.getElementById('connectionLinesFilter').addEventListener('change', function() {
+            filters.connectionLines = this.checked;
+            clearAllConnectionLines();
+            updateConnectionLines();
+        });
+        
+            // Αρχικοποιούμε τα checkboxes
+            document.getElementById('pendingFilter').checked = filters.pending;
+            document.getElementById('approvedFilter').checked = filters.approved;
+            document.getElementById('connectionLinesFilter').checked = filters.connectionLines;
+
             getBaseLocation();
             getVolunteerLocation();
             getApprovedCivilians();
@@ -231,7 +285,7 @@
                 .then(data => {
                     if (data.success) {
                         // Clear existing markers
-                        civilianMarkers.forEach(marker => map.removeLayer(marker));
+                        civilianMarkers.forEach(markerInfo => markerInfo.marker.remove());
                         civilianMarkers = [];
 
                         data.coordinates.forEach((coord) => {
@@ -243,12 +297,13 @@
                             }
 
                             var marker = L.marker([coord.latitude, coord.longitude], {icon: icon})
-                                .bindPopup(() => createPopupContent(coord))
-                                .addTo(map);
+                                .bindPopup(() => createPopupContent(coord));
                             
-                            civilianMarkers.push(marker);
+                            civilianMarkers.push({marker: marker, type: coord.type, status: coord.status});
                         });
+                        updateMarkers();
                         fitMapToAllMarkers();
+                        updateConnectionLines();
                     } else {
                         console.error('Failed to get civilian coordinates:', data.error);
                     }
@@ -256,16 +311,8 @@
                 .catch(error => console.error('Error:', error));
         }
 
-        function updatePopupContent(type, id, status) {
-            // Αυτή η συνάρτηση θα ενημερώνει το περιεχόμενο του popup
-            // Για παράδειγμα, μπορείτε να αλλάξετε το κείμενο της κατάστασης
-            const statusElement = document.querySelector(`#popup-${id} .status`);
-            if (statusElement) {
-                statusElement.textContent = `Status: ${status}`;
-            }
-        }
-
         function createPopupContent(coord) {
+            console.log('Creating popup content for:', coord);
             let content = `<div id="popup-${coord.id}">
                 <strong>${coord.type.charAt(0).toUpperCase() + coord.type.slice(1)}</strong><br>
                 Name: ${coord.full_name || 'N/A'}<br>
@@ -273,60 +320,120 @@
                 Registration Date: ${coord.registration_date || 'N/A'}<br>
                 Product: ${coord.product || 'N/A'}<br>
                 Quantity: ${coord.quantity || 'N/A'}<br>
-                <span class="status"></span><br>`;
+                <span class="status">Status: ${coord.status}</span><br>`;
+            
+            if (coord.status === 'approved') {
+                content += `Vehicle ID: <span class="vehicle-id">${coord.approved_vehicle_id || 'N/A'}</span><br>
+                            Approved Date: <span class="approved-timestamp">${coord.approved_timestamp || 'N/A'}</span><br>`;
+            }
             
             if (coord.status === 'pending') {
                 content += `<button id="accept-btn-${coord.id}" onclick="handleAccept('${coord.type}', ${coord.id})">Accept</button>`;
-            } else if (coord.status === 'approved') {
-                content += `<button onclick="handleFinish('${coord.type}', ${coord.id})">Finish</button>`;
             }
+            // Αφαιρούμε το κουμπί "Finish"
             
             content += `</div>`;
             
+            console.log('Created popup content:', content);
             return content;
         }
 
+        function drawConnectionLine(id) {
+            const markerInfo = civilianMarkers.find(m => m.id == id);
+            if (markerInfo && volunteerMarker) {
+                const line = L.polyline([volunteerMarker.getLatLng(), markerInfo.marker.getLatLng()], {
+                    color: 'red',
+                    weight: 2,
+                    opacity: 0.5,
+                    dashArray: '10, 10'
+                }).addTo(map);
+                connectionLines[id] = line;
+            }
+        }
+
         function handleAccept(type, id) {
+            console.log(`handleAccept called with type: ${type}, id: ${id}`);
             const acceptBtn = document.getElementById(`accept-btn-${id}`);
-            acceptBtn.disabled = true; // Απενεργοποίηση του κουμπιού αμέσως μετά το κλικ
+            if (acceptBtn) {
+                acceptBtn.disabled = true;
+            }
+
+            // Παίρνουμε το τρέχον timestamp
+            const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
             fetch('accept_request.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `type=${type}&id=${id}`
+                body: `type=${type}&id=${id}&timestamp=${timestamp}`
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Response from server:', data);
                 if (data.success) {
                     console.log('Request approved successfully');
-                    acceptBtn.remove(); // Διαγραφή του κουμπιού Accept
-                    
-                    // Δημιουργία και προσθήκη του κουμπιού Finish
-                    const finishBtn = document.createElement('button');
-                    finishBtn.textContent = 'Finish';
-                    finishBtn.onclick = () => handleFinish(type, id);
-                    acceptBtn.parentNode.appendChild(finishBtn);
-                    
-                    // Ενημέρωση του κειμένου στο popup
-                    updatePopupContent(type, id, 'approved');
+                    updateUIAfterApproval(type, id, data.vehicle_id, data.approved_timestamp);
+                    drawConnectionLine(id);
                 } else {
                     console.error('Failed to approve request:', data.error);
-                    acceptBtn.disabled = false;
+                    alert(data.error); // Εμφανίζουμε το μήνυμα λάθους στον χρήστη
+                    if (acceptBtn) {
+                        acceptBtn.disabled = false;
+                    }
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                acceptBtn.disabled = false;
+                alert('Σφάλμα κατά την επεξεργασία του αιτήματος');
+                if (acceptBtn) {
+                    acceptBtn.disabled = false;
+                }
             });
         }
 
+        function updateUIAfterApproval(type, id, vehicleId, timestamp) {
+            console.log(`Updating UI after approval for ${type} with id ${id}`);
+            const markerInfo = civilianMarkers.find(m => m.id == id);
+            if (markerInfo) {
+                markerInfo.status = 'approved';
+                markerInfo.approved_vehicle_id = vehicleId;
+                markerInfo.approved_timestamp = timestamp;
+                updateMarkerIcon(markerInfo);
+
+                // Ανανεώνουμε το περιεχόμενο του popup
+                const newContent = createPopupContent({
+                    ...markerInfo,
+                    type: type,
+                    id: id,
+                    status: 'approved',
+                    approved_vehicle_id: vehicleId,
+                    approved_timestamp: timestamp
+                });
+                markerInfo.marker.setPopupContent(newContent);
+
+                // Αν το popup είναι ανοιχτό, το ανοίγουμε ξανά για να ανανεωθεί
+                if (markerInfo.marker.isPopupOpen()) {
+                    markerInfo.marker.openPopup();
+                }
+            }
+
+            updateMarkers();
+            updateConnectionLines();
+        }
+
+        function updateMarkerIcon(markerInfo) {
+            let icon;
+            if (markerInfo.type === 'inquiry') {
+                icon = markerInfo.status === 'approved' ? inquiryApprovedIcon : inquiryPendingIcon;
+            } else {
+                icon = markerInfo.status === 'approved' ? offerApprovedIcon : offerPendingIcon;
+            }
+            markerInfo.marker.setIcon(icon);
+        }
+
         function handleFinish(type, id) {
-            // Εδώ θα προσθέσετε τη λογική για το τι θα συμβεί όταν πατηθεί το κουμπί Finish
             console.log(`Finish button clicked for ${type} with id ${id}`);
-            // Για παράδειγμα, μπορείτε να κάνετε ένα νέο αίτημα στον server για να ενημερώσετε την κατάσταση σε "completed"
-            // και να κλείσετε το popup ή να ενημερώσετε το UI ανάλογα
         }
     
         function addPermanentLabel(marker, content) {
@@ -362,7 +469,7 @@
         }
     
         function fitMapToAllMarkers() {
-            var allMarkers = [volunteerMarker, baseMarker, ...civilianMarkers].filter(Boolean);
+            var allMarkers = [volunteerMarker, baseMarker, ...civilianMarkers.map(m => m.marker)].filter(Boolean);
             if (allMarkers.length > 0) {
                 var group = new L.featureGroup(allMarkers);
                 map.fitBounds(group.getBounds().pad(0.1));
@@ -370,8 +477,68 @@
                 console.log("No markers to fit");
             }
         }
+
+        function updateConnectionLines() {
+            // Αφαίρεση όλων των υπαρχόντων γραμμών
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Polyline) {
+                    map.removeLayer(layer);
+                }
+            });
+            connectionLines = {};
+
+            // Έλεγχος αν πρέπει να σχεδιαστούν οι γραμμές
+            if (filters.approved && filters.connectionLines && volunteerMarker) {
+                civilianMarkers.forEach(markerInfo => {
+                    if (markerInfo.status === 'approved' && markerInfo.marker.getLatLng()) {
+                        const line = L.polyline([volunteerMarker.getLatLng(), markerInfo.marker.getLatLng()], {
+                            color: 'red',
+                            weight: 2,
+                            opacity: 0.5,
+                            dashArray: '10, 10'
+                        }).addTo(map);
+                        connectionLines[markerInfo.id] = line;
+                    }
+                });
+            }
+        }
+
+        function updateMarkers() {
+            var allFiltersOff = !filters.pending && !filters.approved;
+            
+            civilianMarkers.forEach(markerInfo => {
+                if (allFiltersOff) {
+                    markerInfo.marker.remove();
+                } else if ((markerInfo.status === 'pending' && filters.pending) ||
+                            (markerInfo.status === 'approved' && filters.approved)) {
+                    markerInfo.marker.addTo(map);
+                } else {
+                    markerInfo.marker.remove();
+                }
+            });
+            
+            // Πάντα εμφάνιζε το εικονίδιο του αυτοκινήτου και τη βάση
+            if (volunteerMarker) volunteerMarker.addTo(map);
+            if (baseMarker) baseMarker.addTo(map);
+            
+            clearAllConnectionLines();
+            updateConnectionLines();
+        }
+
+        function clearAllConnectionLines() {
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Polyline) {
+                    map.removeLayer(layer);
+                }
+            });
+            connectionLines = {};
+        }
     
         window.onload = initMap;
     </script>
 </body>
 </html>
+
+
+
+
