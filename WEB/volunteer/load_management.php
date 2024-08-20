@@ -71,17 +71,17 @@ checkSessionAndRedirect();
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li>
-                        <a href="volunteer.html" class="nav-link link-body-emphasis">
+                        <a href="volunteer.php" class="nav-link link-body-emphasis">
                             Map
                         </a>
                     </li>
                     <li>
-                        <a href="load_management.html" class="nav-link active link-body-emphasis">
+                        <a href="#" class="nav-link active link-body-emphasis">
                             Load Management
                         </a>
                     </li>
                     <li>
-                        <a href="tasks.html" class="nav-link link-body-emphasis">
+                        <a href="tasks.php" class="nav-link link-body-emphasis">
                             Tasks
                         </a>
                     </li>

@@ -62,7 +62,7 @@ if ($result->num_rows > 0) {
             header('Location: ../civilian/civilian_main.php');
             break;
         case 'volunteer':
-            header('Location: ../volunteer/volunteer.html');
+            header('Location: ../volunteer/volunteer.php');
             break;
         case 'administrator':
             header('Location: ../admin/announcement.php');

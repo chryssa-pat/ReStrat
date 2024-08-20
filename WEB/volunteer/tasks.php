@@ -32,12 +32,12 @@ checkSessionAndRedirect();
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li>
-                        <a href="volunteer.html" class="nav-link link-body-emphasis">
+                        <a href="volunteer.php" class="nav-link link-body-emphasis">
                             Map
                         </a>
                     </li>
                     <li>
-                        <a href="load_management.html" class="nav-link link-body-emphasis">
+                        <a href="load_management.php" class="nav-link link-body-emphasis">
                             Load Management
                         </a>
                     </li>

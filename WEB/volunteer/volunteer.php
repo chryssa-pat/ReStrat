@@ -30,62 +30,65 @@ checkSessionAndRedirect();
     <div class="container-fluid">
         <div class="row">
             
-            <div class=" col-md-3 col-lg-3  d-none d-md-flex flex-column p-3 bg-body-tertiary"style="width: 280px; min-height:100vh;">
-                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                    <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-                    <span class="fs-4"><img src="../images/world.png" alt="logo" height="50"></span>
-                </a>
-          
-                <hr>
-               
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li>
-                        <a href="#" class="nav-link link-body-emphasis">
-                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                            Map
-                        </a>
-                    </li>
-                    <li>
-                        <a href="load_management.html" class="nav-link link-body-emphasis">
-                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                            Load Management
-                        </a>
-                    </li>
-                    <li>
-                        <a href="tasks.html" class="nav-link link-body-emphasis">
-                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                            Tasks
-                        </a>
-                    </li>
-                   
-                    <hr>
-                </ul>
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Account
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="settings.html" class="dropdown-item">Settings</a></li>
-                        <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                    </ul>
-                </div>
-                <hr>
-                <div id="filters">
-                    <h5>Filters</h5>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="pendingFilter" checked>
-                        <label class="form-check-label" for="pendingFilter">Show Pending Offers/Inquiries</label>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="approvedFilter" checked>
-                        <label class="form-check-label" for="approvedFilter">Show Approved Offers/Inquiries</label>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="connectionLinesFilter">
-                        <label class="form-check-label" for="connectionLinesFilter">Show Connection Lines</label>
-                    </div>
-                </div>
-            </div>
+        <div class=" col-md-3 col-lg-3  d-none d-md-flex flex-column p-3 bg-body-tertiary"style="width: 280px; min-height:100vh;">
+                 <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                     <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+                     <span class="fs-4"><img src="../images/world.png" alt="logo" height="50"></span>
+                 </a>
+           
+                 <hr>
+                
+                 <ul class="nav nav-pills flex-column mb-auto">
+                     <li>
+                         <a href="#" class="nav-link link-body-emphasis">
+                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                             Map
+                         </a>
+                     </li>
+                     <li>
+                         <a href="load_management.php" class="nav-link link-body-emphasis">
+                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                             Load Management
+                         </a>
+                     </li>
+                     <li>
+                         <a href="tasks.php" class="nav-link link-body-emphasis">
+                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                             Tasks
+                         </a>
+                     </li>
+                    
+                     <hr>
+                 </ul>
+                 
+                 <div id="filters">
+                     <h5>Filters</h5>
+                     <div class="form-check form-switch">
+                         <input class="form-check-input" type="checkbox" id="pendingFilter" checked>
+                         <label class="form-check-label" for="pendingFilter">Show Pending Offers/Inquiries</label>
+                     </div>
+                     <div class="form-check form-switch">
+                         <input class="form-check-input" type="checkbox" id="approvedFilter" checked>
+                         <label class="form-check-label" for="approvedFilter">Show Approved Offers/Inquiries</label>
+                     </div>
+                     <div class="form-check form-switch">
+                         <input class="form-check-input" type="checkbox" id="connectionLinesFilter">
+                         <label class="form-check-label" for="connectionLinesFilter">Show Connection Lines</label>
+                     </div>
+                 </div>
+                 
+                 <hr>
+                 
+                 <div class="dropdown">
+                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                         Account
+                     </button>
+                     <ul class="dropdown-menu">
+                         <li><a href="settings.html" class="dropdown-item">Settings</a></li>
+                         <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
+                     </ul>
+                 </div>
+             </div>
 
             <div class="col-md-9 col-lg-9 ">
                 <nav class="navbar navbar-expand-lg navbar-light bg-light d-md-none">
@@ -253,7 +256,7 @@ checkSessionAndRedirect();
                         volunteerMarker.setLatLng([lat, lng]);
                     } else {
                         volunteerMarker = L.marker([lat, lng], {icon: carIcon, draggable: true}).addTo(map);
-                        addPermanentLabel(volunteerMarker, "Volunteer Location<br>Lat: " + lat.toFixed(6) + "<br>Lng: " + lng.toFixed(6));
+                        addPermanentLabel(volunteerMarker, "Volunteer<br>Lat: " + lat.toFixed(6) + "<br>Lng: " + lng.toFixed(6));
                     }
 
                     updateLocation(lat, lng);
