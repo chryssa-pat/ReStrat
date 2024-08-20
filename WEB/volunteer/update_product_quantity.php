@@ -7,6 +7,12 @@ ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
+// Ελέγχουμε αν ο χρήστης είναι συνδεδεμένος
+if (!isset($_SESSION['user'])) {
+    echo json_encode(['success' => false, 'error' => 'Μη εξουσιοδοτημένη πρόσβαση']);
+    exit;
+}
+
 // Ελέγχουμε αν έχουμε λάβει τα απαραίτητα δεδομένα
 if (!isset($_POST['item']) || !isset($_POST['quantity'])) {
     echo json_encode(['success' => false, 'error' => 'Λείπουν απαραίτητα δεδομένα']);
@@ -32,14 +38,21 @@ if ($conn->connect_error) {
 $conn->begin_transaction();
 
 try {
-    // Παίρνουμε το vehicle από τον πίνακα VOLUNTEER
-    $stmt = $conn->prepare("SELECT vehicle FROM VOLUNTEER LIMIT 1");
+    // Παίρνουμε το vehicle από τον πίνακα VOLUNTEER για τον συγκεκριμένο χρήστη
+    $stmt = $conn->prepare("SELECT vehicle FROM VOLUNTEER WHERE volunteer_user = ?");
+    $stmt->bind_param("s", $_SESSION['user']);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows === 0) {
-        throw new Exception("Δεν βρέθηκε όχημα");
+        throw new Exception("Δεν βρέθηκε όχημα για τον χρήστη");
     }
     $vehicleId = $result->fetch_assoc()['vehicle'];
+    
+    // Ελέγχουμε αν το vehicle_id είναι έγκυρο
+    if ($vehicleId === '0' || $vehicleId === 0 || $vehicleId === null) {
+        throw new Exception("Μη έγκυρο vehicle_id");
+    }
+    
     error_log("Retrieved vehicle: $vehicleId");
 
     // Ελέγχουμε αν υπάρχει το προϊόν και αν υπάρχει αρκετή διαθέσιμη ποσότητα
@@ -50,7 +63,7 @@ try {
     
     if ($result->num_rows === 0) {
         error_log("Product not found - item: $item");
-        throw new Exception("Product not found!");
+        throw new Exception("Το προϊόν δεν βρέθηκε!");
     }
     
     $row = $result->fetch_assoc();
@@ -59,7 +72,7 @@ try {
     
     if ($quantity > $availableQuantity) {
         error_log("Not enough quantity - requested: $quantity, available: $availableQuantity");
-        throw new Exception("The quantity you asked exceeds the warehouse availability!");
+        throw new Exception("Η ποσότητα που ζητήσατε υπερβαίνει τη διαθεσιμότητα της αποθήκης!");
     }
     
     // Ενημερώνουμε την ποσότητα στον πίνακα PRODUCTS
@@ -95,7 +108,7 @@ try {
     // Ολοκληρώνουμε τη συναλλαγή
     $conn->commit();
     
-    echo json_encode(['success' => true, 'message' => 'Item loaded successfully!']);
+    echo json_encode(['success' => true, 'message' => 'Το προϊόν φορτώθηκε επιτυχώς!']);
 } catch (Exception $e) {
     // Σε περίπτωση σφάλματος, ακυρώνουμε τη συναλλαγή
     $conn->rollback();
