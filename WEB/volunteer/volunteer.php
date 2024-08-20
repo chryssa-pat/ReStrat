@@ -46,13 +46,13 @@ checkSessionAndRedirect();
                         </a>
                     </li>
                     <li>
-                        <a href="load_management.html" class="nav-link link-body-emphasis">
+                        <a href="load_management.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                             Load Management
                         </a>
                     </li>
                     <li>
-                        <a href="tasks.html" class="nav-link link-body-emphasis">
+                        <a href="tasks.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                             Tasks
                         </a>
