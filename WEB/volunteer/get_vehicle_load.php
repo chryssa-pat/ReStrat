@@ -11,43 +11,48 @@ if (!isset($_SESSION['user'])) {
 $conn = new mysqli("localhost", "root", "", "web");
 
 if ($conn->connect_error) {
-    die(json_encode(['error' => 'Connection failed: ' . $conn->connect_error]));
-}
-
-// Get the vehicle_id associated with the logged-in user
-$userId = $_SESSION['user']; // Adjust this based on your session structure
-$stmt = $conn->prepare("SELECT vehicle FROM VOLUNTEER WHERE volunteer_user = ?");
-$stmt->bind_param("s", $userId);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows === 0) {
-    echo json_encode(['success' => false, 'error' => 'No vehicle found for the user']);
+    echo json_encode(['success' => false, 'error' => 'Αποτυχία σύνδεσης στη βάση δεδομένων']);
     exit;
 }
 
-$vehicleId = $result->fetch_assoc()['vehicle'];
-
-// Retrieve the load for the user's vehicle
-$sql = "SELECT vl.item, vl.quantity, p.description 
-        FROM VEHICLE_LOAD vl
-        JOIN PRODUCTS p ON vl.item = p.item
-        WHERE vl.vehicle_id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $vehicleId);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result) {
-    $products = [];
-    while($row = $result->fetch_assoc()) {
-        $products[] = $row;
+try {
+    // Παίρνουμε το vehicle_id
+    $stmt = $conn->prepare("SELECT vehicle FROM VOLUNTEER WHERE volunteer_user = ?");
+    $stmt->bind_param("s", $_SESSION['user']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows === 0) {
+        throw new Exception("Δεν βρέθηκε όχημα για τον χρήστη");
     }
-    echo json_encode(['success' => true, 'products' => $products]);
-} else {
-    echo json_encode(['success' => false, 'error' => $conn->error]);
+    $vehicleId = $result->fetch_assoc()['vehicle'];
+
+    // Ελέγχουμε αν το vehicle_id είναι έγκυρο
+    if ($vehicleId === '0' || $vehicleId === 0 || $vehicleId === null) {
+        throw new Exception("Μη έγκυρο vehicle_id");
+    }
+
+    // Retrieve the load for the user's vehicle
+    $sql = "SELECT vl.item, vl.quantity, p.description 
+            FROM VEHICLE_LOAD vl
+            JOIN PRODUCTS p ON vl.item = p.item
+            WHERE vl.vehicle_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $vehicleId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result) {
+        $products = [];
+        while($row = $result->fetch_assoc()) {
+            $products[] = $row;
+        }
+        echo json_encode(['success' => true, 'products' => $products]);
+    } else {
+        throw new Exception("Αποτυχία ανάκτησης δεδομένων φορτίου οχήματος");
+    }
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
 
-$stmt->close();
 $conn->close();
 ?>

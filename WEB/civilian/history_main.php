@@ -205,7 +205,7 @@ checkSessionAndRedirect();
                     $('<td>').text(formatDate(latestStatus.date)),
                     $('<td>').append(
                         $('<button>').addClass('btn btn-outline-primary btn-sm view-history-btn').text('View History').data('offer', offer),
-                        latestStatus.status.toLowerCase() === 'pending' ? 
+                        (latestStatus.status.toLowerCase() === 'pending' || latestStatus.status.toLowerCase() === 'approved') ? 
                             $('<button>').addClass('btn btn-danger btn-sm cancel-btn ms-2').text('Cancel').data('offer-id', offer.id) :
                             ''
                     )

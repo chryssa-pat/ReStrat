@@ -549,7 +549,3 @@ checkSessionAndRedirect();
     </script>
 </body>
 </html>
-
-
-
-

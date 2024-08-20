@@ -78,12 +78,12 @@ if ($announce_quantity >= $offer_quantity) {
 
     try {
         // Insert offer into the OFFERS table
-        $sql = "INSERT INTO OFFERS (offer_user, offer_product, offer_quantity) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO OFFERS (offer_user, offer_product, offer_quantity, announce_id) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
             throw new Exception('Prepare failed: ' . $conn->error);
         }
-        $stmt->bind_param("sii", $offer_user, $product_id, $offer_quantity);
+        $stmt->bind_param("siis", $offer_user, $product_id, $offer_quantity, $announce_id);
         if (!$stmt->execute()) {
             throw new Exception('Failed to insert offer: ' . $stmt->error);
         }
@@ -99,6 +99,18 @@ if ($announce_quantity >= $offer_quantity) {
         $stmt->bind_param("is", $offer_id, $offer_status);
         if (!$stmt->execute()) {
             throw new Exception('Failed to insert offer details: ' . $stmt->error);
+        }
+        $stmt->close();
+
+        // Insert into OFFER_HISTORY table
+        $sql = "INSERT INTO OFFER_HISTORY (offer_history_id, history_status) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            throw new Exception('Prepare failed: ' . $conn->error);
+        }
+        $stmt->bind_param("is", $offer_id, $offer_status);
+        if (!$stmt->execute()) {
+            throw new Exception('Failed to insert offer history: ' . $stmt->error);
         }
         $stmt->close();
 

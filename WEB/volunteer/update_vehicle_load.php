@@ -2,6 +2,12 @@
 session_start();
 header('Content-Type: application/json');
 
+// Ελέγχουμε αν ο χρήστης είναι συνδεδεμένος
+if (!isset($_SESSION['user'])) {
+    echo json_encode(['success' => false, 'error' => 'Unauthorized access']);
+    exit;
+}
+
 if (!isset($_POST['item']) || !isset($_POST['quantity'])) {
     echo json_encode(['success' => false, 'error' => 'Λείπουν απαραίτητα δεδομένα']);
     exit;
@@ -20,14 +26,20 @@ if ($conn->connect_error) {
 $conn->begin_transaction();
 
 try {
-    // Παίρνουμε το vehicle_id
-    $stmt = $conn->prepare("SELECT vehicle FROM VOLUNTEER LIMIT 1");
+    // Παίρνουμε το vehicle_id του τρέχοντος χρήστη
+    $stmt = $conn->prepare("SELECT vehicle FROM VOLUNTEER WHERE volunteer_user = ?");
+    $stmt->bind_param("s", $_SESSION['user']);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows === 0) {
-        throw new Exception("Δεν βρέθηκε όχημα");
+        throw new Exception("Δεν βρέθηκε όχημα για τον χρήστη");
     }
     $vehicleId = $result->fetch_assoc()['vehicle'];
+
+    // Ελέγχουμε αν το vehicle_id είναι έγκυρο
+    if ($vehicleId === '0' || $vehicleId === 0 || $vehicleId === null) {
+        throw new Exception("Μη έγκυρο vehicle_id");
+    }
 
     // Ελέγχουμε αν υπάρχει αρκετή ποσότητα στο όχημα
     $stmt = $conn->prepare("SELECT quantity FROM VEHICLE_LOAD WHERE vehicle_id = ? AND item = ? FOR UPDATE");
@@ -35,12 +47,12 @@ try {
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows === 0) {
-        throw new Exception("Item  not found in vehicle!");
+        throw new Exception("Το προϊόν δεν βρέθηκε στο όχημα!");
     }
     $row = $result->fetch_assoc();
     $loadedQuantity = $row['quantity'];
     if ($quantity > $loadedQuantity) {
-        throw new Exception("There is not enough quantity in the vehicle!");
+        throw new Exception("Δεν υπάρχει αρκετή ποσότητα στο όχημα!");
     }
 
     // Ενημερώνουμε την ποσότητα στο VEHICLE_LOAD
@@ -60,7 +72,7 @@ try {
     $stmt->execute();
 
     $conn->commit();
-    echo json_encode(['success' => true, 'message' => 'Load updated successfully!']);
+    echo json_encode(['success' => true, 'message' => 'Το φορτίο ενημερώθηκε επιτυχώς!']);
 } catch (Exception $e) {
     $conn->rollback();
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
