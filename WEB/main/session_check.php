@@ -37,3 +37,11 @@ if (!isset($_SESSION['user'])) {
         exit();
     }
 }
+
+// Add this function at the end of the file
+function checkSessionAndRedirect() {
+    if (!isset($_SESSION['user'])) {
+        header("Location: ../main/login.php");
+        exit();
+    }
+}
