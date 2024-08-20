@@ -9,3 +9,8 @@ WEB\civilian\history_inquiry.css		inquiry history css
 WEB\civilian\history_inquiry.php		fetch data at inquiry (vioew history)
 WEB\admin\save_base_location.php		new location of the base drag and drop php
 WEB\admin\get_volunteer_locations.php	fetch location to display to the map of admin 
+WEB\admin\update_products_main.php  	update products main html
+WEB\admin\add_category_product.php		add category and product form php
+WEB\admin\update_database_from_ceid.php update database from ceid json
+WEB\admin\update_database_from_json.php update database from json file
+
