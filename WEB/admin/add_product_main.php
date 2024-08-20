@@ -1,20 +1,18 @@
-<?php
-session_start();
-require_once('../main/session_check.php');
-checkSessionAndRedirect();
-?>
+<?php include('../main/session_check.php'); ?> 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create User</title>
+    <title>Update Products</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="createuser_admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 </head>
+
 
 <body>
 
@@ -49,7 +47,7 @@ checkSessionAndRedirect();
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="createuser_admin_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                             Create Account
                         </a>
@@ -67,11 +65,11 @@ checkSessionAndRedirect();
                         </a>
                     </li>
                     <li>
-                            <a href="add_product_main.php" class="nav-link active link-body-emphasis">
-                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                                Manage Products
-                            </a>
-                     </li>
+                        <a href="#" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Manage Products
+                        </a>
+                    </li>
                     <hr>
                 </ul>
                 <div class="dropdown">
@@ -117,126 +115,111 @@ checkSessionAndRedirect();
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link active link-body-emphasis">
+                            <a href="createuser_admin_main.php" class="nav-link active link-body-emphasis">
                                 <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                                 Create Account
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="statistics_main.php" class="nav-link link-body-emphasis">
-                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                                Statistics
-                            </a>
+                        <a href="#" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Statistics
+                        </a>
                         </li>
                         <li class="nav-item">
-                            <a href="update_products_main.php" class="nav-link link-body-emphasis">
-                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                                Update Products from JSON
-                            </a>
+                        <a href="update_products_main.php" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Update Products from JSON
+                        </a>
                         </li>
                         <li class="nav-item">
-                            <a href="add_product_main.php" class="nav-link active link-body-emphasis">
-                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                                Manage Products
-                            </a>
+                        <a href="#" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Manage Products
+                        </a>
                         </li>
-                        
                         <hr>
                 
                       </ul>
           
-                      <div class="dropdown">
-                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Account
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                                <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                            </ul>
-                        </div>
+                      <div class="dropdown ">
+                          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Account
+                          </button>
+                          <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="settings.html">Settings</a></li>
+                              <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
+                          </ul>
+                      </div>
                   </div>
                 </nav>
 
-                <div class="container mt-5">
-                    <h2 class="text-center mb-4">Create New User</h2>
-
-                    <div id="message" class="alert" style="display:none;"></div>
-
-                    <div class="card shadow">
-                        <div class="card-body">
-                            <form id="createUserForm">
+                <div class="container mt-4">
+                        <div class="card">
+                        <div class="card-body text-center">
+                            <h2 class="card-title mb-4">Add New Category</h2>
+                            <p class="card-text">
+                                Add a new category to the database. This will create a new entry in the CATEGORIES table.
+                            </p>
+                            <form id="addCategoryForm">
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="username" name="username" required>
+                                    <input type="number" class="form-control" id="categoryId" name="categoryId" placeholder="Enter category ID" required>
                                 </div>
-                            
                                 <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <input type="text" class="form-control" id="categoryName" name="categoryName" placeholder="Enter category name" required>
                                 </div>
-                            
-                                <div class="mb-3">
-                                    <label for="profile" class="form-label">Profile</label>
-                                    <select name="profile" id="profile" class="form-select">
-                                        <option value="volunteer">Volunteer</option>
-                                        <option value="civilian">Civilian</option>
-                                        <option value="administrator">Administrator</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">Create User</button>
-                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg">Add Category</button>
                             </form>
                         </div>
                     </div>
                 </div>
+
+                
+
             </div>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous"></script>
-    <script>
-        document.getElementById('logoutButton').addEventListener('click', function (e) {
-                      e.preventDefault();
-                      var confirmLogout = confirm('Are you sure you want to logout?');
-                      if (confirmLogout) {
-                          window.location.href = "../main/logout.php";
-                      }
-                  });
-        document.getElementById('createUserForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the form from submitting normally
-
-            var formData = new FormData(this);
-
-            fetch('createuser_admin.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                var messageElement = document.getElementById('message');
-                if (data.success) {
-                    messageElement.className = 'alert alert-success';
-                    messageElement.textContent = data.message;
-                } else {
-                    messageElement.className = 'alert alert-danger';
-                    messageElement.textContent = data.message;
-                }
-                messageElement.style.display = 'block';
-            })
-            .catch(error => {
-                var messageElement = document.getElementById('message');
-                messageElement.className = 'alert alert-danger';
-                messageElement.textContent = 'An error occurred: ' + error;
-                messageElement.style.display = 'block';
-            });
-        });
-       
+        crossorigin="anonymous">
     </script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <script>
+    
+    document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    var formData = new FormData(this);
+    
+    fetch('add_category_product.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            // Optionally, you can reset the form or update the UI here
+            document.getElementById('categoryName').value = '';
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while adding the category.');
+    });
+});
+
+
+        
+    </script>
+
 </body>
 
 </html>

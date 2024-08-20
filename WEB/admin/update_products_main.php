@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="createuser_admin.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 </head>
@@ -62,7 +62,13 @@
                     <li>
                         <a href="#" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                            Update Products
+                            Update Products from JSON
+                        </a>
+                    </li>
+                    <li>
+                        <a href="add_product_main.php" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Manage Products 
                         </a>
                     </li>
                     <hr>
@@ -124,7 +130,13 @@
                         <li class="nav-item">
                         <a href="#" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                            Update Products
+                            Update Products from JSON
+                        </a>
+                        </li>
+                        <li class="nav-item">
+                        <a href="add_product_main.php" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Manage Products
                         </a>
                         </li>
                         <hr>
@@ -172,7 +184,27 @@
                             </div>
                         </div>
                     </div>
+                    <br>
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h2 class="card-title mb-4">Add New Category</h2>
+                            <p class="card-text">
+                                Add a new category to the database. This will create a new entry in the CATEGORIES table.
+                            </p>
+                            <form id="addCategoryForm">
+                                <div class="mb-3">
+                                    <input type="number" class="form-control" id="categoryId" name="categoryId" placeholder="Enter category ID" required>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control" id="categoryName" name="categoryName" placeholder="Enter category name" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg">Add Category</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
+
+                
 
             </div>
         </div>
@@ -217,6 +249,35 @@
             alert('An error occurred while updating the database.');
         });
     });
+
+
+    document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    var formData = new FormData(this);
+    
+    fetch('add_category_product.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            // Optionally, you can reset the form or update the UI here
+            document.getElementById('categoryName').value = '';
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while adding the category.');
+    });
+});
+
+
+        
     </script>
 
 </body>

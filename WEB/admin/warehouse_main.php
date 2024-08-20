@@ -56,7 +56,13 @@
                     <li>
                         <a href="update_products_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                            Update Products
+                            Update Products from JSON
+                        </a>
+                    </li>
+                    <li>
+                        <a href="add_product_main.php" class="nav-link link-body-emphasis">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            Manage Products 
                         </a>
                     </li>
                     <hr>
@@ -110,7 +116,7 @@
                                     Create Account
                                 </a>
                             </li>
-                            <li>
+                            <li class="nav-item">
                                 <a href="statistics_main.php" class="nav-link link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                                     Statistics
@@ -119,7 +125,13 @@
                             <li class="nav-item">
                                 <a href="update_products_main.php" class="nav-link link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                                    Update Products
+                                    Update Products from JSON
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="add_product_main.php" class="nav-link link-body-emphasis">
+                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                                    Manage Products 
                                 </a>
                             </li>
                             <hr>
