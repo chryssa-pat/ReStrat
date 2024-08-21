@@ -158,44 +158,7 @@
                 </nav>
 
                 
-                <div class="card mt-4">
-                    <div class="card-body text-center">
-                        <h2 class="card-title mb-4">Add New Product</h2>
-                        <p class="card-text">
-                            Add a new product to the database. This will create entries in the PRODUCTS and PRODUCT_DETAILS tables.
-                        </p>
-                        <form id="addProductForm" action="add_product.php" method="POST">
-                            <div class="mb-3">
-                                <select class="form-select" id="categoryId" name="categoryId" required>
-                                    <option value="">Select a category</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <input type="number" class="form-control" id="productId" name="productId" placeholder="Enter product ID" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" class="form-control" id="item" name="item" placeholder="Enter product name" required>
-                            </div>
-                            <div class="mb-3">
-                                <textarea class="form-control" id="description" name="description" placeholder="Enter product description" required></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <input type="number" class="form-control" id="available" name="available" placeholder="Enter available quantity" required>
-                            </div>
-                            <div id="productDetails">
-                                <div class="mb-3 row">
-                                    <div class="col">
-                                        <input type="text" class="form-control" name="detailName[]" placeholder="Detail name">
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" class="form-control" name="detailValue[]" placeholder="Detail value">
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-lg">Add Product</button>
-                        </form>
-                    </div>
-                </div>
+               
             </div>
                 
 
@@ -212,76 +175,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
-    <script>
-    
 
-    $(document).ready(function() {
-        var categorySelect = $('#categoryId');
-
-        // Fetch categories
-        $.getJSON('get_categories.php', function(data) {
-            // Populate categories
-            $.each(data, function(index, category) {
-                categorySelect.append($('<option></option>').attr('value', category.category_id).text(category.category_name));
-            });
-
-            // Initialize Select2
-            categorySelect.select2({
-                placeholder: 'Search for a category...',
-                allowClear: true
-            });
-        });
-
-        // Handle form submission
-        $('#addProductForm').on('submit', function(e) {
-            e.preventDefault();
-            
-            var formData = new FormData(this);
-            
-            $.ajax({
-                url: 'add_product.php',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        alert(response.message);
-                        $('#addProductForm')[0].reset();
-                        categorySelect.val('').trigger('change');
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('XHR:', xhr);
-                    console.error('Status:', status);
-                    console.error('Error:', error);
-                    alert('An error occurred. Please check the console for more information.');
-                }
-            });
-        });
-
-        // Add new detail fields
-        $('#addDetailField').click(function() {
-            var newDetail = `
-                <div class="mb-3 row">
-                    <div class="col">
-                        <input type="text" class="form-control" name="detailName[]" placeholder="Detail name">
-                    </div>
-                    <div class="col">
-                        <input type="text" class="form-control" name="detailValue[]" placeholder="Detail value">
-                    </div>
-                </div>
-            `;
-            $('#productDetails').append(newDetail);
-        });
-    });
-
-
-        
-    </script>
 
 </body>
 

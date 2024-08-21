@@ -182,6 +182,13 @@
                                 <a href="quantity.php" class="btn btn-primary">Manage Quantity</a>
                             </div>
                         </div>
+                        <div class="card mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Delete Product</h5>
+                                <p class="card-text">Delete a product from the database.</p>
+                                <a href="delete_product.php" class="btn btn-primary">Delete Product</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
