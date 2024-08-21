@@ -60,6 +60,14 @@ try {
         throw new Exception('Failed to update announcement item quantity: ' . $stmt->error);
     }
 
+    // Delete the entry from OFFERS_DETAILS
+    $sql = "DELETE FROM OFFERS_DETAILS WHERE details_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $offer_id);
+    if (!$stmt->execute()) {
+        throw new Exception('Failed to delete offer details: ' . $stmt->error);
+    }
+
     // Insert a new 'cancelled' status entry into OFFER_HISTORY
     $sql = "INSERT INTO OFFER_HISTORY (offer_history_id, history_status) VALUES (?, 'cancelled')";
     $stmt = $conn->prepare($sql);
