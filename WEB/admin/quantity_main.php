@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Products</title>
+    <title>Manage Quantity</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
@@ -14,6 +14,18 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <style>
+        .scrollable-categories {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+        }
+        .scrollable-categories .form-check {
+            margin-bottom: 0.5rem;
+        }
+    </style>
 </head>
 
 
@@ -157,46 +169,43 @@
                   </div>
                 </nav>
 
-                
-                <div class="card mt-4">
-                    <div class="card-body text-center">
-                        <h2 class="card-title mb-4">Add New Product</h2>
-                        <p class="card-text">
-                            Add a new product to the database. This will create entries in the PRODUCTS and PRODUCT_DETAILS tables.
-                        </p>
-                        <form id="addProductForm" action="add_product.php" method="POST">
-                            <div class="mb-3">
-                                <select class="form-select" id="categoryId" name="categoryId" required>
-                                    <option value="">Select a category</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <input type="number" class="form-control" id="productId" name="productId" placeholder="Enter product ID" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" class="form-control" id="item" name="item" placeholder="Enter product name" required>
-                            </div>
-                            <div class="mb-3">
-                                <textarea class="form-control" id="description" name="description" placeholder="Enter product description" required></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <input type="number" class="form-control" id="available" name="available" placeholder="Enter available quantity" required>
-                            </div>
-                            <div id="productDetails">
-                                <div class="mb-3 row">
-                                    <div class="col">
-                                        <input type="text" class="form-control" name="detailName[]" placeholder="Detail name">
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" class="form-control" name="detailValue[]" placeholder="Detail value">
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-lg">Add Product</button>
-                        </form>
+                   
+                    <div class="col-md-9 col-lg-9 ">
+                    <br>
+                    <h2 align="center">Manage Product Quantities</h2>
+                    <br>
+                    <p>
+                    You can change one ore more categories at once and modify the quantity of the products in the selected categories.
+                    </p>
+                    <br>
+                    <!-- Category selection -->
+                    <div class="mb-3">
+                        <label for="categories" class="form-label">Select Categories:</label>
+                        <div id="categories" class="scrollable-categories">
+                            <!-- Categories will be loaded here dynamically -->
+                        </div>
                     </div>
+                    <br>
+                    <!-- Product table -->
+                    <div id="productTable">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product ID</th>
+                                    <th>Item</th>
+                                    <th>Details</th>
+                                    <th>Available Quantity</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productList">
+                                <!-- Products will be loaded here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+            
+                    
                 </div>
-            </div>
                 
 
             </div>
@@ -213,74 +222,86 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <script>
-    
-
-    $(document).ready(function() {
-        var categorySelect = $('#categoryId');
-
-        // Fetch categories
-        $.getJSON('get_categories.php', function(data) {
-            // Populate categories
-            $.each(data, function(index, category) {
-                categorySelect.append($('<option></option>').attr('value', category.category_id).text(category.category_name));
+        $(document).ready(function() {
+            // Fetch and populate categories
+            $.getJSON('get_categories.php', function(data) {
+                var categoryContainer = $('#categories');
+                data.forEach(function(category) {
+                    var checkbox = $('<div class="form-check">')
+                        .append($('<input class="form-check-input category-checkbox" type="checkbox">')
+                            .attr('id', 'category' + category.category_id)
+                            .attr('value', category.category_id))
+                        .append($('<label class="form-check-label">')
+                            .attr('for', 'category' + category.category_id)
+                            .text(category.category_name));
+                    categoryContainer.append(checkbox);
+                });
+                // Add event listener after creating checkboxes
+                $('.category-checkbox').on('change', fetchProducts);
             });
 
-            // Initialize Select2
-            categorySelect.select2({
-                placeholder: 'Search for a category...',
-                allowClear: true
-            });
-        });
-
-        // Handle form submission
-        $('#addProductForm').on('submit', function(e) {
-            e.preventDefault();
-            
-            var formData = new FormData(this);
-            
-            $.ajax({
-                url: 'add_product.php',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        alert(response.message);
-                        $('#addProductForm')[0].reset();
-                        categorySelect.val('').trigger('change');
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('XHR:', xhr);
-                    console.error('Status:', status);
-                    console.error('Error:', error);
-                    alert('An error occurred. Please check the console for more information.');
+            function fetchProducts() {
+                var selectedCategories = $('.category-checkbox:checked').map(function() {
+                    return this.value;
+                }).get();
+                
+                if (selectedCategories.length === 0) {
+                    $('#productList').html('');
+                    return;
                 }
+
+                $.ajax({
+                    url: 'get_products.php',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ category_ids: selectedCategories }),
+                    success: function(response) {
+                        displayProducts(response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error fetching products:", error);
+                        $('#productList').html('<tr><td colspan="5">Error loading products. Please try again.</td></tr>');
+                    }
+                });
+            }
+
+            function displayProducts(products) {
+                var productList = '';
+                $.each(products, function(index, product) {
+                    productList += '<tr>' +
+                        '<td>' + product.product_id + '</td>' +
+                        '<td>' + product.item + '</td>' +
+                        '<td>' + (product.details || '') + '</td>' +
+                        '<td><input type="number" id="quantity-' + product.product_id + '" value="' + product.available + '"></td>' +
+                        '<td><button class="btn btn-primary update-quantity" data-product-id="' + product.product_id + '">Update</button></td>' +
+                        '</tr>';
+                });
+                $('#productList').html(productList);
+            }
+
+            // Update quantity
+            $(document).on('click', '.update-quantity', function() {
+                var productId = $(this).data('product-id');
+                var newQuantity = $('#quantity-' + productId).val();
+                $.ajax({
+                    url: 'update_quantity.php',
+                    type: 'POST',
+                    data: { product_id: productId, quantity: newQuantity },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error updating quantity:", error);
+                        alert("Error updating quantity. Please try again.");
+                    }
+                });
             });
         });
-
-        // Add new detail fields
-        $('#addDetailField').click(function() {
-            var newDetail = `
-                <div class="mb-3 row">
-                    <div class="col">
-                        <input type="text" class="form-control" name="detailName[]" placeholder="Detail name">
-                    </div>
-                    <div class="col">
-                        <input type="text" class="form-control" name="detailValue[]" placeholder="Detail value">
-                    </div>
-                </div>
-            `;
-            $('#productDetails').append(newDetail);
-        });
-    });
-
-
-        
     </script>
 
 </body>

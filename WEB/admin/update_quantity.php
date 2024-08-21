@@ -16,16 +16,17 @@ if ($conn->connect_error) {
 }
 
 $product_id = $_POST['product_id'];
+$quantity = $_POST['quantity'];
 
 // Use prepared statement to prevent SQL injection
-$query = "DELETE FROM PRODUCTS WHERE product_id = ?";
+$query = "UPDATE PRODUCTS SET available = ? WHERE product_id = ?";
 $stmt = $conn->prepare($query);
-$stmt->bind_param("i", $product_id);
+$stmt->bind_param("ii", $quantity, $product_id);
 
 if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'message' => "Product deleted successfully"]);
+    echo json_encode(['success' => true, 'message' => "Quantity updated successfully"]);
 } else {
-    echo json_encode(['success' => false, 'message' => "Error deleting product: " . $conn->error]);
+    echo json_encode(['success' => false, 'message' => "Error updating quantity: " . $conn->error]);
 }
 
 $stmt->close();

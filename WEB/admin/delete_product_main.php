@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Products</title>
+    <title>Delete Products</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
@@ -14,6 +14,18 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <style>
+        .scrollable-categories {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+        }
+        .scrollable-categories .form-check {
+            margin-bottom: 0.5rem;
+        }
+    </style>
 </head>
 
 
@@ -124,7 +136,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="statistics_main.php" class="nav-link link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                             Statistics
                         </a>
@@ -157,29 +169,43 @@
                   </div>
                 </nav>
 
-                <div class="container mt-4">
-                        <div class="card">
-                        <div class="card-body text-center">
-                            <h2 class="card-title mb-4">Add New Category</h2>
-                            <p class="card-text">
-                                Add a new category to the database. This will create a new entry in the CATEGORIES table.
-                            </p>
-                            <form id="addCategoryForm">
-                                <div class="mb-3">
-                                    <input type="number" class="form-control" id="categoryId" name="categoryId" placeholder="Enter category ID" required>
-                                </div>
-                                <div class="mb-3">
-                                    <input type="text" class="form-control" id="categoryName" name="categoryName" placeholder="Enter category name" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-lg">Add Category</button>
-                            </form>
+                   
+                    <div class="col-md-9 col-lg-9 ">
+                    <br>
+                    <h2 align="center">Delete Products</h2>
+                    <br>
+                    <p>
+                    You can delete one or more products at once by selecting their categories.
+                    </p>
+                    <br>
+                    <!-- Category selection -->
+                    <div class="mb-3">
+                        <label for="categories" class="form-label">Select Categories:</label>
+                        <div id="categories" class="scrollable-categories">
+                            <!-- Categories will be loaded here dynamically -->
                         </div>
                     </div>
+                    <br>
+                    <!-- Product table -->
+                    <div id="productTable">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product ID</th>
+                                    <th>Item</th>
+                                    <th>Details</th>
+                                    <th>Available Quantity</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productList">
+                                <!-- Products will be loaded here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+            
+                    
                 </div>
-
-
-                
-            </div>
                 
 
             </div>
@@ -196,36 +222,88 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <script>
-    
-        document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        var formData = new FormData(this);
-        
-        fetch('add_category_product.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-                // Optionally, you can reset the form or update the UI here
-                document.getElementById('categoryName').value = '';
-            } else {
-                alert('Error: ' + data.message);
+        $(document).ready(function() {
+            // Fetch and populate categories
+            $.getJSON('get_categories.php', function(data) {
+                var categoryContainer = $('#categories');
+                data.forEach(function(category) {
+                    var checkbox = $('<div class="form-check">')
+                        .append($('<input class="form-check-input category-checkbox" type="checkbox">')
+                            .attr('id', 'category' + category.category_id)
+                            .attr('value', category.category_id))
+                        .append($('<label class="form-check-label">')
+                            .attr('for', 'category' + category.category_id)
+                            .text(category.category_name));
+                    categoryContainer.append(checkbox);
+                });
+                // Add event listener after creating checkboxes
+                $('.category-checkbox').on('change', fetchProducts);
+            });
+
+            function fetchProducts() {
+                var selectedCategories = $('.category-checkbox:checked').map(function() {
+                    return this.value;
+                }).get();
+                
+                if (selectedCategories.length === 0) {
+                    $('#productList').html('');
+                    return;
+                }
+
+                $.ajax({
+                    url: 'get_products.php',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ category_ids: selectedCategories }),
+                    success: function(response) {
+                        displayProducts(response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error fetching products:", error);
+                        $('#productList').html('<tr><td colspan="5">Error loading products. Please try again.</td></tr>');
+                    }
+                });
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while adding the category.');
+
+            function displayProducts(products) {
+                var productList = '';
+                $.each(products, function(index, product) {
+                    productList += '<tr>' +
+                        '<td>' + product.product_id + '</td>' +
+                        '<td>' + product.item + '</td>' +
+                        '<td>' + (product.details || '') + '</td>' +
+                        '<td>' + product.available + '</td>' +
+                        '<td><button class="btn btn-danger delete-product" data-product-id="' + product.product_id + '">Delete</button></td>' +
+                        '</tr>';
+                });
+                $('#productList').html(productList);
+            }
+
+            // Delete product
+            $(document).on('click', '.delete-product', function() {
+                var productId = $(this).data('product-id');
+                if (confirm('Are you sure you want to delete this product?')) {
+                    $.ajax({
+                        url: 'delete_product.php',
+                        type: 'POST',
+                        data: { product_id: productId },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success) {
+                                alert(response.message);
+                                fetchProducts(); // Refresh the product list
+                            } else {
+                                alert("Error: " + response.message);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error deleting product:", error);
+                            alert("Error deleting product. Please try again.");
+                        }
+                    });
+                }
+            });
         });
-    });
-
-    
-
-
-        
     </script>
 
 </body>
