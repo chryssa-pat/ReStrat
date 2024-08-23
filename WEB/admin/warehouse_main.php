@@ -165,11 +165,13 @@
                             <th>Item</th>
                             <th>Available</th>
                             <th>Details</th>
+                            <th>Load (Vehicle ID, Quantity)</th> <!-- New column added -->
                         </tr>
                     </thead>
                     <tbody id="productTableBody">
                         <!-- Products will be displayed here -->
                     </tbody>
+               
                 </table>
             </div>
         </div>
@@ -240,6 +242,8 @@
                     <td>${product.item}</td>
                     <td>${product.available}</td>
                     <td>${product.details}</td>
+                    <td>${product.vehicle_id || 'N/A'}, ${product.quantity || 0}</td>
+
                 `;
             });
         }
@@ -248,3 +252,4 @@
 </body>
 
 </html>
+
