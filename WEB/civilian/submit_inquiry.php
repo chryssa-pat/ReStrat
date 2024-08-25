@@ -34,6 +34,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Check if the user exists in the CIVILIAN table
+    $check_user_sql = "SELECT civilian_user FROM CIVILIAN WHERE civilian_user = ?";
+    $check_user_stmt = $conn->prepare($check_user_sql);
+    $check_user_stmt->bind_param("s", $user);
+    $check_user_stmt->execute();
+    $check_user_result = $check_user_stmt->get_result();
+
+    if ($check_user_result->num_rows === 0) {
+        echo json_encode(['success' => false, 'message' => 'User not found in the CIVILIAN table.']);
+        exit;
+    }
+    $check_user_stmt->close();
+
     // Start transaction
     $conn->begin_transaction();
 
@@ -57,14 +70,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$stmt2) {
             throw new Exception('Prepare failed: ' . $conn->error);
         }
-        $status = 'pending'; // Or set this based on your business logic
+        $status = 'pending';
         $stmt2->bind_param("is", $inquiry_id, $status);
         if (!$stmt2->execute()) {
             throw new Exception('Execute failed: ' . $stmt2->error);
         }
         $stmt2->close();
 
-        // If we got here, it means both queries were successful
+        // Insert into INQUIRY_HISTORY table
+        $sql3 = "INSERT INTO INQUIRY_HISTORY (inquiry_history_id, history_status) VALUES (?, ?)";
+        $stmt3 = $conn->prepare($sql3);
+        if (!$stmt3) {
+            throw new Exception('Prepare failed: ' . $conn->error);
+        }
+        $stmt3->bind_param("is", $inquiry_id, $status);
+        if (!$stmt3->execute()) {
+            throw new Exception('Execute failed: ' . $stmt3->error);
+        }
+        $stmt3->close();
+
+        // If we got here, it means all queries were successful
         $conn->commit();
         echo json_encode(['success' => true]);
     } catch (Exception $e) {

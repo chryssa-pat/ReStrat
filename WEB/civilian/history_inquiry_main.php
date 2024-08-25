@@ -120,7 +120,7 @@ checkSessionAndRedirect();
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Offer ID</th>
+                                    <th>Inquiry ID</th>
                                     <th>Item</th>
                                     <th>Quantity</th>
                                     <th>Current Status</th>
@@ -153,52 +153,55 @@ checkSessionAndRedirect();
             }
         });
         $(document).ready(function() {
-            $.ajax({
-                url: 'history_inquiry.php',
-                method: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    var tbody = $('#history-table-body');
-                    tbody.empty();
-                    
-                    if (Array.isArray(data)) {
-                        data.forEach(function(inquiry) {
-                            var statusClass = getStatusClass(inquiry.inquiry_status);
-                            var row = '<tr>' +
-                                '<td>' + inquiry.inquiry_id + '</td>' +
-                                '<td>' + inquiry.item + '</td>' +
-                                '<td>' + inquiry.inquiry_quantity + '</td>' +
-                                '<td><span class="status-badge ' + statusClass + '">' + inquiry.inquiry_status + '</span></td>' +
-                                '<td>' + inquiry.last_updated + '</td>' +
-                                '<td><button class="btn btn-sm btn-primary view-history-btn" data-id="' + inquiry.inquiry_id + '">View History</button></td>' +
-                                '</tr>';
-                            tbody.append(row);
-                        });
-                    } else {
-                        console.error('Unexpected data format:', data);
-                    }
-                },
-                error: function(error) {
-                    console.error('Error fetching history data:', error);
-                }
-            });
-
-            function getStatusClass(status) {
-                switch(status.toLowerCase()) {
-                    case 'pending': return 'badge-warning';
-                    case 'approved': return 'badge-success';
-                    case 'rejected': return 'badge-danger';
-                    default: return 'badge-secondary';
-                }
+    $.ajax({
+        url: 'history_inquiry.php',  // Ensure this PHP file returns the correct data format
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            var tbody = $('#history-table-body');
+            tbody.empty();
+            
+            if (Array.isArray(data)) {
+                data.forEach(function(inquiry) {
+                    var latestStatus = inquiry.statuses[0]; // Assuming you want the latest status
+                    var statusClass = getStatusClass(latestStatus.status);
+                    var row = '<tr>' +
+                        '<td>' + inquiry.id + '</td>' +
+                        '<td>' + inquiry.item + '</td>' +
+                        '<td>' + inquiry.quantity + '</td>' +
+                        '<td><span class="status-badge ' + statusClass + '">' + latestStatus.status + '</span></td>' +
+                        '<td>' + latestStatus.date + '</td>' +
+                        '<td><button class="btn btn-sm btn-primary view-history-btn" data-id="' + inquiry.id + '">View History</button></td>' +
+                        '</tr>';
+                    tbody.append(row);
+                });
+            } else {
+                console.error('Unexpected data format:', data);
             }
+        },
+        error: function(error) {
+            console.error('Error fetching history data:', error);
+        }
+    });
 
-            // Event delegation for view history buttons
-            $(document).on('click', '.view-history-btn', function() {
-                var inquiryId = $(this).data('id');
-                // Add your logic here to view the history for the specific inquiry
-                console.log('View history for inquiry ID:', inquiryId);
-            });
-        });
+    function getStatusClass(status) {
+        switch(status.toLowerCase()) {
+            case 'pending': return 'badge-warning';
+            case 'approved': return 'badge-success';
+            case 'finished': return 'badge-primary';
+            case 'cancelled': return 'badge-danger';
+            default: return 'badge-secondary';
+        }
+    }
+
+    // Event delegation for view history buttons
+    $(document).on('click', '.view-history-btn', function() {
+        var inquiryId = $(this).data('id');
+        // Add your logic here to view the history for the specific inquiry
+        console.log('View history for inquiry ID:', inquiryId);
+    });
+});
+
     </script>
 </body>
 </html>
