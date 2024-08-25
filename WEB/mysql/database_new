@@ -194,3 +194,5 @@ insert into offers values("2001","evelina","26","2");
 insert into offers_details(details_id,offer_status) values("2000","pending");
 insert into offers_details(details_id,offer_status) values("2001","pending");
 
+INSERT INTO volunteer(volunteer_user, vehicle, latitude_vehicle, longtitude_vehicle)
+VALUES ('chryssa', 'CAR001', 37.983810, 23.727539),('test', 'CAR002', 35.339774, 25.144213);

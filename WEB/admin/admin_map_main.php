@@ -216,6 +216,32 @@
                                     Map
                                 </a>
                             </li>
+                            <!-- Add Filters Section -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="filtersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Filters
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="filtersDropdown">
+                                    <li>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="pendingFilter" checked>
+                                            <label class="form-check-label" for="pendingFilter">Show Pending Offers/Inquiries</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="approvedFilter" checked>
+                                            <label class="form-check-label" for="approvedFilter">Show Approved Offers/Inquiries</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="connectionLinesFilter">
+                                            <label class="form-check-label" for="connectionLinesFilter">Show Connection Lines</label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
                             <li class="nav-item">
                                 <a href="announcement.php" class="nav-link active link-body-emphasis">
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
@@ -345,6 +371,32 @@
 
             // Add click event to the map
             map.on('click', onMapClick);
+
+            const filters = {
+                pending: true,
+                approved: true,
+                connectionLines: false
+            };
+
+            document.getElementById('pendingFilter').addEventListener('change', function() {
+                filters.pending = this.checked;
+                updateMarkers();
+                clearAllConnectionLines();
+                updateConnectionLines();
+            });
+
+            document.getElementById('approvedFilter').addEventListener('change', function() {
+                filters.approved = this.checked;
+                updateMarkers();
+                clearAllConnectionLines();
+                updateConnectionLines();
+            });
+
+            document.getElementById('connectionLinesFilter').addEventListener('change', function() {
+                filters.connectionLines = this.checked;
+                clearAllConnectionLines();
+                updateConnectionLines();
+            });
         }
 
         function getBaseLocation() {
@@ -378,27 +430,28 @@
                 .catch(error => console.error('Error:', error));
         }
 
-        function getVehicleLocations() {
-            console.log("Fetching vehicle locations...");
-            fetch('get_vehicle_locations.php')
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Vehicle data received:", data);
-                    if (data.success) {
-                        data.vehicles.forEach(vehicle => {
-                            var lat = parseFloat(vehicle.latitude_vehicle);
-                            var lng = parseFloat(vehicle.longitude_vehicle);
-                            var marker = L.marker([lat, lng], {icon: carIcon}).addTo(map);
-                            marker.bindPopup("<strong>Volunteer Location</strong><br>Vehicle ID: " + vehicle.vehicle_id);
-                            vehicleMarkers.push(marker);
-                        });
-                        fitMapToAllMarkers();
-                    } else {
-                        console.error('Failed to get vehicle locations:', data.error);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
+       // Function to fetch and display vehicle locations
+    function getVehicleLocations() {
+        console.log("Fetching vehicle locations...");
+        fetch('get_vehicle_locations.php')
+            .then(response => response.json())
+            .then(data => {
+                console.log("Vehicle data received:", data);
+                if (data.success) {
+                    data.vehicles.forEach(vehicle => {
+                        var lat = parseFloat(vehicle.latitude_vehicle);
+                        var lng = parseFloat(vehicle.longtitude_vehicle); // Ensure this matches the database field
+                        var marker = L.marker([lat, lng], { icon: carIcon }).addTo(map);
+                        marker.bindPopup("<strong>Volunteer Location</strong><br>Vehicle ID: " + vehicle.vehicle_id);
+                        vehicleMarkers.push(marker);
+                    });
+                    fitMapToAllMarkers(); // Adjust the map view to fit all markers
+                } else {
+                    console.error("Error: No vehicles found.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
 
         function getInquiries() {
             console.log("Fetching inquiries...");

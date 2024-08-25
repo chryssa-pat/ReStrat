@@ -14,7 +14,8 @@ if ($conn->connect_error) {
     exit;
 }
 
-$sql = "SELECT vehicle_id, latitude_vehicle, longitude_vehicle FROM VEHICLE";
+$sql = "SELECT v.vehicle AS vehicle_id, v.latitude_vehicle, v.longtitude_vehicle 
+        FROM VOLUNTEER v";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
