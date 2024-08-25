@@ -23,11 +23,13 @@ if ($conn->connect_error) {
 $category_ids_str = implode(',', array_map('intval', $category_ids));
 
 $sql = "SELECT p.product_id, p.item, p.available, 
-        GROUP_CONCAT(DISTINCT CONCAT(pd.detail_name, ': ', pd.detail_value) SEPARATOR ', ') AS details
+        GROUP_CONCAT(DISTINCT CONCAT(pd.detail_name, ': ', pd.detail_value) SEPARATOR ', ') AS details,
+        vl.vehicle_id, vl.quantity
         FROM PRODUCTS p
         LEFT JOIN PRODUCT_DETAILS pd ON p.product_id = pd.product_id
+        LEFT JOIN VEHICLE_LOAD vl ON p.item = vl.item
         WHERE p.category_id IN ($category_ids_str)
-        GROUP BY p.product_id";
+        GROUP BY p.product_id, vl.vehicle_id, vl.quantity";
 
 $result = $conn->query($sql);
 
