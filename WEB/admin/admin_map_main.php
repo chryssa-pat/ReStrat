@@ -195,7 +195,16 @@
                     <input class="form-check-input" type="checkbox" id="approvedFilter">
                     <label class="form-check-label" for="approvedFilter">Show Approved Offers/Inquiries</label>
                 </div>
-              
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="taskFilter">
+                    <label class="form-check-label" for="taskFilter">Show Vehicles with Tasks Only</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="noTaskFilter">
+                    <label class="form-check-label" for="noTaskFilter">Show Vehicles without Tasks Only</label>
+                </div>
+
+                              
                  <hr>
                  
                  <div class="dropdown">
@@ -295,13 +304,12 @@
 
     <!-- Add map initialization script -->
     <script>
-       let map;
+      let map;
 let baseMarker;
 let isDragging = false;
 let vehicleMarkers = [];
 let inquiryMarkers = [];
 let offerMarkers = [];
-
 
 var carIcon = L.divIcon({
     className: 'car-icon',
@@ -350,7 +358,6 @@ function initMap() {
     getOffers(); // Load all markers by default
 }
 
-
 function getBaseLocation() {
     fetch('get_base_location.php')
         .then(response => response.json())
@@ -377,6 +384,11 @@ function getBaseLocation() {
         .catch(error => console.error('Error:', error));
 }
 
+let vehicleMarkersMap = {}; // To map vehicle IDs to their markers
+let vehicleTasksMap = {};   // To keep track of all tasks for each vehicle
+let inquiriesLoaded = false;
+let offersLoaded = false;
+
 function getVehicleLocations() {
     fetch('get_vehicle_locations.php')
         .then(response => response.json())
@@ -395,6 +407,12 @@ function getVehicleLocations() {
 
                     marker.bindPopup(popupContent);
                     vehicleMarkers.push(marker);
+
+                    // Map the vehicle ID to its marker
+                    vehicleMarkersMap[vehicle.vehicle_id] = marker;
+
+                    // Initialize an array to store tasks (offers/inquiries) for the vehicle
+                    vehicleTasksMap[vehicle.vehicle_id] = [];
                 });
                 fitMapToAllMarkers();
             } else {
@@ -404,13 +422,12 @@ function getVehicleLocations() {
         .catch(error => console.error('Error:', error));
 }
 
-
-
 function getInquiries() {
-    fetch('get_inquiries.php') // Modify this script to include `approved_vehicle_id` in the response
+    fetch('get_inquiries.php')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // Group and map inquiries
                 const groupedInquiries = {};
 
                 data.inquiries.forEach(inquiry => {
@@ -446,6 +463,14 @@ function getInquiries() {
                             Date: ${inquiry.registration_date}<br>`;
                         if (inquiry.status.toLowerCase() === 'approved') {
                             popupContent += `Assigned Vehicle: ${inquiry.approved_vehicle_id}<br>`;
+
+                            // Store this inquiry as a task for the assigned vehicle
+                            if (vehicleTasksMap[inquiry.approved_vehicle_id]) {
+                                vehicleTasksMap[inquiry.approved_vehicle_id].push({
+                                    latLng: marker.getLatLng(),
+                                    color: '#DB4437' // Red for inquiries
+                                });
+                            }
                         }
                         popupContent += `<hr>`;
                     });
@@ -454,7 +479,11 @@ function getInquiries() {
                     inquiryMarkers.push(marker);
                 }
 
-                fitMapToAllMarkers();
+                // Mark inquiries as loaded and check if both inquiries and offers are loaded
+                inquiriesLoaded = true;
+                if (offersLoaded) {
+                    drawLinesForAllTasks();
+                }
             } else {
                 console.error('Failed to get inquiries:', data.error);
             }
@@ -462,9 +491,8 @@ function getInquiries() {
         .catch(error => console.error('Error:', error));
 }
 
-
 function getOffers() {
-    fetch('get_offers.php') // Modify this script to include `approved_vehicle_id` in the response
+    fetch('get_offers.php')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -497,6 +525,14 @@ function getOffers() {
                             Date: ${offer.registration_date}<br>`;
                         if (offer.status.toLowerCase() === 'approved') {
                             popupContent += `Assigned Vehicle: ${offer.approved_vehicle_id}<br>`;
+
+                            // Store this offer as a task for the assigned vehicle
+                            if (vehicleTasksMap[offer.approved_vehicle_id]) {
+                                vehicleTasksMap[offer.approved_vehicle_id].push({
+                                    latLng: marker.getLatLng(),
+                                    color: '#0F9D58' // Green for offers
+                                });
+                            }
                         }
                         popupContent += `<hr>`;
                     });
@@ -505,7 +541,11 @@ function getOffers() {
                     offerMarkers.push(marker);
                 }
 
-                fitMapToAllMarkers();
+                // Mark offers as loaded and check if both inquiries and offers are loaded
+                offersLoaded = true;
+                if (inquiriesLoaded) {
+                    drawLinesForAllTasks();
+                }
             } else {
                 console.error('Failed to get offers:', data.error);
             }
@@ -513,7 +553,9 @@ function getOffers() {
         .catch(error => console.error('Error:', error));
 }
 
-
+window.onload = function () {
+    initMap();
+};
 
 function fitMapToAllMarkers() {
     var allMarkers = [baseMarker, ...vehicleMarkers, ...inquiryMarkers, ...offerMarkers].filter(Boolean);
@@ -594,10 +636,26 @@ document.getElementById('approvedFilter').addEventListener('change', function ()
     applyFilters();
 });
 
-function applyFilters() {
-    clearAllMarkers();
+document.getElementById('taskFilter').addEventListener('change', function () {
+    // Uncheck the other filter if this one is checked
+    if (this.checked) {
+        document.getElementById('noTaskFilter').checked = false;
+    }
+    applyFilters();
+});
 
-    // Re-add the base marker after clearing all markers
+document.getElementById('noTaskFilter').addEventListener('change', function () {
+    // Uncheck the other filter if this one is checked
+    if (this.checked) {
+        document.getElementById('taskFilter').checked = false;
+    }
+    applyFilters();
+});
+
+function applyFilters() {
+    clearInquiryAndOfferMarkers();
+
+    // Re-add the base marker after clearing markers
     if (baseMarker) {
         baseMarker.addTo(map);
     } else {
@@ -606,7 +664,10 @@ function applyFilters() {
 
     let showPending = document.getElementById('pendingFilter').checked;
     let showApproved = document.getElementById('approvedFilter').checked;
+    let showVehiclesWithTasks = document.getElementById('taskFilter').checked;
+    let showVehiclesWithoutTasks = document.getElementById('noTaskFilter').checked;
 
+    // Handle the inquiries and offers filtering
     if (showPending || showApproved) {
         if (showPending) {
             getPendingInquiries();
@@ -617,12 +678,59 @@ function applyFilters() {
             getApprovedOffers();
         }
     } else {
-        // If no filters are checked, show all markers
-        getVehicleLocations();
+        // If no inquiry/offer filters are checked, show all inquiries and offers
         getInquiries();
         getOffers();
     }
+
+    // Handle the vehicle filtering based on tasks
+    if (showVehiclesWithTasks) {
+        showOnlyVehiclesWithTasks();
+    } else if (showVehiclesWithoutTasks) {
+        showOnlyVehiclesWithoutTasks();
+    } else {
+        // If neither task-related filter is checked, show all vehicles
+        vehicleMarkers.forEach(marker => marker.addTo(map));
+    }
+
+    // Optionally, refit the map bounds to include all markers
+    fitMapToAllMarkers();
 }
+
+function showOnlyVehiclesWithTasks() {
+    vehicleMarkers.forEach(marker => {
+        const vehicleId = Object.keys(vehicleMarkersMap).find(id => vehicleMarkersMap[id] === marker);
+        if (vehicleTasksMap[vehicleId] && vehicleTasksMap[vehicleId].length > 0) {
+            marker.addTo(map);
+        } else {
+            map.removeLayer(marker);
+        }
+    });
+}
+
+function showOnlyVehiclesWithoutTasks() {
+    vehicleMarkers.forEach(marker => {
+        const vehicleId = Object.keys(vehicleMarkersMap).find(id => vehicleMarkersMap[id] === marker);
+        if (!vehicleTasksMap[vehicleId] || vehicleTasksMap[vehicleId].length === 0) {
+            marker.addTo(map);
+        } else {
+            map.removeLayer(marker);
+        }
+    });
+}
+
+
+
+function clearInquiryAndOfferMarkers() {
+    // Clear inquiry and offer markers only
+    inquiryMarkers.forEach(marker => map.removeLayer(marker));
+    offerMarkers.forEach(marker => map.removeLayer(marker));
+
+    inquiryMarkers = [];
+    offerMarkers = [];
+}
+
+
 
 
 
@@ -636,8 +744,6 @@ function clearAllMarkers() {
     inquiryMarkers = [];
     offerMarkers = [];
 }
-
-
 
 
 function getPendingInquiries() {
@@ -693,36 +799,6 @@ function getPendingOffers() {
                 fitMapToAllMarkers();
             } else {
                 console.error('Failed to get offers:', data.error);
-            }
-        })
-        .catch(error => console.error('Error:', error));
-}
-
-function getApprovedInquiries() {
-    fetch('get_inquiries.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                data.inquiries.forEach(inquiry => {
-                    if (inquiry.status.toLowerCase() === 'approved') {
-                        var lat = parseFloat(inquiry.latitude);
-                        var lng = parseFloat(inquiry.longitude);
-                        var marker = L.marker([lat, lng], {
-                            icon: inquiryApprovedIcon
-                        }).addTo(map);
-                        marker.bindPopup(`<strong>Inquiry</strong><br>
-                            Name: ${inquiry.full_name}<br>
-                            Phone: ${inquiry.phone}<br>
-                            Product: ${inquiry.product}<br>
-                            Quantity: ${inquiry.quantity}<br>
-                            Status: ${inquiry.status}<br>
-                            Date: ${inquiry.registration_date}`);
-                        inquiryMarkers.push(marker);
-                    }
-                });
-                fitMapToAllMarkers();
-            } else {
-                console.error('Failed to get inquiries:', data.error);
             }
         })
         .catch(error => console.error('Error:', error));
@@ -800,7 +876,6 @@ function getApprovedOffers() {
         .catch(error => console.error('Error:', error));
 }
 
-
 function fitMapToAllMarkers() {
     var allMarkers = [baseMarker, ...vehicleMarkers, ...inquiryMarkers, ...offerMarkers].filter(Boolean);
     if (allMarkers.length > 0) {
@@ -808,12 +883,30 @@ function fitMapToAllMarkers() {
         map.fitBounds(group.getBounds().pad(0.1));
     }
 }
+function drawLinesForAllTasks() {
+    for (const vehicleId in vehicleTasksMap) {
+        if (vehicleTasksMap[vehicleId].length > 0) {
+            const vehicleMarker = vehicleMarkersMap[vehicleId];
+            vehicleTasksMap[vehicleId].forEach(task => {
+                drawDashedLine(vehicleMarker.getLatLng(), task.latLng, task.color);
+            });
+        }
+    }
+}
 
+function drawDashedLine(startLatLng, endLatLng, color) {
+    const dashedLine = L.polyline([startLatLng, endLatLng], {
+        color: color,
+        dashArray: '5, 10', // Dashed line style
+        weight: 2,          // Thickness of the line
+    }).addTo(map);
+}
 
 
 window.onload = function () {
     initMap();
 };
+
 
     </script>
 </body>
