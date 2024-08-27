@@ -204,7 +204,11 @@
                     <label class="form-check-label" for="noTaskFilter">Show Vehicles without Tasks Only</label>
                 </div>
 
-                              
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="showLinesFilter">
+                    <label class="form-check-label" for="showLinesFilter">Show Task Lines</label>
+                </div>
+
                  <hr>
                  
                  <div class="dropdown">
@@ -652,8 +656,17 @@ document.getElementById('noTaskFilter').addEventListener('change', function () {
     applyFilters();
 });
 
+let showLines = false; // Initialize the state of the line filter
+let taskLines = [];    // Array to store references to the drawn lines
+
+document.getElementById('showLinesFilter').addEventListener('change', function () {
+    showLines = this.checked; // Update the state based on the checkbox
+    applyFilters(); // Reapply filters when the checkbox is toggled
+});
+
 function applyFilters() {
     clearInquiryAndOfferMarkers();
+    clearTaskLines(); // Clear any existing task lines
 
     // Re-add the base marker after clearing markers
     if (baseMarker) {
@@ -693,8 +706,40 @@ function applyFilters() {
         vehicleMarkers.forEach(marker => marker.addTo(map));
     }
 
+    // Draw dashed lines only if the filter is enabled
+    if (showLines) {
+        drawLinesForAllTasks();
+    }
+
     // Optionally, refit the map bounds to include all markers
     fitMapToAllMarkers();
+}
+
+function drawLinesForAllTasks() {
+    if (!showLines) return; // Do not draw lines if the filter is off
+    
+    for (const vehicleId in vehicleTasksMap) {
+        if (vehicleTasksMap[vehicleId].length > 0) {
+            const vehicleMarker = vehicleMarkersMap[vehicleId];
+            vehicleTasksMap[vehicleId].forEach(task => {
+                drawDashedLine(vehicleMarker.getLatLng(), task.latLng, task.color);
+            });
+        }
+    }
+}
+
+function drawDashedLine(startLatLng, endLatLng, color) {
+    const dashedLine = L.polyline([startLatLng, endLatLng], {
+        color: color,
+        dashArray: '5, 10', // Dashed line style
+        weight: 2,          // Thickness of the line
+    }).addTo(map);
+    taskLines.push(dashedLine); // Store the line reference
+}
+
+function clearTaskLines() {
+    taskLines.forEach(line => map.removeLayer(line)); // Remove each line from the map
+    taskLines = []; // Clear the array
 }
 
 function showOnlyVehiclesWithTasks() {
@@ -883,25 +928,6 @@ function fitMapToAllMarkers() {
         map.fitBounds(group.getBounds().pad(0.1));
     }
 }
-function drawLinesForAllTasks() {
-    for (const vehicleId in vehicleTasksMap) {
-        if (vehicleTasksMap[vehicleId].length > 0) {
-            const vehicleMarker = vehicleMarkersMap[vehicleId];
-            vehicleTasksMap[vehicleId].forEach(task => {
-                drawDashedLine(vehicleMarker.getLatLng(), task.latLng, task.color);
-            });
-        }
-    }
-}
-
-function drawDashedLine(startLatLng, endLatLng, color) {
-    const dashedLine = L.polyline([startLatLng, endLatLng], {
-        color: color,
-        dashArray: '5, 10', // Dashed line style
-        weight: 2,          // Thickness of the line
-    }).addTo(map);
-}
-
 
 window.onload = function () {
     initMap();
