@@ -16,7 +16,8 @@ if ($conn->connect_error) {
 
 $sql_inquiry = "SELECT c.latitude, c.longitude, i.inquiry_id,
                 c.full_name, c.phone, p.item as product, i.inquiry_quantity as quantity,
-                id.inquiry_date as registration_date, id.inquiry_status as status
+                id.inquiry_date as registration_date, id.inquiry_status as status,
+                id.approved_vehicle_id
                 FROM CIVILIAN c
                 JOIN INQUIRY i ON c.civilian_user = i.inquiry_user
                 JOIN PRODUCTS p ON i.inquiry_product = p.product_id
@@ -32,6 +33,9 @@ if ($result_inquiry) {
     while ($row = $result_inquiry->fetch_assoc()) {
         $inquiries[] = $row;
     }
+} else {
+    echo json_encode(['success' => false, 'error' => 'Query failed']);
+    exit;
 }
 
 echo json_encode(['success' => true, 'inquiries' => $inquiries]);

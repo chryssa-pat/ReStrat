@@ -16,7 +16,8 @@ if ($conn->connect_error) {
 
 $sql_offer = "SELECT c.latitude, c.longitude, o.offer_id,
               c.full_name, c.phone, p.item as product, o.offer_quantity as quantity,
-              od.offer_date as registration_date, od.offer_status as status
+              od.offer_date as registration_date, od.offer_status as status,
+              od.approved_vehicle_id
               FROM CIVILIAN c
               JOIN OFFERS o ON c.civilian_user = o.offer_user
               JOIN PRODUCTS p ON o.offer_product = p.product_id
@@ -32,6 +33,9 @@ if ($result_offer) {
     while ($row = $result_offer->fetch_assoc()) {
         $offers[] = $row;
     }
+} else {
+    echo json_encode(['success' => false, 'error' => 'Query failed']);
+    exit;
 }
 
 echo json_encode(['success' => true, 'offers' => $offers]);

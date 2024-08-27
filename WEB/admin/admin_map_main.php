@@ -132,169 +132,152 @@
 </style>
 
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar (for larger screens) -->
-            <div class="col-md-3 col-lg-3 d-none d-md-flex flex-column p-3 bg-body-tertiary" style="width: 280px; min-height:100vh;">
-                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                    <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-                    <span class="fs-4"><img src="../images/world.png" alt="logo" height="50"></span>
-                </a>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar (for larger screens) -->
+        <div class="col-md-3 col-lg-3 d-none d-md-flex flex-column p-3 bg-body-tertiary" style="width: 280px; min-height:100vh;">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+                <span class="fs-4"><img src="../images/world.png" alt="logo" height="50"></span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li>
+                    <a href="#" class="nav-link link-body-emphasis">
+                        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                        Map
+                    </a>
+                </li>
+                <li>
+                    <a href="announcement.php" class="nav-link link-body-emphasis">
+                        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                        Announcements
+                    </a>
+                </li>
+                <li>
+                    <a href="warehouse_main.php" class="nav-link link-body-emphasis">
+                        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                        Warehouse
+                    </a>
+                </li>
+                <li>
+                    <a href="createuser_admin_main.php" class="nav-link link-body-emphasis">
+                        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                        Create Account
+                    </a>
+                </li>
+                <li>
+                    <a href="statistics_main.php" class="nav-link link-body-emphasis">
+                        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                        Statistics
+                    </a>
+                </li>
+                <li>
+                    <a href="update_products_main.php" class="nav-link link-body-emphasis">
+                        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                        Update Products from JSON
+                    </a>
+                </li>
+                <li>
+                    <a href="add_product_main.php" class="nav-link link-body-emphasis">
+                        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                        Manage Products
+                    </a>
+                </li>
                 <hr>
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li>
-                        <a href="#" class="nav-link link-body-emphasis">
-                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                            Map
-                        </a>
-                    </li>
-                    <li>
-                        <a href="announcement.php" class="nav-link link-body-emphasis">
-                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                            Announcements
-                        </a>
-                    </li>
-                    <li>
-                        <a href="warehouse_main.php" class="nav-link link-body-emphasis">
-                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                            Warehouse
-                        </a>
-                    </li>
-                    <li>
-                        <a href="createuser_admin_main.php" class="nav-link link-body-emphasis">
-                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                            Create Account
-                        </a>
-                    </li>
-                    <li>
-                        <a href="statistics_main.php" class="nav-link link-body-emphasis">
-                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                            Statistics
-                        </a>
-                    </li>
-                    <li>
-                        <a href="update_products_main.php" class="nav-link link-body-emphasis">
-                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                            Update Products from JSON
-                        </a>
-                    </li>
-                    <li>
-                        <a href="add_product_main.php" class="nav-link link-body-emphasis">
-                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                            Manage Products
-                        </a>
-                    </li>
-                    <hr>
-                </ul>
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Account
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="settings.html" class="dropdown-item">Settings</a></li>
-                        <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                    </ul>
+                 </ul>
+                 
+                 <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="pendingFilter">
+                    <label class="form-check-label" for="pendingFilter">Show Pending Offers/Inquiries</label>
                 </div>
-            </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="approvedFilter">
+                    <label class="form-check-label" for="approvedFilter">Show Approved Offers/Inquiries</label>
+                </div>
+              
+                 <hr>
+                 
+                 <div class="dropdown">
+                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                         Account
+                     </button>
+                     <ul class="dropdown-menu">
+                         <li><a href="settings.html" class="dropdown-item">Settings</a></li>
+                         <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
+                     </ul>
+                 </div>
+             </div>
 
-            <!-- Content area (for all screens) -->
-            <div class="col-md-9 col-lg-9">
-                <!-- Navbar (for smaller screens) -->
-                <nav class="navbar navbar-expand-lg navbar-light bg-light d-md-none">
-                    <div class="container-fluid">
-                        <a class="navbar-brand" href="#"><img src="../images/world.png" alt="logo" height="50"> </a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
+        <!-- Content area (for all screens) -->
+        <div class="col-md-9 col-lg-9">
+            <!-- Navbar (for smaller screens) -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light d-md-none">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#"><img src="../images/world.png" alt="logo" height="50"> </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active link-body-emphasis">
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                                Map
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="announcement.php" class="nav-link active link-body-emphasis">
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                                Announcements
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="warehouse_main.php" class="nav-link active link-body-emphasis">
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                                Warehouse
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="createuser_admin_main.php" class="nav-link active link-body-emphasis">
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                                Create Account
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="statistics_main.php" class="nav-link link-body-emphasis">
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                                Statistics
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="update_products_main.php" class="nav-link link-body-emphasis">
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                                Update Products from JSON
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="add_product_main.php" class="nav-link link-body-emphasis">
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                                Manage Products 
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Account
                         </button>
-                    </div>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a href="#" class="nav-link active link-body-emphasis">
-                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                                    Map
-                                </a>
-                            </li>
-                            <!-- Add Filters Section -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="filtersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Filters
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="filtersDropdown">
-                                    <li>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="pendingFilter" checked>
-                                            <label class="form-check-label" for="pendingFilter">Show Pending Offers/Inquiries</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="approvedFilter" checked>
-                                            <label class="form-check-label" for="approvedFilter">Show Approved Offers/Inquiries</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="connectionLinesFilter">
-                                            <label class="form-check-label" for="connectionLinesFilter">Show Connection Lines</label>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="nav-item">
-                                <a href="announcement.php" class="nav-link active link-body-emphasis">
-                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                                    Announcements
-                                </a>
-                            </li>
-                            
-                            <li class="nav-item">
-                                <a href="warehouse_main.php" class="nav-link active link-body-emphasis">
-                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                                    Warehouse
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="createuser_admin_main.php" class="nav-link active link-body-emphasis">
-                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                                    Create Account
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="statistics_main.php" class="nav-link link-body-emphasis">
-                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                                    Statistics
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="update_products_main.php" class="nav-link link-body-emphasis">
-                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                                    Update Products from JSON
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="add_product_main.php" class="nav-link link-body-emphasis">
-                                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                                    Manage Products 
-                                </a>
-                            </li>
-                            <hr>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="settings.html">Settings</a></li>
+                            <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
                         </ul>
-
-                        <div class="dropdown ">
-                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Account
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                                <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                            </ul>
-                        </div>
                     </div>
-                </nav>
-
-                <!-- Add map container here -->
+                </div>
+            </nav>
+    
                 <div class="map_container mt-3">
                     <div id="map"></div>
                 </div>
@@ -312,295 +295,526 @@
 
     <!-- Add map initialization script -->
     <script>
-        
-        let map;
-        let baseMarker;
-        let isDragging = false;
-        let vehicleMarkers = [];
-        let inquiryMarkers = [];
-        let offerMarkers = [];
+       let map;
+let baseMarker;
+let isDragging = false;
+let vehicleMarkers = [];
+let inquiryMarkers = [];
+let offerMarkers = [];
 
-        var carIcon = L.divIcon({
-        className: 'car-icon',
-        html: '<i class="fas fa-car"></i>',
-        iconSize: [30, 30],
-        iconAnchor: [15, 15]
-        });
 
-        var inquiryApprovedIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: "<div style='background-color:#4285F4;' class='marker-pin'></div><i class='fa fa-question' style='color:#4285F4;'></i>",
-            iconSize: [30, 42],
-            iconAnchor: [15, 42]
-        });
+var carIcon = L.divIcon({
+    className: 'car-icon',
+    html: '<i class="fas fa-car"></i>',
+    iconSize: [30, 30],
+    iconAnchor: [15, 15]
+});
 
-        var inquiryPendingIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: "<div style='background-color:#DB4437;' class='marker-pin'></div><i class='fa fa-question' style='color:#DB4437;'></i>",
-            iconSize: [30, 42],
-            iconAnchor: [15, 42]
-        });
+var inquiryApprovedIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: "<div style='background-color:#4285F4;' class='marker-pin'></div><i class='fa fa-question' style='color:#4285F4;'></i>",
+    iconSize: [30, 42],
+    iconAnchor: [15, 42]
+});
 
-        var offerApprovedIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: "<div style='background-color:#0F9D58;' class='marker-pin'></div><i class='fa fa-gift' style='color:#ffffff;'></i>",
-            iconSize: [30, 42],
-            iconAnchor: [15, 42]
-        });
+var inquiryPendingIcon = L.divIcon({
+    className: 'inquiry-icon pending',
+    html: '<i class="fas fa-question pending"></i>',
+    iconSize: [30, 30],
+    iconAnchor: [15, 15]
+});
 
-        var offerPendingIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: "<div style='background-color:#F4B400;' class='marker-pin'></div><i class='fa fa-gift' style='color:#ffffff;'></i>",
-            iconSize: [30, 42],
-            iconAnchor: [15, 42]
-        });
+var offerApprovedIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: "<div style='background-color:#0F9D58;' class='marker-pin'></div><i class='fa fa-gift' style='color:#ffffff;'></i>",
+    iconSize: [30, 42],
+    iconAnchor: [15, 42]
+});
 
-        function initMap() {
-            console.log("Initializing map...");
-            map = L.map('map').setView([38.246639, 21.734573], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
+var offerPendingIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: "<div style='background-color:#F4B400;' class='marker-pin'></div><i class='fa fa-gift' style='color:#ffffff;'></i>",
+    iconSize: [30, 42],
+    iconAnchor: [15, 42]
+});
 
-            console.log("Map initialized:", map); 
+function initMap() {
+    map = L.map('map').setView([38.246639, 21.734573], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
-            getBaseLocation();
-            getVehicleLocations();
-            getInquiries();
-            getOffers();
+    getBaseLocation();
+    getVehicleLocations();
+    getInquiries();
+    getOffers(); // Load all markers by default
+}
 
-            // Add click event to the map
-            map.on('click', onMapClick);
 
-            const filters = {
-                pending: true,
-                approved: true,
-                connectionLines: false
-            };
+function getBaseLocation() {
+    fetch('get_base_location.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                var lat = parseFloat(data.latitude);
+                var lng = parseFloat(data.longitude);
 
-            document.getElementById('pendingFilter').addEventListener('change', function() {
-                filters.pending = this.checked;
-                updateMarkers();
-                clearAllConnectionLines();
-                updateConnectionLines();
-            });
-
-            document.getElementById('approvedFilter').addEventListener('change', function() {
-                filters.approved = this.checked;
-                updateMarkers();
-                clearAllConnectionLines();
-                updateConnectionLines();
-            });
-
-            document.getElementById('connectionLinesFilter').addEventListener('change', function() {
-                filters.connectionLines = this.checked;
-                clearAllConnectionLines();
-                updateConnectionLines();
-            });
-        }
-
-        function getBaseLocation() {
-            console.log("Fetching base location...");
-            fetch('get_base_location.php')
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Data received:", data);
-                    if (data.success) {
-                        var lat = parseFloat(data.latitude);
-                        var lng = parseFloat(data.longitude);
-                        
-                        console.log("Base location:", lat, lng);
-                        
-                        if (baseMarker) {
-                            baseMarker.setLatLng([lat, lng]);
-                        } else {
-                            baseMarker = L.marker([lat, lng], {draggable: true}).addTo(map);
-                            baseMarker.bindPopup("<strong>Base Location</strong><br>Lat: " + lat.toFixed(6) + "<br>Lng: " + lng.toFixed(6)).openPopup();
-                            
-                            // Add drag events to the marker
-                            baseMarker.on('dragstart', onDragStart);
-                            baseMarker.on('dragend', onDragEnd);
-                        }
-
-                        map.setView([lat, lng], 13);
-                    } else {
-                        console.error('Failed to get base location:', data.error);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-
-       // Function to fetch and display vehicle locations
-    function getVehicleLocations() {
-        console.log("Fetching vehicle locations...");
-        fetch('get_vehicle_locations.php')
-            .then(response => response.json())
-            .then(data => {
-                console.log("Vehicle data received:", data);
-                if (data.success) {
-                    data.vehicles.forEach(vehicle => {
-                        var lat = parseFloat(vehicle.latitude_vehicle);
-                        var lng = parseFloat(vehicle.longtitude_vehicle); // Ensure this matches the database field
-                        var marker = L.marker([lat, lng], { icon: carIcon }).addTo(map);
-                        marker.bindPopup("<strong>Volunteer Location</strong><br>Vehicle ID: " + vehicle.vehicle_id);
-                        vehicleMarkers.push(marker);
-                    });
-                    fitMapToAllMarkers(); // Adjust the map view to fit all markers
+                if (baseMarker) {
+                    baseMarker.setLatLng([lat, lng]);
                 } else {
-                    console.error("Error: No vehicles found.");
+                    baseMarker = L.marker([lat, lng], { draggable: true }).addTo(map);
+                    baseMarker.bindPopup("<strong>Base Location</strong><br>Lat: " + lat.toFixed(6) + "<br>Lng: " + lng.toFixed(6)).openPopup();
+
+                    baseMarker.on('dragstart', onDragStart);
+                    baseMarker.on('dragend', onDragEnd);
                 }
-            })
-            .catch(error => console.error('Error:', error));
+
+                map.setView([lat, lng], 13);
+            } else {
+                console.error('Failed to get base location:', data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function getVehicleLocations() {
+    fetch('get_vehicle_locations.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                data.vehicles.forEach(vehicle => {
+                    var lat = parseFloat(vehicle.latitude_vehicle);
+                    var lng = parseFloat(vehicle.longtitude_vehicle);
+                    var marker = L.marker([lat, lng], { icon: carIcon }).addTo(map);
+
+                    // Pop-up content to display vehicle ID, load details, and task count
+                    var popupContent = `<strong>Volunteer Location</strong><br>
+                                        Vehicle ID: ${vehicle.vehicle_id}<br>
+                                        Load: ${vehicle.load_details || 'No load'}<br>
+                                        Tasks: ${vehicle.task_count || 0}`;
+
+                    marker.bindPopup(popupContent);
+                    vehicleMarkers.push(marker);
+                });
+                fitMapToAllMarkers();
+            } else {
+                console.error("Error: No vehicles found.");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+
+
+function getInquiries() {
+    fetch('get_inquiries.php') // Modify this script to include `approved_vehicle_id` in the response
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const groupedInquiries = {};
+
+                data.inquiries.forEach(inquiry => {
+                    const key = `${inquiry.latitude},${inquiry.longitude}`;
+                    if (!groupedInquiries[key]) {
+                        groupedInquiries[key] = [];
+                    }
+                    groupedInquiries[key].push(inquiry);
+                });
+
+                for (const key in groupedInquiries) {
+                    const [lat, lng] = key.split(',').map(parseFloat);
+                    const inquiries = groupedInquiries[key];
+                    const status = inquiries[0].status.toLowerCase();
+
+                    const marker = L.marker([lat, lng], {
+                        icon: L.divIcon({
+                            className: `inquiry-icon ${status}`,
+                            html: `<i class="fas fa-question ${status}"></i>`,
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 15]
+                        })
+                    }).addTo(map);
+
+                    let popupContent = `<strong>Inquiries</strong><br>`;
+                    inquiries.forEach(inquiry => {
+                        popupContent += `
+                            Name: ${inquiry.full_name}<br>
+                            Phone: ${inquiry.phone}<br>
+                            Product: ${inquiry.product}<br>
+                            Quantity: ${inquiry.quantity}<br>
+                            Status: ${inquiry.status}<br>
+                            Date: ${inquiry.registration_date}<br>`;
+                        if (inquiry.status.toLowerCase() === 'approved') {
+                            popupContent += `Assigned Vehicle: ${inquiry.approved_vehicle_id}<br>`;
+                        }
+                        popupContent += `<hr>`;
+                    });
+
+                    marker.bindPopup(popupContent);
+                    inquiryMarkers.push(marker);
+                }
+
+                fitMapToAllMarkers();
+            } else {
+                console.error('Failed to get inquiries:', data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+
+function getOffers() {
+    fetch('get_offers.php') // Modify this script to include `approved_vehicle_id` in the response
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const groupedOffers = {};
+
+                data.offers.forEach(offer => {
+                    const key = `${offer.latitude},${offer.longitude}`;
+                    if (!groupedOffers[key]) {
+                        groupedOffers[key] = [];
+                    }
+                    groupedOffers[key].push(offer);
+                });
+
+                for (const key in groupedOffers) {
+                    const [lat, lng] = key.split(',').map(parseFloat);
+                    const offers = groupedOffers[key];
+                    const status = offers[0].status.toLowerCase();
+                    const icon = status === 'approved' ? offerApprovedIcon : offerPendingIcon;
+
+                    const marker = L.marker([lat, lng], { icon: icon }).addTo(map);
+
+                    let popupContent = `<strong>Offers</strong><br>`;
+                    offers.forEach(offer => {
+                        popupContent += `
+                            Name: ${offer.full_name}<br>
+                            Phone: ${offer.phone}<br>
+                            Product: ${offer.product}<br>
+                            Quantity: ${offer.quantity}<br>
+                            Status: ${offer.status}<br>
+                            Date: ${offer.registration_date}<br>`;
+                        if (offer.status.toLowerCase() === 'approved') {
+                            popupContent += `Assigned Vehicle: ${offer.approved_vehicle_id}<br>`;
+                        }
+                        popupContent += `<hr>`;
+                    });
+
+                    marker.bindPopup(popupContent);
+                    offerMarkers.push(marker);
+                }
+
+                fitMapToAllMarkers();
+            } else {
+                console.error('Failed to get offers:', data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+
+
+function fitMapToAllMarkers() {
+    var allMarkers = [baseMarker, ...vehicleMarkers, ...inquiryMarkers, ...offerMarkers].filter(Boolean);
+    if (allMarkers.length > 0) {
+        var group = new L.featureGroup(allMarkers);
+        map.fitBounds(group.getBounds().pad(0.1));
+    }
+}
+
+function onMapClick(e) {
+    if (!baseMarker) {
+        baseMarker = L.marker(e.latlng, { draggable: true }).addTo(map);
+        baseMarker.on('dragstart', onDragStart);
+        baseMarker.on('dragend', onDragEnd);
+    } else {
+        baseMarker.setLatLng(e.latlng);
+    }
+    updateMarkerPopup();
+    confirmLocationChange();
+}
+
+function onDragStart() {
+    isDragging = true;
+}
+
+function onDragEnd(e) {
+    isDragging = false;
+    updateMarkerPopup();
+    confirmLocationChange();
+}
+
+function updateMarkerPopup() {
+    let lat = baseMarker.getLatLng().lat.toFixed(6);
+    let lng = baseMarker.getLatLng().lng.toFixed(6);
+    baseMarker.bindPopup("Base Location<br>Lat: " + lat + "<br>Lng: " + lng).openPopup();
+}
+
+function confirmLocationChange() {
+    if (confirm("Do you want to save this new base location?")) {
+        saveBaseLocation();
+    } else {
+        getBaseLocation(); // Reset to the original location
+    }
+}
+
+function saveBaseLocation() {
+    let lat = baseMarker.getLatLng().lat;
+    let lng = baseMarker.getLatLng().lng;
+
+    fetch('save_base_location.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ latitude: lat, longitude: lng }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Base location updated successfully!");
+            } else {
+                alert("Failed to update base location. Please try again.");
+                getBaseLocation(); // Reset to the original location
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert("An error occurred. Please try again.");
+            getBaseLocation(); // Reset to the original location
+        });
+}
+
+document.getElementById('pendingFilter').addEventListener('change', function () {
+    applyFilters();
+});
+
+document.getElementById('approvedFilter').addEventListener('change', function () {
+    applyFilters();
+});
+
+function applyFilters() {
+    clearAllMarkers();
+
+    // Re-add the base marker after clearing all markers
+    if (baseMarker) {
+        baseMarker.addTo(map);
+    } else {
+        getBaseLocation(); // If base marker doesn't exist, fetch and add it
     }
 
-        function getInquiries() {
-            console.log("Fetching inquiries...");
-            fetch('get_inquiries.php')
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Inquiries data received:", data);
-                    if (data.success) {
-                        data.inquiries.forEach(inquiry => {
-                            var lat = parseFloat(inquiry.latitude);
-                            var lng = parseFloat(inquiry.longitude);
-                            var status = inquiry.status.toLowerCase();
-                            var marker = L.marker([lat, lng], {
-                                icon: L.divIcon({
-                                    className: `inquiry-icon ${status}`,
-                                    html: `<i class="fas fa-question ${status}"></i>`,
-                                    iconSize: [30, 30],
-                                    iconAnchor: [15, 15]
-                                })
-                            }).addTo(map);
-                            marker.bindPopup(`<strong>Inquiry</strong><br>
-                                Name: ${inquiry.full_name}<br>
-                                Phone: ${inquiry.phone}<br>
-                                Product: ${inquiry.product}<br>
-                                Quantity: ${inquiry.quantity}<br>
-                                Status: ${inquiry.status}<br>
-                                Date: ${inquiry.registration_date}`);
-                            inquiryMarkers.push(marker);
-                        });
-                        fitMapToAllMarkers();
-                    } else {
-                        console.error('Failed to get inquiries:', data.error);
+    let showPending = document.getElementById('pendingFilter').checked;
+    let showApproved = document.getElementById('approvedFilter').checked;
+
+    if (showPending || showApproved) {
+        if (showPending) {
+            getPendingInquiries();
+            getPendingOffers();
+        }
+        if (showApproved) {
+            getApprovedInquiries();
+            getApprovedOffers();
+        }
+    } else {
+        // If no filters are checked, show all markers
+        getVehicleLocations();
+        getInquiries();
+        getOffers();
+    }
+}
+
+
+
+function clearAllMarkers() {
+    // Clear existing markers from the map, but don't remove the base marker
+    vehicleMarkers.forEach(marker => map.removeLayer(marker));
+    inquiryMarkers.forEach(marker => map.removeLayer(marker));
+    offerMarkers.forEach(marker => map.removeLayer(marker));
+
+    vehicleMarkers = [];
+    inquiryMarkers = [];
+    offerMarkers = [];
+}
+
+
+
+
+function getPendingInquiries() {
+    fetch('get_inquiries.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                data.inquiries.forEach(inquiry => {
+                    if (inquiry.status.toLowerCase() === 'pending') {
+                        var lat = parseFloat(inquiry.latitude);
+                        var lng = parseFloat(inquiry.longitude);
+                        var marker = L.marker([lat, lng], {
+                            icon: inquiryPendingIcon
+                        }).addTo(map);
+                        marker.bindPopup(`<strong>Inquiry</strong><br>
+                            Name: ${inquiry.full_name}<br>
+                            Phone: ${inquiry.phone}<br>
+                            Product: ${inquiry.product}<br>
+                            Quantity: ${inquiry.quantity}<br>
+                            Status: ${inquiry.status}<br>
+                            Date: ${inquiry.registration_date}`);
+                        inquiryMarkers.push(marker);
                     }
-                })
-                .catch(error => console.error('Error:', error));
-        }
+                });
+                fitMapToAllMarkers();
+            } else {
+                console.error('Failed to get inquiries:', data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
 
-        function getOffers() {
-            console.log("Fetching offers...");
-            fetch('get_offers.php')
-                .then(response => {
-                    console.log("Raw response:", response);
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Offers data received:", data);
-                    if (data.success) {
-                        console.log("Number of offers:", data.offers.length);
-                        data.offers.forEach(offer => {
-                            console.log("Processing offer:", offer);
-                            var lat = parseFloat(offer.latitude);
-                            var lng = parseFloat(offer.longitude);
-                            var status = offer.status.toLowerCase();
-                            var icon = status === 'approved' ? offerApprovedIcon : offerPendingIcon;
-                            
-                            var marker = L.marker([lat, lng], {icon: icon}).addTo(map);
-                            marker.bindPopup(`<strong>Offer</strong><br>
-                                Name: ${offer.full_name}<br>
-                                Phone: ${offer.phone}<br>
-                                Product: ${offer.product}<br>
-                                Quantity: ${offer.quantity}<br>
-                                Status: ${status}<br>
-                                Date: ${offer.registration_date}`);
-                            offerMarkers.push(marker);
-                        });
-                        fitMapToAllMarkers();
-                    } else {
-                        console.error('Failed to get offers:', data.error);
+function getPendingOffers() {
+    fetch('get_offers.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                data.offers.forEach(offer => {
+                    if (offer.status.toLowerCase() === 'pending') {
+                        var lat = parseFloat(offer.latitude);
+                        var lng = parseFloat(offer.longitude);
+                        var marker = L.marker([lat, lng], { icon: offerPendingIcon }).addTo(map);
+                        marker.bindPopup(`<strong>Offer</strong><br>
+                            Name: ${offer.full_name}<br>
+                            Phone: ${offer.phone}<br>
+                            Product: ${offer.product}<br>
+                            Quantity: ${offer.quantity}<br>
+                            Status: ${offer.status}<br>
+                            Date: ${offer.registration_date}`);
+                        offerMarkers.push(marker);
                     }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-        
-        function fitMapToAllMarkers() {
-            var allMarkers = [baseMarker, ...vehicleMarkers, ...inquiryMarkers, ...offerMarkers].filter(Boolean);
-            if (allMarkers.length > 0) {
-                var group = new L.featureGroup(allMarkers);
-                map.fitBounds(group.getBounds().pad(0.1));
-            }
-        }
-
-        function onMapClick(e) {
-            if (!baseMarker) {
-                baseMarker = L.marker(e.latlng, {draggable: true}).addTo(map);
-                baseMarker.on('dragstart', onDragStart);
-                baseMarker.on('dragend', onDragEnd);
+                });
+                fitMapToAllMarkers();
             } else {
-                baseMarker.setLatLng(e.latlng);
+                console.error('Failed to get offers:', data.error);
             }
-            updateMarkerPopup();
-            confirmLocationChange();
-        }
+        })
+        .catch(error => console.error('Error:', error));
+}
 
-        function onDragStart() {
-            isDragging = true;
-        }
-
-        function onDragEnd(e) {
-            isDragging = false;
-            updateMarkerPopup();
-            confirmLocationChange();
-        }
-
-        function updateMarkerPopup() {
-            let lat = baseMarker.getLatLng().lat.toFixed(6);
-            let lng = baseMarker.getLatLng().lng.toFixed(6);
-            baseMarker.bindPopup("Base Location<br>Lat: " + lat + "<br>Lng: " + lng).openPopup();
-        }
-
-        function confirmLocationChange() {
-            if (confirm("Do you want to save this new base location?")) {
-                saveBaseLocation();
+function getApprovedInquiries() {
+    fetch('get_inquiries.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                data.inquiries.forEach(inquiry => {
+                    if (inquiry.status.toLowerCase() === 'approved') {
+                        var lat = parseFloat(inquiry.latitude);
+                        var lng = parseFloat(inquiry.longitude);
+                        var marker = L.marker([lat, lng], {
+                            icon: inquiryApprovedIcon
+                        }).addTo(map);
+                        marker.bindPopup(`<strong>Inquiry</strong><br>
+                            Name: ${inquiry.full_name}<br>
+                            Phone: ${inquiry.phone}<br>
+                            Product: ${inquiry.product}<br>
+                            Quantity: ${inquiry.quantity}<br>
+                            Status: ${inquiry.status}<br>
+                            Date: ${inquiry.registration_date}`);
+                        inquiryMarkers.push(marker);
+                    }
+                });
+                fitMapToAllMarkers();
             } else {
-                getBaseLocation(); // Reset to the original location
+                console.error('Failed to get inquiries:', data.error);
             }
-        }
+        })
+        .catch(error => console.error('Error:', error));
+}
 
-        function saveBaseLocation() {
-            let lat = baseMarker.getLatLng().lat;
-            let lng = baseMarker.getLatLng().lng;
-            
-            fetch('save_base_location.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({latitude: lat, longitude: lng}),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Base location updated successfully!");
-                } else {
-                    alert("Failed to update base location. Please try again.");
-                    getBaseLocation(); // Reset to the original location
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert("An error occurred. Please try again.");
-                getBaseLocation(); // Reset to the original location
-            });
-        }
-            
-        window.onload = function() {
-            console.log("Window loaded, initializing map...");
-            initMap();
-            
-        };
+function getApprovedInquiries() {
+    fetch('get_inquiries.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                data.inquiries.forEach(inquiry => {
+                    if (inquiry.status.toLowerCase() === 'approved') {
+                        var lat = parseFloat(inquiry.latitude);
+                        var lng = parseFloat(inquiry.longitude);
+
+                        // Use the same logic for choosing the icon as in the getPendingInquiries function
+                        var status = inquiry.status.toLowerCase();
+                        var marker = L.marker([lat, lng], {
+                            icon: L.divIcon({
+                                className: `inquiry-icon ${status}`,
+                                html: `<i class="fas fa-question ${status}"></i>`,
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 15]
+                            })
+                        }).addTo(map);
+
+                        marker.bindPopup(`<strong>Inquiry</strong><br>
+                            Name: ${inquiry.full_name}<br>
+                            Phone: ${inquiry.phone}<br>
+                            Product: ${inquiry.product}<br>
+                            Quantity: ${inquiry.quantity}<br>
+                            Status: ${inquiry.status}<br>
+                            Date: ${inquiry.registration_date}`);
+                        inquiryMarkers.push(marker);
+                    }
+                });
+                fitMapToAllMarkers();
+            } else {
+                console.error('Failed to get inquiries:', data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function getApprovedOffers() {
+    fetch('get_offers.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                data.offers.forEach(offer => {
+                    if (offer.status.toLowerCase() === 'approved') {
+                        var lat = parseFloat(offer.latitude);
+                        var lng = parseFloat(offer.longitude);
+
+                        // Ensure the icon for approved offers is used
+                        var marker = L.marker([lat, lng], {
+                            icon: offerApprovedIcon
+                        }).addTo(map);
+
+                        marker.bindPopup(`<strong>Offer</strong><br>
+                            Name: ${offer.full_name}<br>
+                            Phone: ${offer.phone}<br>
+                            Product: ${offer.product}<br>
+                            Quantity: ${offer.quantity}<br>
+                            Status: ${offer.status}<br>
+                            Date: ${offer.registration_date}`);
+                        offerMarkers.push(marker);
+                    }
+                });
+                fitMapToAllMarkers();
+            } else {
+                console.error('Failed to get offers:', data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+
+function fitMapToAllMarkers() {
+    var allMarkers = [baseMarker, ...vehicleMarkers, ...inquiryMarkers, ...offerMarkers].filter(Boolean);
+    if (allMarkers.length > 0) {
+        var group = new L.featureGroup(allMarkers);
+        map.fitBounds(group.getBounds().pad(0.1));
+    }
+}
+
+
+
+window.onload = function () {
+    initMap();
+};
+
     </script>
 </body>
 
