@@ -18,17 +18,69 @@
    
 </head>
 <style>
+#map {
+  height: 90vh; 
+  width: 100%;
+  max-height: 800px; /* Maximum height */
+}
+.map_container {
+  padding: 20px;
+}
+
+.custom-div-icon .marker-pin {
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 50% 0;
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 50%;
+  top: 50%;
+  margin: -15px 0 0 -15px;
+}
+
+.custom-div-icon i {
+  position: absolute;
+  width: 22px;
+  font-size: 22px;
+  left: 0;
+  right: 0;
+  margin: 10px auto;
+  text-align: center;
+}
+
+.custom-div-icon .marker-pin::after {
+  content: '';
+  width: 24px;
+  height: 24px;
+  margin: 3px 0 0 3px;
+  background: #fff;
+  position: absolute;
+  border-radius: 50%;
+}
+
 .car-icon {
-    background-color: #ffffff;
-    border: 2px solid #000000;
-    border-radius: 50%;
-    text-align: center;
- }
-   
+ background-color: #ffffff;
+ border: 2px solid #000000;
+ border-radius: 50%;
+ text-align: center;
+}
+
 .car-icon i {
-    font-size: 20px;
-    margin-top: 5px;
-    color: #000000;
+ font-size: 20px;
+ margin-top: 5px;
+ color: #000000;
+}
+
+.marker-pin.pending {
+ background-color: #DB4437; /* Κόκκινο */
+}
+
+.marker-pin.approved {
+ background-color: #F4B400; /* Κίτρινο */
+}
+
+.marker-pin.completed {
+ background-color: #0F9D58; /* Πράσινο */
 }
 
 .custom-div-icon i.pending {
@@ -39,95 +91,8 @@
  color: #F4B400; /* Κίτρινο */
 }
 
-.inquiry-icon {
-    background-color: #ffffff;
-    border: 2px solid #000000;
-    border-radius: 50%;
-    text-align: center;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.inquiry-icon.pending {
-    border-color: #DB4437; /* Red */
-}
-
-.inquiry-icon.approved {
-    border-color: #F4B400; /* Yellow */
-}
-
-.inquiry-icon i {
-    font-size: 16px;
-}
-
-.inquiry-icon i.pending {
-    color: #DB4437; /* Red */
-}
-
-.inquiry-icon i.approved {
-    color: #F4B400; /* Yellow */
-}
-
-.offer-icon {
-    background-color: #ffffff;
-    border: 2px solid #000000;
-    border-radius: 50%;
-    text-align: center;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.offer-icon.pending {
-    border-color: #4285F4; /* Blue */
-}
-
-.offer-icon.approved {
-    border-color: #0F9D58; /* Green */
-}
-
-.offer-icon i {
-    font-size: 16px;
-}
-
-.offer-icon i.pending {
-    color: #4285F4; /* Blue */
-}
-
-.offer-icon i.approved {
-    color: #0F9D58; /* Green */
-}
-
-.custom-div-icon .marker-pin {
-    width: 30px;
-    height: 30px;
-    border-radius: 50% 50% 50% 0;
-    background: #c30b82;
-    position: absolute;
-    transform: rotate(-45deg);
-    left: 50%;
-    top: 50%;
-    margin: -15px 0 0 -15px;
-}
-
-.custom-div-icon i {
-    position: absolute;
-    width: 22px;
-    font-size: 22px;
-    left: 0;
-    right: 0;
-    margin: 10px auto;
-    text-align: center;
-}
-
-.custom-div-icon i.fa-gift {
-    font-size: 16px;
-    margin: 12px auto;
+.custom-div-icon i.completed {
+ color: #0F9D58; /* Πράσινο */
 }
 </style>
 
@@ -322,34 +287,35 @@ var carIcon = L.divIcon({
     iconAnchor: [15, 15]
 });
 
-var inquiryApprovedIcon = L.divIcon({
-    className: 'custom-div-icon',
-    html: "<div style='background-color:#4285F4;' class='marker-pin'></div><i class='fa fa-question' style='color:#4285F4;'></i>",
-    iconSize: [30, 42],
-    iconAnchor: [15, 42]
-});
+// Ορίζουμε τα εικονίδια για τις διαφορετικές πινέζες
+        // Ορίζουμε τα εικονίδια για τις διαφορετικές πινέζες
+        var inquiryApprovedIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#4285F4;' class='marker-pin'></div><i class='fa fa-question' style='color:#4285F4;'></i>",
+            iconSize: [30, 42],
+            iconAnchor: [15, 42]
+        });
 
-var inquiryPendingIcon = L.divIcon({
-    className: 'inquiry-icon pending',
-    html: '<i class="fas fa-question pending"></i>',
-    iconSize: [30, 30],
-    iconAnchor: [15, 15]
-});
+        var inquiryPendingIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#DB4437;' class='marker-pin'></div><i class='fa fa-question' style='color:#DB4437;'></i>",
+            iconSize: [30, 42],
+            iconAnchor: [15, 42]
+        });
 
-var offerApprovedIcon = L.divIcon({
-    className: 'custom-div-icon',
-    html: "<div style='background-color:#0F9D58;' class='marker-pin'></div><i class='fa fa-gift' style='color:#ffffff;'></i>",
-    iconSize: [30, 42],
-    iconAnchor: [15, 42]
-});
+        var offerApprovedIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#0F9D58;' class='marker-pin'></div><i class='fa fa-gift' style='color:#0F9D58;'></i>",
+            iconSize: [30, 42],
+            iconAnchor: [15, 42]
+        });
 
-var offerPendingIcon = L.divIcon({
-    className: 'custom-div-icon',
-    html: "<div style='background-color:#F4B400;' class='marker-pin'></div><i class='fa fa-gift' style='color:#ffffff;'></i>",
-    iconSize: [30, 42],
-    iconAnchor: [15, 42]
-});
-
+        var offerPendingIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#F4B400;' class='marker-pin'></div><i class='fa fa-gift' style='color:#F4B400;'></i>",
+            iconSize: [30, 42],
+            iconAnchor: [15, 42]
+        });
 function initMap() {
     map = L.map('map').setView([38.246639, 21.734573], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -447,14 +413,9 @@ function getInquiries() {
                     const inquiries = groupedInquiries[key];
                     const status = inquiries[0].status.toLowerCase();
 
-                    const marker = L.marker([lat, lng], {
-                        icon: L.divIcon({
-                            className: `inquiry-icon ${status}`,
-                            html: `<i class="fas fa-question ${status}"></i>`,
-                            iconSize: [30, 30],
-                            iconAnchor: [15, 15]
-                        })
-                    }).addTo(map);
+                    const icon = status === 'approved' ? inquiryApprovedIcon : inquiryPendingIcon;
+
+                    const marker = L.marker([lat, lng], { icon: icon }).addTo(map);
 
                     let popupContent = `<strong>Inquiries</strong><br>`;
                     inquiries.forEach(inquiry => {
@@ -880,14 +841,8 @@ function getApprovedInquiries() {
 
                         // Use the same logic for choosing the icon as in the getPendingInquiries function
                         var status = inquiry.status.toLowerCase();
-                        var marker = L.marker([lat, lng], {
-                            icon: L.divIcon({
-                                className: `inquiry-icon ${status}`,
-                                html: `<i class="fas fa-question ${status}"></i>`,
-                                iconSize: [30, 30],
-                                iconAnchor: [15, 15]
-                            })
-                        }).addTo(map);
+                        var marker = L.marker([lat, lng],
+                            { icon: inquiryApprovedIcon }).addTo(map);
 
                         marker.bindPopup(`<strong>Inquiry</strong><br>
                             Name: ${inquiry.full_name}<br>
