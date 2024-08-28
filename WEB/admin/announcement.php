@@ -25,12 +25,12 @@ checkSessionAndRedirect();
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li><a href="admin_map_main.php" class="nav-link link-body-emphasis">Map</a></li>
-                    <li><a href="#" class="nav-link link-body-emphasis">Announcements</a></li>
+                    <li><a href="#" class="nav-link active link-body-emphasis">Announcements</a></li>
                     <li><a href="warehouse_main.php" class="nav-link link-body-emphasis">Warehouse</a></li>
                     <li><a href="createuser_admin_main.php" class="nav-link link-body-emphasis">Create Account</a></li>
-                    <li><a href="statistics_main.php" class="nav-link active link-body-emphasis">Statistics</a></li>
-                    <li><a href="update_products_main.php" class="nav-link active link-body-emphasis">Update Products from JSON</a></li>
-                    <li><a href="add_product_main.php" class="nav-link active link-body-emphasis">Manage Products</a></li>
+                    <li><a href="statistics_main.php" class="nav-link link-body-emphasis">Statistics</a></li>
+                    <li><a href="update_products_main.php" class="nav-link link-body-emphasis">Update Products from JSON</a></li>
+                    <li><a href="add_product_main.php" class="nav-link link-body-emphasis">Manage Products</a></li>
                     <hr>
                 </ul>
                 <div class="dropdown">
@@ -53,13 +53,13 @@ checkSessionAndRedirect();
                     </div>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                          <li class="nav-item"><a href="admin_map_main.php" class="nav-link active link-body-emphasis">Map</a></li>
+                          <li class="nav-item"><a href="admin_map_main.php" class="nav-link link-body-emphasis">Map</a></li>
                           <li class="nav-item"><a href="#" class="nav-link active link-body-emphasis">Announcements</a></li>
-                          <li class="nav-item"><a href="warehouse_main.php" class="nav-link active link-body-emphasis">Warehouse</a></li>
-                          <li class="nav-item"><a href="createuser_admin_main.php" class="nav-link active link-body-emphasis">Create Account</a></li>
-                          <li class="nav-item"><a href="statistics_main.php" class="nav-link active link-body-emphasis">Statistics</a></li>
-                          <li class="nav-item"><a href="update_products_main.php" class="nav-link active link-body-emphasis">Update Products from JSON</a></li>
-                          <li class="nav-item"><a href="add_product_main.php" class="nav-link active link-body-emphasis">Manage Products</a></li>
+                          <li class="nav-item"><a href="warehouse_main.php" class="nav-link link-body-emphasis">Warehouse</a></li>
+                          <li class="nav-item"><a href="createuser_admin_main.php" class="nav-link link-body-emphasis">Create Account</a></li>
+                          <li class="nav-item"><a href="statistics_main.php" class="nav-link link-body-emphasis">Statistics</a></li>
+                          <li class="nav-item"><a href="update_products_main.php" class="nav-link link-body-emphasis">Update Products from JSON</a></li>
+                          <li class="nav-item"><a href="add_product_main.php" class="nav-link link-body-emphasis">Manage Products</a></li>
                           <hr>
                       </ul>
                       <div class="dropdown">
