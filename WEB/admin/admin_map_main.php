@@ -649,7 +649,7 @@ document.getElementById('taskFilter').addEventListener('change', function () {
 });
 
 document.getElementById('noTaskFilter').addEventListener('change', function () {
-    // Uncheck the other filter if this one is checked
+    // Uncheck the "Show Vehicles with Tasks Only" filter if this one is checked
     if (this.checked) {
         document.getElementById('taskFilter').checked = false;
     }
@@ -664,8 +664,38 @@ document.getElementById('showLinesFilter').addEventListener('change', function (
     applyFilters(); // Reapply filters when the checkbox is toggled
 });
 
+function drawDashedLine(startLatLng, endLatLng, color) {
+    const dashedLine = L.polyline([startLatLng, endLatLng], {
+        color: '#000000',
+        dashArray: '5, 10', // Dashed line style
+        weight: 2,          // Thickness of the line
+    }).addTo(map);
+    taskLines.push(dashedLine); // Store the line reference
+}
+
+function clearTaskLines() {
+    taskLines.forEach(line => map.removeLayer(line)); // Remove each line from the map
+    taskLines = []; // Clear the array
+}
+
+function drawLinesForAllTasks() {
+    clearTaskLines(); // Ensure any existing lines are cleared
+
+    if (showLines) { // Only draw lines if the filter is enabled
+        for (const vehicleId in vehicleTasksMap) {
+            const tasks = vehicleTasksMap[vehicleId];
+            if (tasks.length > 0 && vehicleMarkersMap[vehicleId]) {
+                const vehicleLatLng = vehicleMarkersMap[vehicleId].getLatLng();
+                tasks.forEach(task => {
+                    drawDashedLine(vehicleLatLng, task.latLng, task.color);
+                });
+            }
+        }
+    }
+}
+
 function applyFilters() {
-    clearInquiryAndOfferMarkers();
+    clearInquiryAndOfferMarkers(); // Clear markers for inquiries and offers
     clearTaskLines(); // Clear any existing task lines
 
     // Re-add the base marker after clearing markers
@@ -680,30 +710,34 @@ function applyFilters() {
     let showVehiclesWithTasks = document.getElementById('taskFilter').checked;
     let showVehiclesWithoutTasks = document.getElementById('noTaskFilter').checked;
 
-    // Handle the inquiries and offers filtering
-    if (showPending || showApproved) {
-        if (showPending) {
-            getPendingInquiries();
-            getPendingOffers();
-        }
-        if (showApproved) {
-            getApprovedInquiries();
-            getApprovedOffers();
-        }
-    } else {
-        // If no inquiry/offer filters are checked, show all inquiries and offers
-        getInquiries();
-        getOffers();
-    }
-
-    // Handle the vehicle filtering based on tasks
     if (showVehiclesWithTasks) {
+        // Hide inquiries and offers when showing only vehicles with tasks
         showOnlyVehiclesWithTasks();
     } else if (showVehiclesWithoutTasks) {
+        // Hide inquiries and offers when showing only vehicles without tasks
+        clearInquiryAndOfferMarkers(); // Ensure inquiry and offer markers are cleared
         showOnlyVehiclesWithoutTasks();
     } else {
-        // If neither task-related filter is checked, show all vehicles
-        vehicleMarkers.forEach(marker => marker.addTo(map));
+        // Handle the inquiries and offers filtering
+        if (showPending || showApproved) {
+            if (showPending) {
+                getPendingInquiries();
+                getPendingOffers();
+            }
+            if (showApproved) {
+                getApprovedInquiries();
+                getApprovedOffers();
+            }
+            // Hide vehicles if "Show Pending Offers/Inquiries" is checked
+            vehicleMarkers.forEach(marker => map.removeLayer(marker));
+        } else {
+            // If no inquiry/offer filters are checked, show all inquiries and offers
+            getInquiries();
+            getOffers();
+
+            // Re-show the vehicles when no filters or other vehicle-related filters are active
+            vehicleMarkers.forEach(marker => marker.addTo(map)); // Re-add all vehicle markers
+        }
     }
 
     // Draw dashed lines only if the filter is enabled
@@ -715,31 +749,16 @@ function applyFilters() {
     fitMapToAllMarkers();
 }
 
-function drawLinesForAllTasks() {
-    if (!showLines) return; // Do not draw lines if the filter is off
-    
-    for (const vehicleId in vehicleTasksMap) {
-        if (vehicleTasksMap[vehicleId].length > 0) {
-            const vehicleMarker = vehicleMarkersMap[vehicleId];
-            vehicleTasksMap[vehicleId].forEach(task => {
-                drawDashedLine(vehicleMarker.getLatLng(), task.latLng, task.color);
-            });
+function showOnlyVehiclesWithTasks() {
+    vehicleMarkers.forEach(marker => {
+        const vehicleId = Object.keys(vehicleMarkersMap).find(id => vehicleMarkersMap[id] === marker);
+        if (vehicleTasksMap[vehicleId] && vehicleTasksMap[vehicleId].length > 0) {
+            marker.addTo(map);
+            drawTasksOnVehicleMarker(marker, vehicleId); // Draw tasks on the vehicle marker
+        } else {
+            map.removeLayer(marker);
         }
-    }
-}
-
-function drawDashedLine(startLatLng, endLatLng, color) {
-    const dashedLine = L.polyline([startLatLng, endLatLng], {
-        color: color,
-        dashArray: '5, 10', // Dashed line style
-        weight: 2,          // Thickness of the line
-    }).addTo(map);
-    taskLines.push(dashedLine); // Store the line reference
-}
-
-function clearTaskLines() {
-    taskLines.forEach(line => map.removeLayer(line)); // Remove each line from the map
-    taskLines = []; // Clear the array
+    });
 }
 
 function showOnlyVehiclesWithTasks() {
