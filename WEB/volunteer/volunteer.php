@@ -178,7 +178,7 @@ checkSessionAndRedirect();
             connectionLines: false
         };
         var connectionLines = {};
-    
+        let currentVehicleId = null;
         // Ορίζουμε τα εικονίδια για τις διαφορετικές πινέζες
         var inquiryApprovedIcon = L.divIcon({
             className: 'custom-div-icon',
@@ -245,6 +245,28 @@ checkSessionAndRedirect();
             getApprovedCivilians();
         }
     
+        function getCurrentVehicleId() {
+            return new Promise((resolve, reject) => {
+                if (currentVehicleId !== null) {
+                    resolve(currentVehicleId);
+                } else {
+                    fetch('get_current_vehicle_id.php')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                currentVehicleId = data.vehicle_id;
+                                resolve(currentVehicleId);
+                            } else {
+                                reject('Failed to get vehicle ID: ' + data.error);
+                            }
+                        })
+                        .catch(error => {
+                            reject('Error fetching vehicle ID: ' + error);
+                        });
+                }
+            });
+        }
+
         function getVolunteerLocation() {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(function(position) {
@@ -527,29 +549,31 @@ checkSessionAndRedirect();
         }
 
         function updateConnectionLines() {
-            // Αφαίρεση όλων των υπαρχόντων γραμμών
-            map.eachLayer(function (layer) {
-                if (layer instanceof L.Polyline) {
-                    map.removeLayer(layer);
-                }
-            });
-            connectionLines = {};
+            clearAllConnectionLines();
 
-            // Έλεγχος αν πρέπει να σχεδιαστούν οι γραμμές
-            if (filters.approved && filters.connectionLines && volunteerMarker) {
-                civilianMarkers.forEach(markerInfo => {
-                    if (markerInfo.status === 'approved' && markerInfo.marker.getLatLng()) {
-                        const line = L.polyline([volunteerMarker.getLatLng(), markerInfo.marker.getLatLng()], {
-                            color: 'red',
-                            weight: 2,
-                            opacity: 0.5,
-                            dashArray: '10, 10'
-                        }).addTo(map);
-                        connectionLines[markerInfo.id] = line;
-                    }
-                });
+            if (filters.connectionLines && filters.approved && volunteerMarker) {
+                getCurrentVehicleId()
+                    .then(vehicleId => {
+                        civilianMarkers.forEach(markerInfo => {
+                            const approvedItems = markerInfo.items.filter(item => 
+                                item.status === 'approved' && 
+                                item.approved_vehicle_id === vehicleId
+                            );
+                            if (approvedItems.length > 0) {
+                                const line = L.polyline([volunteerMarker.getLatLng(), markerInfo.marker.getLatLng()], {
+                                    color: 'red',
+                                    weight: 2,
+                                    opacity: 0.5,
+                                    dashArray: '10, 10'
+                                }).addTo(map);
+                                connectionLines[markerInfo.items[0].id] = line;
+                            }
+                        });
+                    })
+                    .catch(error => console.error(error));
             }
         }
+
 
         function updateMarkers() {
             civilianMarkers.forEach(markerInfo => {
@@ -566,7 +590,6 @@ checkSessionAndRedirect();
             if (volunteerMarker) volunteerMarker.addTo(map);
             if (baseMarker) baseMarker.addTo(map);
             
-            clearAllConnectionLines();
             updateConnectionLines();
         }
 
@@ -579,6 +602,13 @@ checkSessionAndRedirect();
             });
             connectionLines = {};
         }
+        document.getElementById('approvedFilter').addEventListener('change', function() {
+            filters.approved = this.checked;
+            updateMarkers();
+            clearAllConnectionLines();
+            updateConnectionLines();
+        });
+
     
         window.onload = initMap;
     </script>
