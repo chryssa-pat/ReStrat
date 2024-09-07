@@ -230,8 +230,7 @@ var carIcon = L.divIcon({
     iconAnchor: [15, 15]
 });
 
-// Ορίζουμε τα εικονίδια για τις διαφορετικές πινέζες
-        // Ορίζουμε τα εικονίδια για τις διαφορετικές πινέζες
+
         var inquiryApprovedIcon = L.divIcon({
             className: 'custom-div-icon',
             html: "<div style='background-color:#4285F4;' class='marker-pin'></div><i class='fa fa-question' style='color:#4285F4;'></i>",
