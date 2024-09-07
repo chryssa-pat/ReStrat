@@ -237,7 +237,7 @@ checkSessionAndRedirect();
                 .openOn(map);
 
                 // Enable/disable buttons based on distance
-                if (distanceInKm <= 200) {
+                if (distanceInKm <= 10000) {
                     loadButton.disabled = false;
                     unloadButton.disabled = false;
                 } else {
