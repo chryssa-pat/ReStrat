@@ -51,7 +51,17 @@ if ($result_offer) {
     }
 }
 
-echo json_encode(['success' => true, 'coordinates' => $coordinates]);
+// Group coordinates by latitude and longitude
+$grouped_coordinates = [];
+foreach ($coordinates as $coord) {
+    $key = $coord['latitude'] . ',' . $coord['longitude'];
+    if (!isset($grouped_coordinates[$key])) {
+        $grouped_coordinates[$key] = [];
+    }
+    $grouped_coordinates[$key][] = $coord;
+}
+
+echo json_encode(['success' => true, 'coordinates' => array_values($grouped_coordinates)]);
 
 $conn->close();
 ?>
