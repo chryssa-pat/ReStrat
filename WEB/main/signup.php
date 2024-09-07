@@ -25,7 +25,7 @@ if ($conn->query($sql_users) === TRUE) {
     $sql_civilian = "INSERT INTO civilian (civilian_user, full_name, phone, latitude, longitude) VALUES ('$username', '$fullname', '$phone', '$latitude', '$longitude')";
 
     if ($conn->query($sql_civilian) === TRUE) {
-        header('Location: ../civilian/civilian.html');
+        header('Location: ../civilian/civilian_main.php');
         exit;
     } else {
         $_SESSION['signup_message'] = 'Error creating account in CIVILIAN table: ' . $conn->error;

@@ -11,32 +11,38 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><img src="../images/world.png" alt="logo" height="50"> </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="main.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page"  href="aboutus.html"> About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="faqs.html">FAQs</a>
-                    </li>
-    
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Contact Us</a>
-                    </li>
-                </ul>
-            </div>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#"><img src="../images/world.png" alt="logo" height="50"> </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="main.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"  href="aboutus.html"> About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="faqs.html">FAQs</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                  <a class="nav-link active dropdown-toggle" href="#" id="contactUsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Contact Us
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="contactUsDropdown">
+                      <li><a class="dropdown-item" href="mailto:test@test.com">Email</a></li>
+                      <li><a class="dropdown-item" href="tel:+1234567890">Phone</a></li>
+                  </ul>
+              </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <div class="px-4 pt-5 my-3 text-center border-bottom">
         <h1 class="display-6 fw-bold text-body-emphasis">About Us</h1>
@@ -60,46 +66,51 @@
     <h2 style="text-align:center">Meet Our Team!</h2>
     <div class="row">
         <div class="column">
-            <div class="card">
-            <img src="../images/together.png" alt="Maria" style="width: 250px;">
-      <div class="container">
-        <h2>Maria Kouri</h2>
-        <p class="title">CEO & Founder</p>
-        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
-        <p>jane@example.com</p>
-        <p><button class="button">Contact</button></p>
-      </div>
-    </div>
-  </div>
+            <div class="card text-center"> <!-- Added text-center class -->
+                <img src="../images/maria.jpg" alt="Maria" style="width: 250px; display: block; margin: 0 auto;"> <!-- Center image -->
+                <div class="container">
+                    <h2>Maria Kouri</h2> <!-- Center name -->
+                    <p class="title">Founder</p>
+                    <p>Maria is a visionary and innovative thinker, 
+                      always looking for creative solutions to meet the community's needs. Their determination
+                       and entrepreneurial spirit have laid the foundation for lasting change,
+                        inspiring others to follow their lead in making a meaningful difference.</p>
+                    <p>up1084526@ac.upatras.gr</p>
+                    <p><button class="button">Contact</button></p>
+                </div>
+            </div>
+        </div>
 
-  <div class="column">
-    <div class="card">
-      <img src="../images/together.png" alt="Chryssa" style="width: 250px;">
-      <div class="container">
-        <h2>Chrysavgi Pateli</h2>
-        <p class="title">Art Director</p>
-        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
-        <p>mike@example.com</p>
-        <p><button class="button">Contact</button></p>
-      </div>
-    </div>
-  </div>
+        <div class="column">
+            <div class="card text-center"> <!-- Added text-center class -->
+                <img src="../images/chryssa.jpg" alt="Chryssa" style="width: 250px; display: block; margin: 0 auto;"> <!-- Center image -->
+                <div class="container">
+                    <h2>Chrysavgi Pateli</h2> <!-- Center name -->
+                    <p class="title">President</p>
+                    <p>Chrysavgi is a compassionate and 
+                      empathetic individual, always putting the needs of others first. 
+                      With strong integrity and a selfless attitude, they inspire trust and respect, motivating the team through their unwavering commitment to helping the community.</p>
+                    <p>up1084513@ac.upatras.gr</p>
+                    <p><button class="button">Contact</button></p>
+                </div>
+            </div>
+        </div>
 
-  <div class="column">
-    <div class="card">
-      <img src="../images/together.png" alt="Miltiadis" style="width: 250px;">
-      <div class="container">
-        <h2>Miltiadis Mantes</h2>
-        <p class="title">Designer</p>
-        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
-        <p>miltiadesmantes@gmail.com</p>
-        <p><button class="button">Contact</button></p>
-      </div>
+        <div class="column">
+            <div class="card text-center"> <!-- Added text-center class -->
+                <img src="../images/miltos.jpg" alt="Miltiadis" style="width: 250px; display: block; margin: 0 auto;"> <!-- Center image -->
+                <div class="container">
+                    <h2>Miltiadis Mantes</h2> <!-- Center name -->
+                    <p class="title">Web Developer</p>
+                    <p>Miltiadis is a charismatic and decisive leader, known for their strong organizational skills and clear vision. 
+                      Their confidence and ability to take initiative drive the team forward, 
+                      ensuring that every project is executed efficiently and with purpose. He is very creative and deticated to his duties.</p>
+                    <p>up1084661@ac.upatras.gr</p>
+                    <p><button class="button">Contact</button></p>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
-    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
