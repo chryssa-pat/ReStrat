@@ -10,10 +10,12 @@ checkSessionAndRedirect();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Announcements</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="announcements.css">
+ 
+</head>
+
 </head>
 <body>
 
@@ -33,7 +35,7 @@ checkSessionAndRedirect();
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis">
+                        <a href="#" class="nav-link active link-body-emphasis">
                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                             Announcements
                         </a>
@@ -75,7 +77,7 @@ checkSessionAndRedirect();
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a href="civilian_main.php" class="nav-link active link-body-emphasis">
+                                <a href="civilian_main.php" class="nav-link link-body-emphasis>
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
                                     Inquiries
                                 </a>
@@ -87,13 +89,13 @@ checkSessionAndRedirect();
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="history_main.php" class="nav-link active link-body-emphasis">
+                                <a href="history_main.php" class="nav-link link-body-emphasis>
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                                     Offers History
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="history_inquiry.php" class="nav-link active link-body-emphasis">
+                                <a href="history_inquiry.php" class="nav-link link-body-emphasis>
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                                     Inquiries History
                                 </a>
