@@ -152,7 +152,7 @@ checkSessionAndRedirect();
                             <!-- Items will be populated dynamically based on the selected category -->
                         </select>
 
-                        <label for="quantity">Quantity:</label>
+                        <label for="quantity">People:</label>
                         <input type="number" id="quantity" name="quantity" min="1" required>
 
                         <label for="address">Address:</label>
