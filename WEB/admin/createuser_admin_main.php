@@ -94,10 +94,8 @@ checkSessionAndRedirect();
                             
                                 <div class="mb-3">
                                     <label for="profile" class="form-label">Profile</label>
-                                    <select name="profile" id="profile" class="form-select">
-                                        <option value="volunteer">Volunteer</option>
-                                        <option value="civilian">Civilian</option>
-                                        <option value="administrator">Administrator</option>
+                                    <select name="profile" id="profile" class="form-select" disabled>
+                                        <option value="volunteer" selected>Volunteer</option>
                                     </select>
                                 </div>
                                 
