@@ -39,27 +39,24 @@ checkSessionAndRedirect();
                  <hr>
                 
                  <ul class="nav nav-pills flex-column mb-auto">
-                     <li>
-                         <a href="#" class="nav-link link-body-emphasis">
-                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                             Map
-                         </a>
-                     </li>
-                     <li>
-                         <a href="load_management.php" class="nav-link link-body-emphasis">
-                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                             Load Management
-                         </a>
-                     </li>
-                     <li>
-                         <a href="tasks.php" class="nav-link link-body-emphasis">
-                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                             Tasks
-                         </a>
-                     </li>
-                    
-                     <hr>
-                 </ul>
+                    <li>
+                        <a href="#" class="nav-link active link-body-emphasis">
+                            Map
+                        </a>
+                    </li>
+                    <li>
+                        <a href="load_management.php" class="nav-link link-body-emphasis">
+                            Load Management
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tasks.php" class="nav-link link-body-emphasis">
+                            Tasks
+                        </a>
+                    </li>
+                    <hr>
+                </ul>
+                <hr>
                  
                  <div id="filters">
                      <h5>Filters</h5>
@@ -123,7 +120,23 @@ checkSessionAndRedirect();
                         <hr>
                 
                       </ul>
-          
+                      <div id="filters" class="me-auto mb-2 mb-lg-0">
+                        <h5>Filters</h5>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="pendingFilterMobile" checked>
+                            <label class="form-check-label" for="pendingFilterMobile">Show Pending Offers/Inquiries</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="approvedFilterMobile" checked>
+                            <label class="form-check-label" for="approvedFilterMobile">Show Approved Offers/Inquiries</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="connectionLinesFilterMobile">
+                            <label class="form-check-label" for="connectionLinesFilterMobile">Show Connection Lines</label>
+                        </div>
+                    </div>
+                                        
+                        <hr>
                       <div class="dropdown ">
                           <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                               Account
@@ -178,7 +191,7 @@ checkSessionAndRedirect();
             connectionLines: false
         };
         var connectionLines = {};
-    
+        let currentVehicleId = null;
         // Ορίζουμε τα εικονίδια για τις διαφορετικές πινέζες
         var inquiryApprovedIcon = L.divIcon({
             className: 'custom-div-icon',
@@ -244,7 +257,49 @@ checkSessionAndRedirect();
             getVolunteerLocation();
             getApprovedCivilians();
         }
+        // Add event listeners for mobile filters
+            document.getElementById('pendingFilterMobile').addEventListener('change', function() {
+                filters.pending = this.checked;
+                updateMarkers();
+                clearAllConnectionLines();
+                updateConnectionLines();
+            });
+
+            document.getElementById('approvedFilterMobile').addEventListener('change', function() {
+                filters.approved = this.checked;
+                updateMarkers();
+                clearAllConnectionLines();
+                updateConnectionLines();
+            });
+
+            document.getElementById('connectionLinesFilterMobile').addEventListener('change', function() {
+                filters.connectionLines = this.checked;
+                clearAllConnectionLines();
+                updateConnectionLines();
+            });
     
+        function getCurrentVehicleId() {
+            return new Promise((resolve, reject) => {
+                if (currentVehicleId !== null) {
+                    resolve(currentVehicleId);
+                } else {
+                    fetch('get_current_vehicle_id.php')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                currentVehicleId = data.vehicle_id;
+                                resolve(currentVehicleId);
+                            } else {
+                                reject('Failed to get vehicle ID: ' + data.error);
+                            }
+                        })
+                        .catch(error => {
+                            reject('Error fetching vehicle ID: ' + error);
+                        });
+                }
+            });
+        }
+
         function getVolunteerLocation() {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(function(position) {
@@ -303,19 +358,18 @@ checkSessionAndRedirect();
                         civilianMarkers.forEach(markerInfo => markerInfo.marker.remove());
                         civilianMarkers = [];
 
-                        data.coordinates.forEach((coord) => {
-                            var icon;
-                            if (coord.type === 'inquiry') {
-                                icon = coord.status === 'approved' ? inquiryApprovedIcon : inquiryPendingIcon;
-                            } else {
-                                icon = coord.status === 'approved' ? offerApprovedIcon : offerPendingIcon;
-                            }
+                        data.coordinates.forEach(group => {
+                            const offers = group.filter(item => item.type === 'offer');
+                            const inquiries = group.filter(item => item.type === 'inquiry');
 
-                            var marker = L.marker([coord.latitude, coord.longitude], {icon: icon})
-                                .bindPopup(() => createPopupContent(coord));
-                            
-                            civilianMarkers.push({marker: marker, type: coord.type, status: coord.status});
+                            if (offers.length > 0) {
+                                addMarker(offers, 'offer');
+                            }
+                            if (inquiries.length > 0) {
+                                addMarker(inquiries, 'inquiry');
+                            }
                         });
+
                         updateMarkers();
                         fitMapToAllMarkers();
                         updateConnectionLines();
@@ -325,28 +379,67 @@ checkSessionAndRedirect();
                 })
                 .catch(error => console.error('Error:', error));
         }
-        function createPopupContent(coord) {
-       let content = `<div id="popup-${coord.id}">
-           <strong>${coord.type.charAt(0).toUpperCase() + coord.type.slice(1)}</strong><br>
-           Name: ${coord.full_name || 'N/A'}<br>
-           Phone: ${coord.phone || 'N/A'}<br>
-           Registration Date: ${coord.registration_date || 'N/A'}<br>
-           Product: ${coord.product || 'N/A'}<br>
-           Quantity: ${coord.quantity || 'N/A'}<br>
-           <span class="status">Status: ${coord.status}</span><br>`;
-       
-       if (coord.status === 'approved') {
-           content += `Vehicle ID: <span class="vehicle-id">${coord.approved_vehicle_id || 'N/A'}</span><br>
-                       Approved Date: <span class="approved-timestamp">${coord.approved_timestamp || 'N/A'}</span><br>`;
-       }
-       
-       if (coord.status === 'pending') {
-           content += `<button id="accept-btn-${coord.id}" onclick="handleAccept('${coord.type}', ${coord.id})">Accept</button>`;
-       }
-       
-       content += `</div>`;
-       return content;
-   }
+
+        function addMarker(items, type) {
+            const lat = parseFloat(items[0].latitude);
+            const lng = parseFloat(items[0].longitude);
+            
+            let icon;
+            const hasApproved = items.some(item => item.status === 'approved');
+            const hasPending = items.some(item => item.status === 'pending');
+            
+            if (type === 'inquiry') {
+                icon = hasApproved ? inquiryApprovedIcon : inquiryPendingIcon;
+            } else {
+                icon = hasApproved ? offerApprovedIcon : offerPendingIcon;
+            }
+
+            var marker = L.marker([lat, lng], {icon: icon})
+                .bindPopup(() => createPopupContent(items));
+            
+            civilianMarkers.push({
+                marker: marker, 
+                type: type, 
+                hasApproved: hasApproved,
+                hasPending: hasPending,
+                items: items
+            });
+        }
+
+
+        function createPopupContent(items) {
+            const type = items[0].type.charAt(0).toUpperCase() + items[0].type.slice(1);
+            let content = `<div id="popup-${items[0].id}"><strong>${type}</strong><br>`;
+            
+            items.forEach((item, index) => {
+                const shouldShow = (item.status === 'pending' && filters.pending) ||
+                                (item.status === 'approved' && filters.approved);
+                if (shouldShow) {
+                    content += `
+                    <div class="offer-item" style="margin-bottom: 10px; ${index > 0 ? 'border-top: 1px solid #ccc; padding-top: 10px;' : ''}">
+                        Name: ${item.full_name || 'N/A'}<br>
+                        Phone: ${item.phone || 'N/A'}<br>
+                        Product: ${item.product || 'N/A'}<br>
+                        Quantity: ${item.quantity || 'N/A'}<br>
+                        Status: <span class="status">${item.status}</span><br>
+                        Date: ${item.registration_date || 'N/A'}<br>`;
+                    
+                    if (item.status === 'approved') {
+                        content += `Vehicle ID: <span class="vehicle-id">${item.approved_vehicle_id || 'N/A'}</span><br>
+                                    Approved Date: <span class="approved-timestamp">${item.approved_timestamp || 'N/A'}</span><br>`;
+                    }
+                    
+                    if (item.status === 'pending') {
+                        content += `<button id="accept-btn-${item.id}" onclick="handleAccept('${item.type}', ${item.id})">Accept</button>`;
+                    }
+                    
+                    content += `</div>`;
+                }
+            });
+            
+            content += `</div>`;
+            return content;
+        }
 
         function drawConnectionLine(id) {
             const markerInfo = civilianMarkers.find(m => m.id == id);
@@ -489,51 +582,50 @@ checkSessionAndRedirect();
         }
 
         function updateConnectionLines() {
-            // Αφαίρεση όλων των υπαρχόντων γραμμών
-            map.eachLayer(function (layer) {
-                if (layer instanceof L.Polyline) {
-                    map.removeLayer(layer);
-                }
-            });
-            connectionLines = {};
+            clearAllConnectionLines();
 
-            // Έλεγχος αν πρέπει να σχεδιαστούν οι γραμμές
-            if (filters.approved && filters.connectionLines && volunteerMarker) {
-                civilianMarkers.forEach(markerInfo => {
-                    if (markerInfo.status === 'approved' && markerInfo.marker.getLatLng()) {
-                        const line = L.polyline([volunteerMarker.getLatLng(), markerInfo.marker.getLatLng()], {
-                            color: 'red',
-                            weight: 2,
-                            opacity: 0.5,
-                            dashArray: '10, 10'
-                        }).addTo(map);
-                        connectionLines[markerInfo.id] = line;
-                    }
-                });
+            if (filters.connectionLines && filters.approved && volunteerMarker) {
+                getCurrentVehicleId()
+                    .then(vehicleId => {
+                        civilianMarkers.forEach(markerInfo => {
+                            const approvedItems = markerInfo.items.filter(item => 
+                                item.status === 'approved' && 
+                                item.approved_vehicle_id === vehicleId
+                            );
+                            if (approvedItems.length > 0) {
+                                const line = L.polyline([volunteerMarker.getLatLng(), markerInfo.marker.getLatLng()], {
+                                    color: 'red',
+                                    weight: 2,
+                                    opacity: 0.5,
+                                    dashArray: '10, 10'
+                                }).addTo(map);
+                                connectionLines[markerInfo.items[0].id] = line;
+                            }
+                        });
+                    })
+                    .catch(error => console.error(error));
             }
         }
 
+
         function updateMarkers() {
-            var allFiltersOff = !filters.pending && !filters.approved;
-            
             civilianMarkers.forEach(markerInfo => {
-                if (allFiltersOff) {
-                    markerInfo.marker.remove();
-                } else if ((markerInfo.status === 'pending' && filters.pending) ||
-                            (markerInfo.status === 'approved' && filters.approved)) {
+                const shouldShow = (markerInfo.hasPending && filters.pending) ||
+                                (markerInfo.hasApproved && filters.approved);
+                if (shouldShow) {
                     markerInfo.marker.addTo(map);
                 } else {
                     markerInfo.marker.remove();
                 }
             });
             
-            // Πάντα εμφάνιζε το εικονίδιο του αυτοκινήτου και τη βάση
+            // Always show the volunteer marker and base marker
             if (volunteerMarker) volunteerMarker.addTo(map);
             if (baseMarker) baseMarker.addTo(map);
             
-            clearAllConnectionLines();
             updateConnectionLines();
         }
+
 
         function clearAllConnectionLines() {
             map.eachLayer(function (layer) {
@@ -543,9 +635,15 @@ checkSessionAndRedirect();
             });
             connectionLines = {};
         }
+        document.getElementById('approvedFilter').addEventListener('change', function() {
+            filters.approved = this.checked;
+            updateMarkers();
+            clearAllConnectionLines();
+            updateConnectionLines();
+        });
+
     
         window.onload = initMap;
     </script>
 </body>
 </html>
-

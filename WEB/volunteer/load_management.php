@@ -85,14 +85,15 @@ checkSessionAndRedirect();
                             Tasks
                         </a>
                     </li>
+                    <hr>
                 </ul>
-                <hr>
+               
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Account
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a href="settings.html" class="dropdown-item">Settings</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
                         <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
                     </ul>
                 </div>

@@ -136,6 +136,29 @@ checkSessionAndRedirect();
             </div>
         </div>
     </div>
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusModalLabel">Inquiry Status History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="statusModalBody">
+                            <!-- Status history will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
@@ -151,37 +174,40 @@ checkSessionAndRedirect();
                 window.location.href = "../main/logout.php";
             }
         });
-        $(document).ready(function() {
-    $.ajax({
-        url: 'history_inquiry.php',  // Ensure this PHP file returns the correct data format
-        method: 'GET',
-        dataType: 'json',
-        success: function(data) {
-            var tbody = $('#history-table-body');
-            tbody.empty();
-            
-            if (Array.isArray(data)) {
-                data.forEach(function(inquiry) {
-                    var latestStatus = inquiry.statuses[0]; // Assuming you want the latest status
-                    var statusClass = getStatusClass(latestStatus.status);
-                    var row = '<tr>' +
-                        '<td>' + inquiry.id + '</td>' +
-                        '<td>' + inquiry.item + '</td>' +
-                        '<td>' + inquiry.quantity + '</td>' +
-                        '<td><span class="status-badge ' + statusClass + '">' + latestStatus.status + '</span></td>' +
-                        '<td>' + latestStatus.date + '</td>' +
-                        '<td><button class="btn btn-sm btn-primary view-history-btn" data-id="' + inquiry.id + '">View History</button></td>' +
-                        '</tr>';
-                    tbody.append(row);
-                });
-            } else {
-                console.error('Unexpected data format:', data);
+       
+    $(document).ready(function() {
+        $.ajax({
+            url: 'history_inquiry.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var tbody = $('#history-table-body');
+                tbody.empty();
+                
+                if (Array.isArray(data)) {
+                    data.forEach(function(inquiry) {
+                        var latestStatus = inquiry.statuses[0];
+                        var statusClass = getStatusClass(latestStatus.status);
+                        var row = '<tr>' +
+                            '<td>' + inquiry.id + '</td>' +
+                            '<td>' + inquiry.item + '</td>' +
+                            '<td>' + inquiry.quantity + '</td>' +
+                            '<td><span class="status-badge ' + statusClass + '">' + latestStatus.status + '</span></td>' +
+                            '<td>' + formatDate(latestStatus.date) + '</td>' +
+                            '<td><button class="btn btn-sm btn-primary view-history-btn" data-inquiry=\'' + JSON.stringify(inquiry) + '\'>View History</button></td>' +
+                            '</tr>';
+                        tbody.append(row);
+                    });
+                } else {
+                    console.error('Unexpected data format:', data);
+                }
+            },
+            error: function(error) {
+                console.error('Error fetching history data:', error);
             }
-        },
-        error: function(error) {
-            console.error('Error fetching history data:', error);
-        }
+        });
     });
+
 
     function getStatusClass(status) {
         switch(status.toLowerCase()) {
@@ -195,11 +221,30 @@ checkSessionAndRedirect();
 
     // Event delegation for view history buttons
     $(document).on('click', '.view-history-btn', function() {
-        var inquiryId = $(this).data('id');
-        // Add your logic here to view the history for the specific inquiry
-        console.log('View history for inquiry ID:', inquiryId);
+        var inquiry = $(this).data('inquiry');
+        showStatusHistory(inquiry);
     });
-});
+
+    function showStatusHistory(inquiry) {
+        var modalBody = $('#statusModalBody');
+        modalBody.empty();
+        
+        inquiry.statuses.forEach(function(status) {
+            var statusRow = $('<tr>').append(
+                $('<td>').append($('<span>').addClass('status-badge ' + getStatusClass(status.status)).text(status.status)),
+                $('<td>').text(formatDate(status.date))
+            );
+            modalBody.append(statusRow);
+        });
+
+        $('#statusModalLabel').text('Inquiry Status History - ID: ' + inquiry.id);
+        var modal = new bootstrap.Modal(document.getElementById('statusModal'));
+        modal.show();
+    }
+    function formatDate(dateString) {
+        var date = new Date(dateString);
+        return date.toLocaleString();
+    }
 
     </script>
 </body>

@@ -54,15 +54,7 @@ checkSessionAndRedirect();
                     </li>
                     <hr>
                 </ul>
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Account
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="settings.html" class="dropdown-item">Settings</a></li>
-                        <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                    </ul>
-                </div>
+                <button class="btn btn-danger" id="logoutButton">Logout</button> 
             </div>
 
             <div class="col-md-9 col-lg-9">
@@ -103,15 +95,7 @@ checkSessionAndRedirect();
                             <hr>
                         </ul>
 
-                        <div class="dropdown">
-                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Account
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                                <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                            </ul>
-                        </div>
+                        <button class="btn btn-danger" id="logoutButton2">Logout</button> 
                     </div>
                 </nav>
 
@@ -119,6 +103,23 @@ checkSessionAndRedirect();
                     <h1 class="center-title">Announcements</h1>
                     <!-- Announcements will be injected here by the AJAX call -->
                 </main>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to logout?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmLogout">Logout</button>
+                </div>
             </div>
         </div>
     </div>
@@ -163,12 +164,19 @@ checkSessionAndRedirect();
 
     
     document.getElementById('logoutButton').addEventListener('click', function (e) {
-            e.preventDefault();
-            var confirmLogout = confirm('Are you sure you want to logout?');
-            if (confirmLogout) {
-                window.location.href = "../main/logout.php";
-            }
-        });
+        e.preventDefault();
+        $('#logoutModal').modal('show'); // Show the logout confirmation modal
+    });
+
+    document.getElementById('logoutButton2').addEventListener('click', function (e) {
+        e.preventDefault();
+        $('#logoutModal').modal('show'); // Show the logout confirmation modal
+    });
+
+    // Confirm logout action
+    document.getElementById('confirmLogout').addEventListener('click', function () {
+        window.location.href = "../main/logout.php"; // Redirect to logout
+    });
     // Handle announcement button click
     $(document).on('click', '.announcement-button', function() {
     var announceId = $(this).data('announce-id');

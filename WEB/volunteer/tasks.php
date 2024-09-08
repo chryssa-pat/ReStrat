@@ -46,6 +46,7 @@ checkSessionAndRedirect();
                             Tasks
                         </a>
                     </li>
+                    <hr>
                 </ul>
                 <hr>
                 <div class="dropdown">
