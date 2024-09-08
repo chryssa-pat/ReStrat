@@ -151,6 +151,7 @@ CREATE TABLE OFFER_HISTORY (
 CREATE TABLE INQUIRY_HISTORY (
     inquiry_history_id INT,
     history_status ENUM('pending', 'approved', 'finished', 'cancelled'),
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
 	 CONSTRAINT INQUIRYHISTORY FOREIGN KEY(inquiry_history_id) REFERENCES INQUIRY(inquiry_id)
 	 ON DELETE CASCADE ON UPDATE CASCADE
 );
