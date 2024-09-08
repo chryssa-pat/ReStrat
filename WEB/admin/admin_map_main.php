@@ -137,13 +137,7 @@
                 </div>
 
                  <hr>
-            <div class="dropdown">
-                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Account</button>
-                <ul class="dropdown-menu">
-                    <li><a href="settings.html" class="dropdown-item">Settings</a></li>
-                    <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                </ul>
-            </div>
+                 <button class="btn btn-danger" id="logoutButton">Logout</button> 
         </div>
         <!-- Content area (for all screens) -->
         <div class="col-md-9 col-lg-9">
@@ -189,13 +183,7 @@
                 </div>
 
                 <hr>
-                  <div class="dropdown">
-                      <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Account</button>
-                      <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                          <li><a classdropdown-item" id="logoutButton" href="#">Logout</a></li>
-                      </ul>
-                  </div>
+                <button class="btn btn-danger" id="logoutButton2">Logout</button> 
               </div>
             </nav>
     
@@ -206,29 +194,51 @@
         </div>
     </div>
 
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to logout?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmLogout">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Add Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
 
+   
+
     <!-- Add map initialization script -->
     <script>
+        
       let map;
-let baseMarker;
-let isDragging = false;
-let vehicleMarkers = [];
-let inquiryMarkers = [];
-let offerMarkers = [];
+    let baseMarker;
+    let isDragging = false;
+    let vehicleMarkers = [];
+    let inquiryMarkers = [];
+    let offerMarkers = [];
 
-var carIcon = L.divIcon({
-    className: 'car-icon',
-    html: '<i class="fas fa-car"></i>',
-    iconSize: [30, 30],
-    iconAnchor: [15, 15]
-});
+    var carIcon = L.divIcon({
+        className: 'car-icon',
+        html: '<i class="fas fa-car"></i>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
+    });
 
 
         var inquiryApprovedIcon = L.divIcon({
@@ -535,6 +545,20 @@ function saveBaseLocation() {
         });
 }
 
+document.getElementById('logoutButton').addEventListener('click', function (e) {
+    e.preventDefault();
+    $('#logoutModal').modal('show'); 
+});
+
+document.getElementById('logoutButton2').addEventListener('click', function (e) {
+    e.preventDefault();
+    $('#logoutModal').modal('show'); 
+});
+
+// Confirm logout action
+document.getElementById('confirmLogout').addEventListener('click', function () {
+    window.location.href = "../main/logout.php"; 
+});
 document.getElementById('pendingFilter').addEventListener('change', function () {
     applyFilters();
 });

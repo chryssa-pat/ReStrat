@@ -33,44 +33,31 @@ checkSessionAndRedirect();
                     <li><a href="add_product_main.php" class="nav-link link-body-emphasis">Manage Products</a></li>
                     <hr>
                 </ul>
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Account</button>
-                    <ul class="dropdown-menu">
-                        <li><a href="settings.html" class="dropdown-item">Settings</a></li>
-                        <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                    </ul>
-                </div>
+                <button class="btn btn-danger" id="logoutButton">Logout</button> 
             </div>
             <!-- Content area (for all screens) -->
             <div class="col-md-9 col-lg-9">
-                <!-- Navbar (for smaller screens) -->
-                <nav class="navbar navbar-expand-lg navbar-light bg-light d-md-none">
-                    <div class="container-fluid">
-                      <a class="navbar-brand" href="#"><img src="../images/world.png" alt="logo" height="50"></a>
-                      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                      <span class="navbar-toggler-icon"></span>
-                  </button>
-                    </div>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                          <li class="nav-item"><a href="admin_map_main.php" class="nav-link link-body-emphasis">Map</a></li>
-                          <li class="nav-item"><a href="#" class="nav-link active link-body-emphasis">Announcements</a></li>
-                          <li class="nav-item"><a href="warehouse_main.php" class="nav-link link-body-emphasis">Warehouse</a></li>
-                          <li class="nav-item"><a href="createuser_admin_main.php" class="nav-link link-body-emphasis">Create Account</a></li>
-                          <li class="nav-item"><a href="statistics_main.php" class="nav-link link-body-emphasis">Statistics</a></li>
-                          <li class="nav-item"><a href="update_products_main.php" class="nav-link link-body-emphasis">Update Products from JSON</a></li>
-                          <li class="nav-item"><a href="add_product_main.php" class="nav-link link-body-emphasis">Manage Products</a></li>
-                          <hr>
-                      </ul>
-                      <div class="dropdown">
-                          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Account</button>
-                          <ul class="dropdown-menu">
-                              <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                              <li><a classdropdown-item" id="logoutButton" href="#">Logout</a></li>
-                          </ul>
-                      </div>
-                  </div>
-                </nav>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light d-md-none">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#"><img src="../images/world.png" alt="logo" height="50"></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a href="admin_map_main.php" class="nav-link link-body-emphasis">Map</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link link-body-emphasis">Announcements</a></li>
+                        <li class="nav-item"><a href="warehouse_main.php" class="nav-link link-body-emphasis">Warehouse</a></li>
+                        <li class="nav-item"><a href="createuser_admin_main.php" class="nav-link link-body-emphasis">Create Account</a></li>
+                        <li class="nav-item"><a href="statistics_main.php" class="nav-link link-body-emphasis">Statistics</a></li>
+                        <li class="nav-item"><a href="update_products_main.php" class="nav-link link-body-emphasis">Update Products from JSON</a></li>
+                        <li class="nav-item"><a href="add_product_main.php" class="nav-link link-body-emphasis">Manage Products</a></li>
+                    </ul>
+                    <button class="btn btn-danger" id="logoutButton2">Logout</button> 
+                </div>
+            </nav>
                 <br>
                 <div id="Frame">
                     <h2 style="text-align: center;">Create Announcement</h2>
@@ -108,209 +95,234 @@ checkSessionAndRedirect();
             </div>
         </div>
     </div>
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to logout?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmLogout">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        document.getElementById('logoutButton').addEventListener('click', function (e) {
-                      e.preventDefault();
-                      var confirmLogout = confirm('Are you sure you want to logout?');
-                      if (confirmLogout) {
-                          window.location.href = "../main/logout.php";
-                      }
-                  });
+         document.getElementById('logoutButton').addEventListener('click', function (e) {
+                e.preventDefault();
+                $('#logoutModal').modal('show'); 
+            });
+
+            document.getElementById('logoutButton2').addEventListener('click', function (e) {
+                e.preventDefault();
+                $('#logoutModal').modal('show'); 
+            });
+
+            // Confirm logout action
+            document.getElementById('confirmLogout').addEventListener('click', function () {
+                window.location.href = "../main/logout.php"; 
+            });
         $(document).ready(function () {
-    var data;
-    var items = [];
+            var data;
+            var items = [];
 
-    // Fetch categories and items
-    $.getJSON('fetch_data.php', function (fetchedData) {
-        data = fetchedData;
-        var categorySelect = $('#category');
-        var itemSelect = $('#item');
+            // Fetch categories and items
+            $.getJSON('fetch_data.php', function (fetchedData) {
+                data = fetchedData;
+                var categorySelect = $('#category');
+                var itemSelect = $('#item');
 
-        // Populate categories
-        populateSelect(categorySelect, data.categories);
+                // Populate categories
+                populateSelect(categorySelect, data.categories);
 
-        // Update items when category changes
-        categorySelect.change(function () {
-            var selectedCategory = $(this).val();
-            updateItems(selectedCategory);
-        });
+                // Update items when category changes
+                categorySelect.change(function () {
+                    var selectedCategory = $(this).val();
+                    updateItems(selectedCategory);
+                });
 
-        // Add search functionality to category select
-        addSearchToSelect(categorySelect, data.categories);
+                // Add search functionality to category select
+                addSearchToSelect(categorySelect, data.categories);
 
-        // Add search functionality to item select
-        addSearchToSelect(itemSelect, []);
-    });
+                // Add search functionality to item select
+                addSearchToSelect(itemSelect, []);
+            });
 
-    function populateSelect(select, options) {
-        select.empty().append($('<option></option>').attr('value', '').text('Choose an option'));
-        $.each(options, function (index, option) {
-            if (typeof option === 'object') {
-                select.append($('<option></option>').attr('value', option.id).text(option.name));
-            } else {
-                select.append($('<option></option>').attr('value', option).text(option));
-            }
-        });
-    }
-
-    function updateItems(selectedCategory) {
-        var itemSelect = $('#item');
-        if (selectedCategory in data.items) {
-            populateSelect(itemSelect, data.items[selectedCategory]);
-            addSearchToSelect(itemSelect, data.items[selectedCategory]);
-        } else {
-            itemSelect.empty().append($('<option></option>').attr('value', '').text('Choose an item'));
-        }
-    }
-
-    function addSearchToSelect(select, options) {
-        select.select2({
-            data: options.map(option => {
-                return typeof option === 'object' ? 
-                    { id: option.id, text: option.name } : 
-                    { id: option, text: option };
-            }),
-            placeholder: 'Search...',
-            allowClear: true,
-            matcher: matchCustom
-        });
-    }
-
-    function matchCustom(params, data) {
-        // If there are no search terms, return all of the data
-        if ($.trim(params.term) === '') {
-            return data;
-        }
-
-        // Do not display the item if there is no 'text' property
-        if (typeof data.text === 'undefined') {
-            return null;
-        }
-
-        // params.term should be the term that is used for searching
-        // data.text is the text that is displayed for the data object
-        if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
-            var modifiedData = $.extend({}, data, true);
-            return modifiedData;
-        }
-
-        // Return null if the term should not be displayed
-        return null;
-    }
-
-    $('#addItemButton').click(function() {
-        var itemId = $('#item').val();
-        var itemName = $('#item option:selected').text();
-        var quantity = $('#quantity').val();
-
-        console.log('Selected item:', itemName, '(ID:', itemId, ')');
-        console.log('Entered quantity:', quantity);
-
-        if (!itemId || itemName === 'Choose an option') {
-            alert('Please select an item.');
-            return;
-        }
-
-        if (quantity <= 0) {
-            alert('Please enter a valid quantity.');
-            return;
-        }
-
-        items.push({
-            id: itemId,  // Store as 'id' to match the structure you're using
-            name: itemName,  // Store the name as well
-            quantity: parseInt(quantity)
-        });
-        console.log('Items after adding:', JSON.stringify(items, null, 2));
-        updateCheckoutFrame();
-
-        // Clear the form
-        $('#category').val('').trigger('change');
-        $('#item').val('').trigger('change');
-        $('#quantity').val('');
-    });
-
-    function updateCheckoutFrame() {
-        console.log('Current items:', JSON.stringify(items, null, 2)); // Log the entire items array
-
-        var html = '<h3>Added Items:</h3>';
-        items.forEach(function(item, index) {
-            var itemId = item.itemId || item.id; // Use itemId if available, otherwise use id
-            var itemName = item.itemName || item.name || 'Unknown Item';
-            
-            if (itemName === 'Unknown Item') {
-                // If the item name is not stored, try to fetch it from the select options
-                var selectOption = $('#item option[value="' + itemId + '"]');
-                if (selectOption.length) {
-                    itemName = selectOption.text();
-                }
+            function populateSelect(select, options) {
+                select.empty().append($('<option></option>').attr('value', '').text('Choose an option'));
+                $.each(options, function (index, option) {
+                    if (typeof option === 'object') {
+                        select.append($('<option></option>').attr('value', option.id).text(option.name));
+                    } else {
+                        select.append($('<option></option>').attr('value', option).text(option));
+                    }
+                });
             }
 
-            html += '<div>Item ID: ' + itemId + ' (' + itemName + ') - Quantity: ' + item.quantity + 
-                    ' <button class="btn btn-sm btn-danger remove-item" data-index="' + index + '">Remove</button></div>';
-        });
-        $('#checkoutFrame').html(html);
-    }
-
-    $(document).on('click', '.remove-item', function() {
-        var index = $(this).data('index');
-        items.splice(index, 1);
-        updateCheckoutFrame();
-    });
-
-    function showAlert(message, type) {
-    var alertDiv = $('#customAlert');
-    var alertMessage = $('#alertMessage');
-    
-    alertMessage.text(message);
-    alertDiv.removeClass('alert-success alert-danger').addClass('alert-' + type);
-    alertDiv.addClass('show');
-    
-    setTimeout(function() {
-        alertDiv.removeClass('show');
-    }, 3000); // Auto-hide after 3 seconds
-}
-
-$('#createAnnouncementButton').click(function() {
-    if (items.length === 0) {
-        showAlert('Please add at least one item before creating an announcement.', 'danger');
-        return;
-    }
-
-   
-
-    $.ajax({
-        url: 'create_announcement.php',
-        type: 'POST',
-        data: JSON.stringify({ items: items }),
-        contentType: 'application/json',
-        success: function(response) {
-            try {
-                var parsedResponse = JSON.parse(response);
-                console.log('Received response:', parsedResponse);
-                if (parsedResponse.success) {
-                    showAlert(parsedResponse.message, 'success');
-                    items = []; // Clear the items array
-                    updateCheckoutFrame(); // Update the display
+            function updateItems(selectedCategory) {
+                var itemSelect = $('#item');
+                if (selectedCategory in data.items) {
+                    populateSelect(itemSelect, data.items[selectedCategory]);
+                    addSearchToSelect(itemSelect, data.items[selectedCategory]);
                 } else {
-                    showAlert(parsedResponse.error, 'danger');
+                    itemSelect.empty().append($('<option></option>').attr('value', '').text('Choose an item'));
                 }
-            } catch (e) {
-                console.error('Parsing error:', e);
-                showAlert('Error parsing server response.', 'danger');
             }
-        },
-        error: function(xhr, status, error) {
-            console.error('Ajax error:', status, error);
-            showAlert('An error occurred while submitting the form: ' + error, 'danger');
+
+            function addSearchToSelect(select, options) {
+                select.select2({
+                    data: options.map(option => {
+                        return typeof option === 'object' ? 
+                            { id: option.id, text: option.name } : 
+                            { id: option, text: option };
+                    }),
+                    placeholder: 'Search...',
+                    allowClear: true,
+                    matcher: matchCustom
+                });
+            }
+
+            function matchCustom(params, data) {
+                // If there are no search terms, return all of the data
+                if ($.trim(params.term) === '') {
+                    return data;
+                }
+
+                // Do not display the item if there is no 'text' property
+                if (typeof data.text === 'undefined') {
+                    return null;
+                }
+
+                // params.term should be the term that is used for searching
+                // data.text is the text that is displayed for the data object
+                if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
+                    var modifiedData = $.extend({}, data, true);
+                    return modifiedData;
+                }
+
+                // Return null if the term should not be displayed
+                return null;
+            }
+
+            $('#addItemButton').click(function() {
+                var itemId = $('#item').val();
+                var itemName = $('#item option:selected').text();
+                var quantity = $('#quantity').val();
+
+                console.log('Selected item:', itemName, '(ID:', itemId, ')');
+                console.log('Entered quantity:', quantity);
+
+                if (!itemId || itemName === 'Choose an option') {
+                    alert('Please select an item.');
+                    return;
+                }
+
+                if (quantity <= 0) {
+                    alert('Please enter a valid quantity.');
+                    return;
+                }
+
+                items.push({
+                    id: itemId,  // Store as 'id' to match the structure you're using
+                    name: itemName,  // Store the name as well
+                    quantity: parseInt(quantity)
+                });
+                console.log('Items after adding:', JSON.stringify(items, null, 2));
+                updateCheckoutFrame();
+
+                // Clear the form
+                $('#category').val('').trigger('change');
+                $('#item').val('').trigger('change');
+                $('#quantity').val('');
+            });
+
+            function updateCheckoutFrame() {
+                console.log('Current items:', JSON.stringify(items, null, 2)); // Log the entire items array
+
+                var html = '<h3>Added Items:</h3>';
+                items.forEach(function(item, index) {
+                    var itemId = item.itemId || item.id; // Use itemId if available, otherwise use id
+                    var itemName = item.itemName || item.name || 'Unknown Item';
+                    
+                    if (itemName === 'Unknown Item') {
+                        // If the item name is not stored, try to fetch it from the select options
+                        var selectOption = $('#item option[value="' + itemId + '"]');
+                        if (selectOption.length) {
+                            itemName = selectOption.text();
+                        }
+                    }
+
+                    html += '<div>Item ID: ' + itemId + ' (' + itemName + ') - Quantity: ' + item.quantity + 
+                            ' <button class="btn btn-sm btn-danger remove-item" data-index="' + index + '">Remove</button></div>';
+                });
+                $('#checkoutFrame').html(html);
+            }
+
+            $(document).on('click', '.remove-item', function() {
+                var index = $(this).data('index');
+                items.splice(index, 1);
+                updateCheckoutFrame();
+            });
+
+            function showAlert(message, type) {
+            var alertDiv = $('#customAlert');
+            var alertMessage = $('#alertMessage');
+            
+            alertMessage.text(message);
+            alertDiv.removeClass('alert-success alert-danger').addClass('alert-' + type);
+            alertDiv.addClass('show');
+            
+            setTimeout(function() {
+                alertDiv.removeClass('show');
+            }, 3000); // Auto-hide after 3 seconds
         }
-    });
-});
+
+        $('#createAnnouncementButton').click(function() {
+            if (items.length === 0) {
+                showAlert('Please add at least one item before creating an announcement.', 'danger');
+                return;
+            }
+
+        
+
+            $.ajax({
+                url: 'create_announcement.php',
+                type: 'POST',
+                data: JSON.stringify({ items: items }),
+                contentType: 'application/json',
+                success: function(response) {
+                    try {
+                        var parsedResponse = JSON.parse(response);
+                        console.log('Received response:', parsedResponse);
+                        if (parsedResponse.success) {
+                            showAlert(parsedResponse.message, 'success');
+                            items = []; // Clear the items array
+                            updateCheckoutFrame(); // Update the display
+                        } else {
+                            showAlert(parsedResponse.error, 'danger');
+                        }
+                    } catch (e) {
+                        console.error('Parsing error:', e);
+                        showAlert('Error parsing server response.', 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ajax error:', status, error);
+                    showAlert('An error occurred while submitting the form: ' + error, 'danger');
+                }
+            });
+        });
 
 
     });
