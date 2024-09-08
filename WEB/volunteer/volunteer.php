@@ -76,15 +76,7 @@ checkSessionAndRedirect();
                  
                  <hr>
                  
-                 <div class="dropdown">
-                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                         Account
-                     </button>
-                     <ul class="dropdown-menu">
-                         <li><a href="settings.html" class="dropdown-item">Settings</a></li>
-                         <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                     </ul>
-                 </div>
+                 <button class="btn btn-danger" id="logoutButton">Logout</button> 
              </div>
 
             <div class="col-md-9 col-lg-9 ">
@@ -137,15 +129,7 @@ checkSessionAndRedirect();
                     </div>
                                         
                         <hr>
-                      <div class="dropdown ">
-                          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                              Account
-                          </button>
-                          <ul class="dropdown-menu">
-                              <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                              <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                          </ul>
-                      </div>
+                        <button class="btn btn-danger" id="logoutButton2">Logout</button> 
                     </div>
                 </nav>
               
@@ -158,6 +142,7 @@ checkSessionAndRedirect();
     </div>
         
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
@@ -668,8 +653,22 @@ checkSessionAndRedirect();
             clearAllConnectionLines();
             updateConnectionLines();
         });
-
+        
         window.onload = initMap;
+        document.getElementById('logoutButton').addEventListener('click', function (e) {
+            e.preventDefault();
+            $('#logoutModal').modal('show'); 
+        });
+
+        document.getElementById('logoutButton2').addEventListener('click', function (e) {
+            e.preventDefault();
+            $('#logoutModal').modal('show'); 
+        });
+
+        // Confirm logout action
+        document.getElementById('confirmLogout').addEventListener('click', function () {
+            window.location.href = "../main/logout.php"; 
+        });
     </script>
 </body>
 </html>

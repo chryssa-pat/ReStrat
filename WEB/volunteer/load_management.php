@@ -88,15 +88,7 @@ checkSessionAndRedirect();
                     <hr>
                 </ul>
                
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Account
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                    </ul>
-                </div>
+                  <button class="btn btn-danger" id="logoutButton">Logout</button> 
             </div>
 
             <div class="col-md-9 col-lg-9">
@@ -135,15 +127,7 @@ checkSessionAndRedirect();
                       </ul>
                                         
                         <hr>
-                      <div class="dropdown ">
-                          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                              Account
-                          </button>
-                          <ul class="dropdown-menu">
-                              <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                              <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                          </ul>
-                      </div>
+                        <button class="btn btn-danger" id="logoutButton2">Logout</button> 
                     </div>
                 </nav>
 
@@ -169,10 +153,11 @@ checkSessionAndRedirect();
             </div>
         </div>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+         
          document.getElementById('logoutButton').addEventListener('click', function (e) {
                       e.preventDefault();
                       var confirmLogout = confirm('Are you sure you want to logout?');
@@ -534,6 +519,20 @@ checkSessionAndRedirect();
         document.addEventListener('DOMContentLoaded', function() {
             initMap();
             updateVehicleLoadTable();
+        });
+        document.getElementById('logoutButton').addEventListener('click', function (e) {
+            e.preventDefault();
+            $('#logoutModal').modal('show'); 
+        });
+
+        document.getElementById('logoutButton2').addEventListener('click', function (e) {
+            e.preventDefault();
+            $('#logoutModal').modal('show'); 
+        });
+
+        // Confirm logout action
+        document.getElementById('confirmLogout').addEventListener('click', function () {
+            window.location.href = "../main/logout.php"; 
         });
     </script>
 </body>
