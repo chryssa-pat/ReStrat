@@ -47,12 +47,12 @@ try {
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows === 0) {
-        throw new Exception("Το προϊόν δεν βρέθηκε στο όχημα!");
+        throw new Exception("Product not found in vehicle load!");
     }
     $row = $result->fetch_assoc();
     $loadedQuantity = $row['quantity'];
     if ($quantity > $loadedQuantity) {
-        throw new Exception("Δεν υπάρχει αρκετή ποσότητα στο όχημα!");
+        throw new Exception("The quantity you requested exceeds the vehicle load!");
     }
 
     // Ενημερώνουμε την ποσότητα στο VEHICLE_LOAD
@@ -72,7 +72,7 @@ try {
     $stmt->execute();
 
     $conn->commit();
-    echo json_encode(['success' => true, 'message' => 'Το φορτίο ενημερώθηκε επιτυχώς!']);
+    echo json_encode(['success' => true, 'message' => 'Load updated successfully!']);
 } catch (Exception $e) {
     $conn->rollback();
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
