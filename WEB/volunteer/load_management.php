@@ -100,6 +100,53 @@ checkSessionAndRedirect();
             </div>
 
             <div class="col-md-9 col-lg-9">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light d-md-none">
+                    <div class="container-fluid">
+                      <a class="navbar-brand" href="#"><img src="../images/world.png" alt="logo" height="50"> </a>
+                      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                  </button>
+                    </div>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                          <li class="nav-item">
+                            <hr>
+                              <a href="volunteer.php" class="nav-link active link-body-emphasis">
+                                  <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                                  Map
+                              </a>
+                          </li>
+                          <li class="nav-item">
+                            <a href="#" class="nav-link activelink-body-emphasis">
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                                Load Managment
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="tasks.php" class="nav-link active link-body-emphasis">
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                                Tasks
+                            </a>
+                        </li>
+                        
+
+                
+                      </ul>
+                                        
+                        <hr>
+                      <div class="dropdown ">
+                          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Account
+                          </button>
+                          <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="settings.html">Settings</a></li>
+                              <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
+                          </ul>
+                      </div>
+                    </div>
+                </nav>
+
                 <div class="row mt-5">
                     <div class="col-md-7">
                         <h3 class="mb-4">Load Management</h3>
@@ -238,7 +285,7 @@ checkSessionAndRedirect();
                 .openOn(map);
 
                 // Enable/disable buttons based on distance
-                if (distanceInKm <= 10000) {
+                if (distanceInKm <= 10^-1) {
                     loadButton.disabled = false;
                     unloadButton.disabled = false;
                 } else {
