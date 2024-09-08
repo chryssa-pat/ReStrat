@@ -60,25 +60,71 @@ checkSessionAndRedirect();
                 </div>
             </div>
 
-            <!-- Main content -->
-            <div class="col-md-9 col-lg-9">
+            <div class="col-md-9 col-lg-9 ">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light d-md-none">
+                    <div class="container-fluid">
+                      <a class="navbar-brand" href="#"><img src="../images/world.png" alt="logo" height="50"> </a>
+                      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                  </button>
+                    </div>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                          <li class="nav-item">
+                            <hr>
+                              <a href="volunteer.php" class="nav-link active link-body-emphasis">
+                                  <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                                  Map
+                              </a>
+                          </li>
+                          <li class="nav-item">
+                            <a href="load_management.php" class="nav-link activelink-body-emphasis">
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                                Load Managment
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active link-body-emphasis">
+                                <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                                Tasks
+                            </a>
+                        </li>
+                
+                      </ul>
+                                        
+                        <hr>
+                      <div class="dropdown ">
+                          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Account
+                          </button>
+                          <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="settings.html">Settings</a></li>
+                              <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
+                          </ul>
+                      </div>
+                    </div>
+                </nav>
+
                 <div class="container mt-5">
                     <h2>My Tasks</h2>
-                    <table class="table table-striped" id="tasksTable">
-                        <thead>
-                            <tr>
-                                <th>Type</th>
-                                <th>Full Name</th>
-                                <th>Phone</th>
-                                <th>Item</th>
-                                <th>Quantity</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Task details will be added here dynamically -->
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="tasksTable">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Full Name</th>
+                                    <th>Phone</th>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Task details will be added here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
