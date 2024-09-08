@@ -189,7 +189,7 @@ checkSessionAndRedirect();
                             
                             data.tasks.forEach(task => {
                                 const distance = userLocation ? calculateDistance(userLocation.latitude, userLocation.longitude, task.latitude, task.longitude) : Infinity;
-                                const isWithinRange = distance <= 5*10^-2;
+                                const isWithinRange = distance <= 0.05;
                                 
                                 const row = `
                                     <tr>
