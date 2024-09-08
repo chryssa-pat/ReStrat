@@ -39,27 +39,24 @@ checkSessionAndRedirect();
                  <hr>
                 
                  <ul class="nav nav-pills flex-column mb-auto">
-                     <li>
-                         <a href="#" class="nav-link link-body-emphasis">
-                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                             Map
-                         </a>
-                     </li>
-                     <li>
-                         <a href="load_management.php" class="nav-link link-body-emphasis">
-                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                             Load Management
-                         </a>
-                     </li>
-                     <li>
-                         <a href="tasks.php" class="nav-link link-body-emphasis">
-                             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                             Tasks
-                         </a>
-                     </li>
-                    
-                     <hr>
-                 </ul>
+                    <li>
+                        <a href="#" class="nav-link active link-body-emphasis">
+                            Map
+                        </a>
+                    </li>
+                    <li>
+                        <a href="load_management.php" class="nav-link link-body-emphasis">
+                            Load Management
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tasks.php" class="nav-link link-body-emphasis">
+                            Tasks
+                        </a>
+                    </li>
+                    <hr>
+                </ul>
+                <hr>
                  
                  <div id="filters">
                      <h5>Filters</h5>
