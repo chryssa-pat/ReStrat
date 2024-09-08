@@ -13,20 +13,18 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <link rel="stylesheet" href="warehouse_main.css">
     <style>
         #categoryContainer {
-            max-height: 300px; /* Set the max height for the scrollable area */
-            overflow-y: auto; /* Make the category container scrollable */
-            border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+            max-height: 300px; 
+            overflow-y: auto; 
+            border: 1px solid #ccc; 
             padding: 10px;
             border-radius: 5px;
-            margin-top: 20px; /* Add some space above the form */
+            margin-top: 20px; 
         }
 
-        /* Add margin between the navbar and the form */
         .content-area {
-            margin-top: 20px; /* Adjust this value to increase or decrease the gap */
+            margin-top: 20px; 
         }
 
     </style>
@@ -52,13 +50,7 @@
                 <li><a href="add_product_main.php" class="nav-link link-body-emphasis">Manage Products</a></li>
                 <hr>
             </ul>
-            <div class="dropdown">
-                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Account</button>
-                <ul class="dropdown-menu">
-                    <li><a href="settings.html" class="dropdown-item">Settings</a></li>
-                    <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                </ul>
-            </div>
+            <button class="btn btn-danger" id="logoutButton">Logout</button> 
         </div>
         <!-- Content area (for all screens) -->
         <div class="col-md-9 col-lg-9">
@@ -81,13 +73,7 @@
                       <li class="nav-item"><a href="add_product_main.php" class="nav-link link-body-emphasis">Manage Products</a></li>
                       <hr>
                   </ul>
-                  <div class="dropdown">
-                      <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Account</button>
-                      <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                          <li><a classdropdown-item" id="logoutButton" href="#">Logout</a></li>
-                      </ul>
-                  </div>
+                  <button class="btn btn-danger" id="logoutButton2">Logout</button> 
               </div>
             </nav>
 
@@ -118,10 +104,43 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to logout?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmLogout">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <script>
+        document.getElementById('logoutButton').addEventListener('click', function (e) {
+            e.preventDefault();
+            $('#logoutModal').modal('show'); 
+        });
+
+        document.getElementById('logoutButton2').addEventListener('click', function (e) {
+            e.preventDefault();
+            $('#logoutModal').modal('show'); 
+        });
+
+        // Confirm logout action
+        document.getElementById('confirmLogout').addEventListener('click', function () {
+            window.location.href = "../main/logout.php"; 
+        });
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Fetch and populate categories
             fetch('get_categories.php')
