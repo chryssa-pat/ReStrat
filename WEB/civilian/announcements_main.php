@@ -87,7 +87,7 @@ checkSessionAndRedirect();
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="history_inquiry.php" class="nav-link link-body-emphasis>
+                                <a href="history_inquiry_main.php" class="nav-link link-body-emphasis>
                                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                                     Inquiries History
                                 </a>
@@ -165,17 +165,17 @@ checkSessionAndRedirect();
     
     document.getElementById('logoutButton').addEventListener('click', function (e) {
         e.preventDefault();
-        $('#logoutModal').modal('show'); // Show the logout confirmation modal
+        $('#logoutModal').modal('show'); 
     });
 
     document.getElementById('logoutButton2').addEventListener('click', function (e) {
         e.preventDefault();
-        $('#logoutModal').modal('show'); // Show the logout confirmation modal
+        $('#logoutModal').modal('show'); 
     });
 
     // Confirm logout action
     document.getElementById('confirmLogout').addEventListener('click', function () {
-        window.location.href = "../main/logout.php"; // Redirect to logout
+        window.location.href = "../main/logout.php"; 
     });
     // Handle announcement button click
     $(document).on('click', '.announcement-button', function() {
