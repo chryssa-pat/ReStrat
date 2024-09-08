@@ -120,7 +120,23 @@ checkSessionAndRedirect();
                         <hr>
                 
                       </ul>
-          
+                      <div id="filters" class="me-auto mb-2 mb-lg-0">
+                        <h5>Filters</h5>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="pendingFilterMobile" checked>
+                            <label class="form-check-label" for="pendingFilterMobile">Show Pending Offers/Inquiries</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="approvedFilterMobile" checked>
+                            <label class="form-check-label" for="approvedFilterMobile">Show Approved Offers/Inquiries</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="connectionLinesFilterMobile">
+                            <label class="form-check-label" for="connectionLinesFilterMobile">Show Connection Lines</label>
+                        </div>
+                    </div>
+                                        
+                        <hr>
                       <div class="dropdown ">
                           <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                               Account
@@ -241,6 +257,26 @@ checkSessionAndRedirect();
             getVolunteerLocation();
             getApprovedCivilians();
         }
+        // Add event listeners for mobile filters
+            document.getElementById('pendingFilterMobile').addEventListener('change', function() {
+                filters.pending = this.checked;
+                updateMarkers();
+                clearAllConnectionLines();
+                updateConnectionLines();
+            });
+
+            document.getElementById('approvedFilterMobile').addEventListener('change', function() {
+                filters.approved = this.checked;
+                updateMarkers();
+                clearAllConnectionLines();
+                updateConnectionLines();
+            });
+
+            document.getElementById('connectionLinesFilterMobile').addEventListener('change', function() {
+                filters.connectionLines = this.checked;
+                clearAllConnectionLines();
+                updateConnectionLines();
+            });
     
         function getCurrentVehicleId() {
             return new Promise((resolve, reject) => {
