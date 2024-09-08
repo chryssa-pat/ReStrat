@@ -40,7 +40,7 @@ checkSessionAndRedirect();
                 
                  <ul class="nav nav-pills flex-column mb-auto">
                      <li>
-                         <a href="#" class="nav-link link-body-emphasis">
+                         <a href="#" class="nav-link active link-body-emphasis">
                              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
                              Map
                          </a>

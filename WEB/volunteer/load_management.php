@@ -85,8 +85,9 @@ checkSessionAndRedirect();
                             Tasks
                         </a>
                     </li>
+                    <hr>
                 </ul>
-                <hr>
+               
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Account
