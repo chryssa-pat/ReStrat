@@ -44,7 +44,7 @@ try {
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows === 0) {
-        throw new Exception("Δεν βρέθηκε όχημα για τον χρήστη");
+        throw new Exception("No vehicle found for this user!");
     }
     $vehicleId = $result->fetch_assoc()['vehicle'];
     
@@ -63,7 +63,7 @@ try {
     
     if ($result->num_rows === 0) {
         error_log("Product not found in vehicle load - item: $item");
-        throw new Exception("Το προϊόν δεν βρέθηκε στο φορτίο του οχήματος!");
+        throw new Exception("Product not found in vehicle load!");
     }
     
     $row = $result->fetch_assoc();
@@ -72,7 +72,7 @@ try {
     
     if ($quantity > $loadedQuantity) {
         error_log("Not enough quantity in vehicle - requested: $quantity, available: $loadedQuantity");
-        throw new Exception("Η ποσότητα που ζητήσατε υπερβαίνει το φορτίο του οχήματος!");
+        throw new Exception("The quantity you requested exceeds the vehicle load!");
     }
     
     // Ενημερώνουμε την ποσότητα στον πίνακα VEHICLE_LOAD
@@ -98,7 +98,7 @@ try {
     // Ολοκληρώνουμε τη συναλλαγή
     $conn->commit();
     
-    echo json_encode(['success' => true, 'message' => 'Το προϊόν ξεφορτώθηκε επιτυχώς!']);
+    echo json_encode(['success' => true, 'message' => 'Product unloaded successfully!']);
 } catch (Exception $e) {
     // Σε περίπτωση σφάλματος, ακυρώνουμε τη συναλλαγή
     $conn->rollback();

@@ -375,7 +375,7 @@ checkSessionAndRedirect();
 
 
         function createPopupContent(items) {
-            const type = items[0].type.charAt(0).toUpperCase() + items[0].type.slice(1) + 's';
+            const type = items[0].type.charAt(0).toUpperCase() + items[0].type.slice(1);
             let content = `<div id="popup-${items[0].id}"><strong>${type}</strong><br>`;
             
             items.forEach((item, index) => {

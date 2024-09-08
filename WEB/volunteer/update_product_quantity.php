@@ -72,7 +72,7 @@ try {
     
     if ($quantity > $availableQuantity) {
         error_log("Not enough quantity - requested: $quantity, available: $availableQuantity");
-        throw new Exception("Η ποσότητα που ζητήσατε υπερβαίνει τη διαθεσιμότητα της αποθήκης!");
+        throw new Exception("The quantity you exceeds the!");
     }
     
     // Ενημερώνουμε την ποσότητα στον πίνακα PRODUCTS
@@ -108,7 +108,7 @@ try {
     // Ολοκληρώνουμε τη συναλλαγή
     $conn->commit();
     
-    echo json_encode(['success' => true, 'message' => 'Το προϊόν φορτώθηκε επιτυχώς!']);
+    echo json_encode(['success' => true, 'message' => 'Product loaded successfully!']);
 } catch (Exception $e) {
     // Σε περίπτωση σφάλματος, ακυρώνουμε τη συναλλαγή
     $conn->rollback();
