@@ -62,15 +62,7 @@ checkSessionAndRedirect();
                     </li>
                     <hr>
                 </ul>
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        Account
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a href="settings.html" class="dropdown-item">Settings</a></li>
-                        <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                    </ul>
-                </div>
+                <button class="btn btn-danger" id="logoutButton">Logout</button> 
             </div>
 
             <!-- Content area (for all screens) -->
@@ -114,16 +106,7 @@ checkSessionAndRedirect();
                                 </a>
                             </li>
                         </ul>
-
-                        <div class="dropdown">
-                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                Account
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                                <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                            </ul>
-                        </div>
+                        <button class="btn btn-danger" id="logoutButton2">Logout</button> 
                     </div>
                 </nav>
 
@@ -151,6 +134,23 @@ checkSessionAndRedirect();
 
                         <button class="form_button" type="submit">Submit</button>
                     </form>
+                </div>
+                  <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to logout?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-danger" id="confirmLogout">Logout</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
@@ -281,11 +281,17 @@ checkSessionAndRedirect();
 
                     document.getElementById('logoutButton').addEventListener('click', function (e) {
                         e.preventDefault();
-                        console.log('Logout button clicked'); // Debugging line
-                        var confirmLogout = confirm('Are you sure you want to logout?');
-                        if (confirmLogout) {
-                            window.location.href = "../main/logout.php";
-                        }
+                        $('#logoutModal').modal('show'); 
+                    });
+
+                    document.getElementById('logoutButton2').addEventListener('click', function (e) {
+                        e.preventDefault();
+                        $('#logoutModal').modal('show'); 
+                    });
+
+                    // Confirm logout action
+                    document.getElementById('confirmLogout').addEventListener('click', function () {
+                        window.location.href = "../main/logout.php"; 
                     });
                 });
                 </script>

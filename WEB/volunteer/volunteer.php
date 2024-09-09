@@ -76,15 +76,7 @@ checkSessionAndRedirect();
                  
                  <hr>
                  
-                 <div class="dropdown">
-                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                         Account
-                     </button>
-                     <ul class="dropdown-menu">
-                         <li><a href="settings.html" class="dropdown-item">Settings</a></li>
-                         <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                     </ul>
-                 </div>
+                 <button class="btn btn-danger" id="logoutButton">Logout</button> 
              </div>
 
             <div class="col-md-9 col-lg-9 ">
@@ -105,13 +97,13 @@ checkSessionAndRedirect();
                               </a>
                           </li>
                           <li class="nav-item">
-                            <a href="#" class="nav-link activelink-body-emphasis">
+                            <a href="load_management.php" class="nav-link activelink-body-emphasis">
                                 <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                                 Load Managment
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="tasks.html" class="nav-link active link-body-emphasis">
+                            <a href="tasks.php" class="nav-link active link-body-emphasis">
                                 <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
                                 Tasks
                             </a>
@@ -137,15 +129,7 @@ checkSessionAndRedirect();
                     </div>
                                         
                         <hr>
-                      <div class="dropdown ">
-                          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                              Account
-                          </button>
-                          <ul class="dropdown-menu">
-                              <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                              <li><a class="dropdown-item" id="logoutButton" href="#">Logout</a></li>
-                          </ul>
-                      </div>
+                        <button class="btn btn-danger" id="logoutButton2">Logout</button> 
                     </div>
                 </nav>
               
@@ -158,6 +142,7 @@ checkSessionAndRedirect();
     </div>
         
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
@@ -408,12 +393,15 @@ checkSessionAndRedirect();
 
 
         function createPopupContent(items) {
-            const type = items[0].type.charAt(0).toUpperCase() + items[0].type.slice(1);
-            let content = `<div id="popup-${items[0].id}"><strong>${type}</strong><br>`;
+            const type = items[0].type.charAt(0).toUpperCase() + items[0].type.slice(1) + 's';
+            const title = type === 'Inquirys' ? 'Inquiries' : type; 
+            let content = `<div id="popup-${items[0].id}"><strong>${title}</strong><br>`;
             
             items.forEach((item, index) => {
                 const shouldShow = (item.status === 'pending' && filters.pending) ||
-                                (item.status === 'approved' && filters.approved);
+                                (item.status === 'approved' && filters.approved) ||
+                                (filters.pending === false && filters.approved === false); // Show all if no filters
+
                 if (shouldShow) {
                     content += `
                     <div class="offer-item" style="margin-bottom: 10px; ${index > 0 ? 'border-top: 1px solid #ccc; padding-top: 10px;' : ''}">
@@ -609,8 +597,12 @@ checkSessionAndRedirect();
 
 
         function updateMarkers() {
+            // Check if all filters are disabled
+            const allFiltersDisabled = !filters.pending && !filters.approved;
+
             civilianMarkers.forEach(markerInfo => {
-                const shouldShow = (markerInfo.hasPending && filters.pending) ||
+                const shouldShow = allFiltersDisabled || 
+                                (markerInfo.hasPending && filters.pending) ||
                                 (markerInfo.hasApproved && filters.approved);
                 if (shouldShow) {
                     markerInfo.marker.addTo(map);
@@ -642,8 +634,41 @@ checkSessionAndRedirect();
             updateConnectionLines();
         });
 
-    
+        document.getElementById('pendingFilterMobile').addEventListener('change', function() {
+            filters.pending = this.checked;
+            updateMarkers();
+            clearAllConnectionLines();
+            updateConnectionLines();
+        });
+
+        document.getElementById('approvedFilterMobile').addEventListener('change', function() {
+            filters.approved = this.checked;
+            updateMarkers();
+            clearAllConnectionLines();
+            updateConnectionLines();
+        });
+
+        document.getElementById('connectionLinesFilterMobile').addEventListener('change', function() {
+            filters.connectionLines = this.checked;
+            clearAllConnectionLines();
+            updateConnectionLines();
+        });
+        
         window.onload = initMap;
+        document.getElementById('logoutButton').addEventListener('click', function (e) {
+            e.preventDefault();
+            $('#logoutModal').modal('show'); 
+        });
+
+        document.getElementById('logoutButton2').addEventListener('click', function (e) {
+            e.preventDefault();
+            $('#logoutModal').modal('show'); 
+        });
+
+        // Confirm logout action
+        document.getElementById('confirmLogout').addEventListener('click', function () {
+            window.location.href = "../main/logout.php"; 
+        });
     </script>
 </body>
 </html>
