@@ -1,0 +1,44 @@
+# Enable RewriteEngine for URL rewriting
+RewriteEngine On
+
+# Force HTTPS (if SSL is enabled)
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Deny access to .htaccess file
+<Files .htaccess>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Prevent directory listing
+Options -Indexes
+
+# Set Time-To-Live (TTL) for caching of static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 0 seconds"          # No caching for HTML files
+    ExpiresByType text/css "access plus 1 month"             # 1 month for CSS
+    ExpiresByType text/javascript "access plus 1 month"      # 1 month for JS
+    ExpiresByType application/javascript "access plus 1 month" # 1 month for JS
+    ExpiresByType image/jpeg "access plus 1 year"            # 1 year for images
+    ExpiresByType image/png "access plus 1 year"             # 1 year for images
+    ExpiresByType image/gif "access plus 1 year"             # 1 year for images
+    ExpiresByType application/pdf "access plus 1 year"       # 1 year for PDFs
+</IfModule>
+
+# Set security headers
+<IfModule mod_headers.c>
+    # Prevent MIME-type sniffing
+    Header set X-Content-Type-Options "nosniff"
+
+    # Prevent Clickjacking
+    Header set X-Frame-Options "DENY"
+
+    # Prevent XSS attacks
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Custom error pages
+ErrorDocument 404 /custom_404.php
+ErrorDocument 500 /custom_500.php
