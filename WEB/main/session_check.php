@@ -29,7 +29,6 @@ if (isset($_COOKIE['last_activity'])) {
 setcookie('last_activity', time(), time() + $timeout, '/'); // Reset the cookie timer
 
 
-
 if (!isset($_SESSION['user'])) {
     header("Location: ../main/login.php");
     exit();
@@ -62,7 +61,6 @@ if (!isset($_SESSION['user'])) {
     }
 }
 
-// Add this function at the end of the file
 function checkSessionAndRedirect() {
     if (!isset($_SESSION['user'])) {
         header("Location: ../main/login.php");
