@@ -79,12 +79,15 @@ checkSessionAndRedirect();
                                     <label for="password" class="form-label">Password</label>
                                     <input type="password" class="form-control" id="password" name="password" required>
                                 </div>
+                                 
+                                <div class="mb-3">
+                                    <label for="carId" class="form-label">Car Id</label>
+                                    <input type="carId" class="form-control" id="carId" name="carId" required>
+                                </div>
                             
                                 <div class="mb-3">
-                                    <label for="profile" class="form-label">Profile</label>
-                                    <select name="profile" id="profile" class="form-select" disabled>
-                                        <option value="volunteer" selected>Volunteer</option>
-                                    </select>
+                                <label for="profile" class="form-label">Profile</label>
+                                <input type="text" class="form-control" id="profile" value="volunteer" readonly>
                                 </div>
                                 
                                 <div class="d-grid">
