@@ -234,8 +234,8 @@ checkSessionAndRedirect();
                 }
 
                 items.push({
-                    id: itemId,  // Store as 'id' to match the structure you're using
-                    name: itemName,  // Store the name as well
+                    id: itemId,  // Store the id 
+                    name: itemName,  // Store the name 
                     quantity: parseInt(quantity)
                 });
                 console.log('Items after adding:', JSON.stringify(items, null, 2));

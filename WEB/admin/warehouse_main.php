@@ -84,7 +84,7 @@
 
                 <div id="categoryContainer" class="form-group mt-4">
                 <label><h4>Select Categories:</h4></label>
-                    <!-- The categories will be populated here via JavaScript -->
+                    <!-- The categories will be populated here  -->
                 </div>
                 <table id="productTable" class="table">
                     <thead>
@@ -92,7 +92,7 @@
                             <th>Item</th>
                             <th>Available</th>
                             <th>Details</th>
-                            <th>Load (Vehicle ID, Quantity)</th> <!-- New column added -->
+                            <th>Load (Vehicle ID, Quantity)</th>
                         </tr>
                     </thead>
                     <tbody id="productTableBody">
