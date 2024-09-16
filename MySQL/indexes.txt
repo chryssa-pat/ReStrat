@@ -1,5 +1,6 @@
 -- USERS Table Indexes
 CREATE INDEX idx_user_profile ON USERS(profile);
+CREATE INDEX idx_user_name ON USERS(username);
 
 -- CIVILIAN Table Indexes
 CREATE INDEX idx_civilian_user ON CIVILIAN(civilian_user);
