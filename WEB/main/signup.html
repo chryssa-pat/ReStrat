@@ -1,13 +1,10 @@
-<?php include('signup.php') ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReStrat | Signup Form</title>
     <link rel="stylesheet" href="login-signup.css">
-
 </head>
 
 <body>
@@ -15,7 +12,7 @@
         <div class="signup-container">
             <a href="main.html"><img id="image" src="../images/earth.png" alt="logo icon" height="60"></a>
             <h2>Signup</h2>
-            <form action="signup.php" method="post">
+            <form id="signupForm">
                 <label for="signup-username">Username:</label>
                 <input type="text" id="signup-username" name="signup-username" required>
 
@@ -28,44 +25,68 @@
                 <label for="signup-phone">Phone Number:</label>
                 <input type="text" id="signup-phone" name="signup-phone" pattern="\d{10}" required title="Please enter a 10-digit phone number">
 
-              <!-- Update the name attributes to match PHP script -->
-            <label for="longitude">Longitude:</label>
-            <input type="text" id="longitude" name="longitude" value="" >
+                <label for="longitude">Longitude:</label>
+                <input type="text" id="longitude" name="longitude" value="">
 
-            <label for="latitude">Latitude:</label>
-            <input type="text" id="latitude" name="latitude" value="" >
-
+                <label for="latitude">Latitude:</label>
+                <input type="text" id="latitude" name="latitude" value="">
 
                 <button type="submit">Sign Up</button>
             </form>
 
+            <p id="signupMessage" style="color:red;"></p>
         </div>
     </div>
 
-    <!-- Add this script in the head section of your HTML -->
-<script>
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-            alert("Geolocation is not supported by this browser.");
+    <script>
+        // Get user's location when the page loads
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
         }
-    }
 
-    function showPosition(position) {
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
-        console.log('Latitude:', latitude, 'Longitude:', longitude);
-        
-        // Update the latitude and longitude fields
-        document.getElementById('latitude').value = latitude;
-        document.getElementById('longitude').value = longitude;
-    }
+        function showPosition(position) {
+            document.getElementById('latitude').value = position.coords.latitude;
+            document.getElementById('longitude').value = position.coords.longitude;
+        }
 
-    // Call getLocation() when the page is loaded
-    getLocation();
-</script>
+        // Call getLocation() when the page is loaded
+        window.onload = getLocation;
 
+        // Form submission using Fetch API
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting the traditional way
+
+            // Prepare form data
+            const formData = new FormData(document.getElementById('signupForm'));
+
+            // Send the form data using Fetch API
+            fetch('signup.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json()) // Parse the JSON from the response
+            .then(data => {
+                const messageElement = document.getElementById('signupMessage');
+                if (data.success) {
+                    messageElement.style.color = 'green';
+                    messageElement.textContent = data.message;
+                    setTimeout(() => {
+                        window.location.href = '../civilian/civilian_main.php';
+                    }, 2000); // Redirect after 2 seconds
+                } else {
+                    messageElement.style.color = 'red';
+                    messageElement.textContent = data.message;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('signupMessage').textContent = 'An unexpected error occurred. Please try again.';
+            });
+        });
+    </script>
 </body>
-
 </html>

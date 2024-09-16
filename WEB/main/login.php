@@ -69,7 +69,7 @@ if ($result->num_rows > 0) {
             break;
         default:
             // Redirect to a default page if user type is not recognized
-            header('Location: default_dashboard.php');
+            header('Location: ../main/login.php');
             break;
     }
 
