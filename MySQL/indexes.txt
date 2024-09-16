@@ -2,7 +2,7 @@
 CREATE INDEX idx_user_profile ON USERS(profile);
 
 -- CIVILIAN Table Indexes
-CREATE INDEX idx_civilian_phone ON CIVILIAN(phone);
+CREATE INDEX idx_civilian_user ON CIVILIAN(civilian_user);
 CREATE INDEX idx_civilian_location ON CIVILIAN(latitude, longitude);
 
 -- CATEGORIES Table Indexes
