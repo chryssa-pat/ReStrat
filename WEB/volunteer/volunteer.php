@@ -300,16 +300,14 @@ checkSessionAndRedirect();
 
                     updateLocation(lat, lng);
 
-                    volunteerMarker.on('dragend', function(event) {
-                        var position = volunteerMarker.getLatLng();
-                        updateLocation(position.lat, position.lng);
-                        updateLabel(volunteerMarker, "Volunteer Location<br>Lat: " + position.lat.toFixed(6) + "<br>Lng: " + position.lng.toFixed(6));
-                    });
+                    volunteerMarker.on('dragstart', onDragStart);
+                    volunteerMarker.on('dragend', onDragEnd);
 
                     fitMapToAllMarkers();
                 });
             }
         }
+
     
         function getBaseLocation() {
             fetch('get_base_location.php')
@@ -333,7 +331,58 @@ checkSessionAndRedirect();
                 })
                 .catch(error => console.error('Error:', error));
         }
+        function onDragStart() {
+            isDragging = true;
+        }
 
+        function onDragEnd(e) {
+            isDragging = false;
+            updateVolunteerMarkerPopup();
+            confirmLocationChange();
+        }
+
+        function updateVolunteerMarkerPopup() {
+            let lat = volunteerMarker.getLatLng().lat.toFixed(6);
+            let lng = volunteerMarker.getLatLng().lng.toFixed(6);
+            updateLabel(volunteerMarker, "Volunteer Location<br>Lat: " + lat + "<br>Lng: " + lng);
+        }
+
+        function confirmLocationChange() {
+            if (confirm("Do you want to save this new volunteer location?")) {
+                saveVolunteerLocation();
+            } else {
+                getVolunteerLocation(); // Reset to the original location
+            }
+        }
+        function saveVolunteerLocation() {
+            let lat = volunteerMarker.getLatLng().lat;
+            let lng = volunteerMarker.getLatLng().lng;
+
+            fetch('update_location.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'latitude=' + lat + '&longitude=' + lng
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Location updated successfully');
+                    updateLabel(volunteerMarker, "Volunteer Location<br>Lat: " + lat.toFixed(6) + "<br>Lng: " + lng.toFixed(6));
+                    alert("Volunteer location updated successfully!");
+                } else {
+                    console.error('Failed to update location:', data.error);
+                    alert("Failed to update volunteer location. Please try again.");
+                    getVolunteerLocation(); // Reset to the original location
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred. Please try again.");
+                getVolunteerLocation(); // Reset to the original location
+            });
+        }
         function getApprovedCivilians() {
             fetch('get_approved_civilians.php')
                 .then(response => response.json())
