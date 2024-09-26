@@ -637,14 +637,21 @@ function applyFilters() {
     let showVehiclesWithTasks = document.getElementById('taskFilter').checked;
     let showVehiclesWithoutTasks = document.getElementById('noTaskFilter').checked;
 
+    //case1 Vehicle with tasks
     if (showVehiclesWithTasks) {
         // Hide inquiries and offers when showing only vehicles with tasks
         showOnlyVehiclesWithTasks();
-    } else if (showVehiclesWithoutTasks) {
+
+    }
+    //case2  Vehicle without tasks
+    else if (showVehiclesWithoutTasks) {
         // Hide inquiries and offers when showing only vehicles without tasks
         clearInquiryAndOfferMarkers(); // Ensure inquiry and offer markers are cleared
         showOnlyVehiclesWithoutTasks();
-    } else {
+    }
+
+    // Case 3: Filter for pending/approved offers and inquiries
+    else {
         // Handle the inquiries and offers filtering
         if (showPending || showApproved) {
             if (showPending) {
