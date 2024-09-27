@@ -51,7 +51,7 @@ function getHomePage() {
         case 'civilian':
             return '../civilian/civilian_main.php';
         case 'volunteer':
-            return '../volunteer/volunteer.html';
+            return '../volunteer/volunteer.php';
         case 'administrator':
             return '../admin/announcement.php';
         default:
