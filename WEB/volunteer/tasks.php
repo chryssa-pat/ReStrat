@@ -149,13 +149,6 @@ checkSessionAndRedirect();
         document.getElementById('confirmLogout').addEventListener('click', function () {
             window.location.href = "../main/logout.php"; 
         });
-         document.getElementById('logoutButton').addEventListener('click', function (e) {
-                      e.preventDefault();
-                      var confirmLogout = confirm('Are you sure you want to logout?');
-                      if (confirmLogout) {
-                          window.location.href = "../main/logout.php";
-                      }
-                  });
         let userLocation = null;
 
         function getUserLocation() {
@@ -297,12 +290,6 @@ checkSessionAndRedirect();
             setInterval(loadTasks, 5 * 60 * 1000); // Κάθε 5 λεπτά
         });
 
-        // Logout functionality
-        document.getElementById('logoutButton').addEventListener('click', function(e) {
-            e.preventDefault();
-            // Implement logout logic here
-            console.log('Logout clicked');
-        });
     </script>
 </body>
 </html>
