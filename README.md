@@ -13,5 +13,5 @@ Further information about the design and the implementation of the app can be fo
 Visual Studio Code, XAMPP, Bootstrap 
 
 ## Technologies
-HTML, PHP, JavaScript, AJAX
+HTML, PHP, CSS, JavaScript, AJAX
 
