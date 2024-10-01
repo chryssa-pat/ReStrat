@@ -7,8 +7,11 @@
 
 This project is part of **Programming & Systems in World Wide Web** compulsory course in Computer Engineering & Informatics Department of University of Patras for Winter Semester 2023-2024 (Semester 7).
 
-Further information about the design and the implementation of the project can be found in the technical report at the **Documentation** folder.
+Further information about the design and the implementation of the app can be found in the technical report at the **Documentation** folder.
 
 ## Programming Tools & Environment
 Visual Studio Code, XAMPP, Bootstrap 
+
+## Technologies
+HTML, PHP, JavaScript, AJAX
 
